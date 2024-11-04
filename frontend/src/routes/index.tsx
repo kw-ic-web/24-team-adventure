@@ -1,4 +1,4 @@
-// frontend/src/routes/index.tsx
+// src/routes/index.tsx
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from '../pages/Home';
 import BoardList from '../pages/Board/BoardList';
@@ -10,7 +10,7 @@ export default function Router() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/board" element={<BoardList />} />
-        <Route path="/board/:geul_ID" element={<BoardDetail />} />
+        <Route path="/board/:geul_id" element={<BoardDetail />} />
       </Routes>
     </BrowserRouter>
   );
