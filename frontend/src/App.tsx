@@ -1,3 +1,4 @@
+// frontend/src/App.tsx
 import { ToastContainer } from 'react-toastify';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Router from './routes';
