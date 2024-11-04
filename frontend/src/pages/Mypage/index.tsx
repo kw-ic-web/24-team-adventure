@@ -1,3 +1,4 @@
+import homeBtn from '../../assets/images/homeBtn.png';
 import PostCard from '../../components/myPage/PostCard';
 
 export default function Mypage() {
@@ -81,8 +82,12 @@ export default function Mypage() {
         </div>
 
         {/* 홈으로 이동 버튼 */}
-        <button className="absolute bottom-4 right-4 bg-green-500 text-white p-4 rounded-full shadow-lg">
-          홈
+        <button
+          className="absolute bottom-2 right-2 p-4 bg-white rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-110 "
+          title="홈으로 이동"
+          aria-label="홈으로 이동"
+        >
+          <img src={homeBtn} alt="홈으로 이동" className="w-10 h-10" />
         </button>
       </div>
     </div>
