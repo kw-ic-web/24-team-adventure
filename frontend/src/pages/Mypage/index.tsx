@@ -83,7 +83,7 @@ export default function Mypage() {
 
         {/* 홈으로 이동 버튼 */}
         <button
-          className="absolute bottom-2 right-2 p-4 bg-white rounded-full shadow-lg transition-all duration-200 ease-in-out transform hover:scale-110 "
+          className="absolute bottom-1 right-1 p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110 "
           title="홈으로 이동"
           aria-label="홈으로 이동"
         >
