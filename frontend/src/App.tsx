@@ -1,19 +1,20 @@
-// src/App.tsx
-import { ToastContainer } from 'react-toastify';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Router from './routes';
-import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import StoryGrid from "./pages/Board/StoryGrid";
+import BoardListByStory from "./pages/Board/BoardListByStory";
+import PostDetail from "./pages/Board/PostDetail"; // 새로운 컴포넌트
 
 function App() {
-  const queryClient = new QueryClient();
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="App font-mono h-screen">
-        <Router />
-      </div>
-      <ToastContainer />
-    </QueryClientProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/board" element={<StoryGrid />} />
+        <Route path="/board/:id" element={<BoardListByStory />} />
+        <Route path="/board/:storyId/post/:postId" element={<PostDetail />} /> {/* 게시물 세부 정보 페이지 */}
+      </Routes>
+    </Router>
   );
 }
 

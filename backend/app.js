@@ -1,60 +1,55 @@
-// backend/app.js
-const express = require('express');
-const cors = require('cors');
-const pool = require('./db');
-const app = express();
-const PORT = 3000;
+const express = require("express");
+const cors = require("cors");
+const pool = require("./db"); // db.js 파일에서 pool 가져오기
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 게시판 목록 조회 API
-app.get('/board', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM one_s_story ORDER BY uploaded_time DESC');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch board data' });
-  }
+// 스토리 목록 가져오기 엔드포인트
+app.get("/stories", async (req, res) => {
+    try {
+        const stories = await pool.query("SELECT * FROM story");
+        res.json(stories.rows);
+    } catch (err) {
+        console.error("Error fetching stories:", err);
+        res.status(500).json({ error: "Failed to fetch stories" });
+    }
 });
 
-// 게시물 상세 조회 API
-app.get('/board/:geul_id', async (req, res) => {
-  const { geul_id } = req.params;
-  if (isNaN(geul_id)) {
-    return res.status(400).json({ error: 'Invalid post ID' });
-  }
-  try {
-    const result = await pool.query('SELECT * FROM one_s_story WHERE geul_id = $1', [geul_id]);
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch post details' });
-  }
+// 특정 스토리에 대한 게시물 목록 가져오기
+app.get("/stories/:story_id", async (req, res) => {
+    const { story_id } = req.params;
+    
+    if (!story_id || isNaN(story_id)) {
+        return res.status(400).json({ error: "Invalid story ID" });
+    }
+
+    try {
+        const posts = await pool.query("SELECT * FROM one_s_story WHERE story_id = $1", [parseInt(story_id)]);
+        res.json(posts.rows);
+    } catch (err) {
+        console.error("Error fetching posts for story:", err);
+        res.status(500).json({ error: "Failed to fetch posts for story" });
+    }
 });
 
-// 댓글 작성 API
-app.post('/board/:geul_id/comment', async (req, res) => {
-  const { geul_id } = req.params;
-  const { id, comm_content } = req.body;
-  if (isNaN(geul_id)) {
-    return res.status(400).json({ error: 'Invalid post ID' });
-  }
-  try {
-    await pool.query(
-      'INSERT INTO comment (id, geul_id, comm_content) VALUES ($1, $2, $3)',
-      [id, geul_id, comm_content]
-    );
-    res.status(201).json({ message: 'Comment added successfully' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to add comment' });
-  }
+// 특정 게시물 세부 정보 가져오기 엔드포인트
+app.get("/board/:story_id/post/:post_id", async (req, res) => {
+    const { story_id, post_id } = req.params;
+    try {
+        const post = await pool.query("SELECT * FROM one_s_story WHERE story_id = $1 AND id = $2", [story_id, post_id]);
+        if (post.rows.length === 0) {
+            return res.status(404).json({ error: "게시물을 찾을 수 없습니다." });
+        }
+        res.json(post.rows[0]);
+    } catch (err) {
+        console.error("Error fetching post details:", err);
+        res.status(500).json({ error: "게시물 세부 정보 가져오기에 실패했습니다." });
+    }
 });
 
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
-
-module.exports = app;
