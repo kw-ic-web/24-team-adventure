@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from '../pages/Home';
 import Start from '../pages/Start';
-import GameStart from '../pages/Game/GameSelect'
+import GameStart from '../pages/Game/GameSelect';
 import MyPage from '../pages/Mypage';
 import VideoChat from '../pages/Video';
 import VideoChatEndPage from '../pages/Video/videoChatEnd';
