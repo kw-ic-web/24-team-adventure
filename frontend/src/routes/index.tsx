@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from '../pages/Home';
 import Start from '../pages/Start';
+import GameStart from '../pages/Game/GameSelect'
 import MyPage from '../pages/Mypage';
 import VideoChat from '../pages/Video';
 import VideoChatEndPage from '../pages/Video/videoChatEnd';
@@ -16,6 +17,7 @@ export default function Router() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/video" element={<VideoChat />} />
         <Route path="/videoEnd" element={<VideoChatEndPage />} />
+        <Route path="/GameSelect" element={<GameStart />} />
       </Routes>
     </BrowserRouter>
   );
