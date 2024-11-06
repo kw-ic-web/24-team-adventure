@@ -1,8 +1,4 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import StoryGrid from '../pages/Board/StoryGrid';
-import BoardPage from '../pages/Board/BoardPage';
-import PostDetail from '../pages/Board/PostDetail';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from '../pages/Home';
 import Start from '../pages/Start';
@@ -10,12 +6,15 @@ import GameStart from '../pages/Game/GameSelect';
 import MyPage from '../pages/Mypage';
 import VideoChat from '../pages/Video';
 import VideoChatEndPage from '../pages/Video/videoChatEnd';
+import StoryGrid from '../pages/Board/StoryGrid';
+import BoardPage from '../pages/Board/BoardPage';
+import PostDetail from '../pages/Board/PostDetail';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 
 export default function Router() {
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
         <Route path="/board" element={<StoryGrid />} />
         <Route path="/board/:story_id" element={<BoardPage />} />
@@ -27,7 +26,6 @@ export default function Router() {
         <Route path="/videoEnd" element={<VideoChatEndPage />} />
         <Route path="/GameSelect" element={<GameStart />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
-};
-
+}
