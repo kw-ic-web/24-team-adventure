@@ -10,7 +10,7 @@ export default function Game_Play() {
   const [recognizedText, setRecognizedText] = useState('');
 
   const smallWords = [
-    { text: 'Word 1', color: 'bg-red-200' },
+    { text: 'Word 1', color: 'bg-red-300' },
     { text: 'Word 2', color: 'bg-green-200' },
     { text: 'Word 3', color: 'bg-yellow-200' },
   ];
