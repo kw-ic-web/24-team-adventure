@@ -36,7 +36,7 @@ const posts: Post[] = [
   // 추가 게시글 데이터...
 ];
 
-const Home: React.FC = () => {
+export default function Home() {
   return (
     <div className="min-h-screen bg-light-green flex w-screen bg-[#b3ae56] justify-center items-center font-noto">
       {/* 중앙 배경화면 박스 */}
@@ -103,6 +103,4 @@ const Home: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default Home;
+}
