@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./StoryGrid.css"; // 스토리 그리드 스타일링 CSS
+import api from "../../api"; // Axios 인스턴스 임포트
 
-// Story의 타입 정의
 interface Story {
   story_id: number;
   title: string;
@@ -11,19 +10,15 @@ interface Story {
 }
 
 const StoryGrid: React.FC = () => {
-  const [stories, setStories] = useState<Story[]>([]); // 스토리 목록 상태
-  const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
-  const [error, setError] = useState<string>(""); // 에러 메시지
+  const [stories, setStories] = useState<Story[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    // 스토리 데이터를 백엔드에서 가져오는 함수
     const fetchStories = async () => {
       try {
-        const response = await fetch("http://localhost:3000/stories"); // 백엔드의 /stories 엔드포인트
-        if (!response.ok) throw new Error("Failed to fetch stories");
-        const data: Story[] = await response.json();
-        console.log("Fetched Stories:", data); // 디버깅용 로그
-        setStories(data);
+        const response = await api.get("/stories");
+        setStories(response.data);
       } catch (error: any) {
         console.error("Failed to fetch stories:", error);
         setError("스토리 데이터를 불러오는 데 실패했습니다.");
@@ -34,36 +29,43 @@ const StoryGrid: React.FC = () => {
     fetchStories();
   }, []);
 
-  // 로딩 중일 때 표시
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      </div>
+    );
   }
 
-  // 에러 발생 시 표시
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
   }
 
   return (
-    <div className="story-grid">
-      <h2>동화 선택</h2>
-      <div className="story-cards">
-        {stories.map((story) => {
-          console.log("Story Object:", story); // 각 스토리 객체 확인용 로그
-          if (!story.story_id) {
-            console.error("Story ID is undefined for story:", story);
-            return null;
-          }
-          return (
-            <Link to={`/board/${story.story_id}`} key={story.story_id} className="story-card-link">
-              <div className="story-card">
-                {/* 스토리 커버 이미지 */}
-                <img src={`/${story.cover_pic}`} alt={story.title} className="story-image" />
-                <h3>{story.title}</h3>
-              </div>
-            </Link>
-          );
-        })}
+    <div className="p-8 bg-gray-100 min-h-screen">
+      <h2 className="text-2xl font-semibold mb-6 text-center">동화 선택</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {stories.map((story) => (
+          <Link
+            to={`/board/${story.story_id}`}
+            key={story.story_id}
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
+          >
+            <img
+              src={`/${story.cover_pic}`}
+              alt={story.title}
+              className="w-full h-48 object-cover rounded-t-lg"
+            />
+            <div className="p-4">
+              <h3 className="text-xl font-semibold">{story.title}</h3>
+              <p className="text-gray-600 mt-2">{story.intro}</p>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

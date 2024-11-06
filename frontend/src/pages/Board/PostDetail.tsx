@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../../api"; // 백엔드 API 호출을 위한 Axios 인스턴스
-import "./PostDetail.css"; // 포스트 상세 스타일링 CSS
+import api from "../../api"; // Axios 인스턴스 임포트
+import HomeButton from "../../components/HomeButton";
 
-// 댓글과 포스트의 타입 정의
 interface Comment {
   comment_id: number;
   comm_content: string;
@@ -23,38 +22,25 @@ interface Post {
 }
 
 const PostDetail: React.FC = () => {
-  // URL에서 story_id와 geul_id 추출
   const { story_id, geul_id } = useParams<{ story_id: string; geul_id: string }>();
-
-  // 디버깅용 로그
-  console.log("Story ID:", story_id);
-  console.log("Geul ID:", geul_id);
-
-  // 상태 변수 설정
-  const [post, setPost] = useState<Post | null>(null); // 포스트 데이터
-  const [comments, setComments] = useState<Comment[]>([]); // 댓글 데이터
-  const [loading, setLoading] = useState<boolean>(true); // 로딩 상태
-  const [error, setError] = useState<string>(""); // 에러 메시지
+  const [post, setPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    // story_id 또는 geul_id가 없을 경우 에러 처리
     if (!story_id || !geul_id) {
-      setError("Invalid story_id or geul_id");
+      setError("유효하지 않은 story_id 또는 geul_id입니다.");
       setLoading(false);
       return;
     }
 
-    // 포스트와 댓글을 가져오는 비동기 함수
     const fetchData = async () => {
       try {
-        // 포스트 상세 정보 조회
         const postResponse = await api.get(`/board/${story_id}/post/${geul_id}`);
-        console.log("Post Response:", postResponse.data); // 디버깅용 로그
         setPost(postResponse.data);
 
-        // 댓글 목록 조회
         const commentsResponse = await api.get(`/board/${story_id}/post/${geul_id}/comments`);
-        console.log("Comments Response:", commentsResponse.data); // 디버깅용 로그
         setComments(commentsResponse.data);
       } catch (err: any) {
         console.error("Error fetching post or comments:", err);
@@ -67,39 +53,70 @@ const PostDetail: React.FC = () => {
     fetchData();
   }, [story_id, geul_id]);
 
-  // 로딩 상태일 때 로더 표시
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+      </div>
+    );
+  }
 
-  // 에러 발생 시 에러 메시지 표시
-  if (error && !post) return <div>{error}</div>;
+  if (error && !post) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
+        <p className="text-red-500 mb-4">{error}</p>
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200"
+          onClick={() => window.location.reload()}
+        >
+          다시 시도
+        </button>
+      </div>
+    );
+  }
 
-  // 포스트가 없을 경우 메시지 표시
-  if (!post) return <div>게시물이 없습니다.</div>;
+  if (!post) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100">
+        <p className="text-gray-600">게시물이 없습니다.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="post-detail">
-      <h1>{post.title}</h1>
+    <div className="p-8 bg-gray-100 min-h-screen max-w-4xl mx-auto">
+      {/* 포스트 제목 */}
+      <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
 
-      <p>{post.content}</p>
+      {/* 포스트 내용 */}
+      <p className="text-lg text-gray-800">{post.content}</p>
 
-      <small>업로드 시간: {new Date(post.uploaded_time).toLocaleString()}</small>
+      {/* 업로드 시간 */}
+      <small className="text-gray-500">업로드 시간: {new Date(post.uploaded_time).toLocaleString()}</small>
 
-      <div className="comments-section">
-        <h3>댓글</h3>
-        {error && <p className="error">{error}</p>}
+      {/* 댓글 섹션 */}
+      <div className="mt-8">
+        <h3 className="text-2xl font-semibold mb-4">댓글</h3>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
         {comments.length > 0 ? (
           comments.map((comment) => (
-            <div key={comment.comment_id} className="comment">
-              <p>{comment.comm_content}</p>
-              <small>
-                {comment.author} - {new Date(comment.created_at).toLocaleString()}
-              </small>
+            <div
+              key={comment.comment_id}
+              className="bg-white p-4 rounded-lg shadow mb-4"
+            >
+              <p className="text-gray-800">{comment.comm_content}</p>
+              <div className="flex justify-between items-center mt-2 text-sm text-gray-500">
+                <span>{comment.author}</span>
+                <span>{new Date(comment.created_at).toLocaleString()}</span>
+              </div>
             </div>
           ))
         ) : (
-          <p>댓글이 없습니다.</p>
+          <p className="text-gray-600">댓글이 없습니다.</p>
         )}
       </div>
+
+      <HomeButton />
     </div>
   );
 };
