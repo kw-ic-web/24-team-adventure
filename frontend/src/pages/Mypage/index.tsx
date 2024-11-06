@@ -1,7 +1,11 @@
-import homeBtn from '../../assets/images/homeBtn.png';
+//src/pages/Mypage/index.tsx
+import { useNavigate } from 'react-router-dom';
+import homeBtnImg from '../../assets/images/homeBtn.png';
 import PostCard from '../../components/myPage/PostCard';
 
 export default function Mypage() {
+  const navigate = useNavigate();
+
   // 임시 데이터
   const posts = [
     {
@@ -47,7 +51,7 @@ export default function Mypage() {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-emerald-700">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-600 to-emerald-700">
       {/* 스크롤 가능한 흰색 직사각형 박스 */}
       <div className="w-full max-w-5xl bg-white p-6 shadow-lg rounded-lg max-h-[80vh] flex relative">
         {/* Left Side: 게시물 리스트 */}
@@ -83,11 +87,12 @@ export default function Mypage() {
 
         {/* 홈으로 이동 버튼 */}
         <button
+          onClick={() => navigate('/home')}
           className="absolute bottom-1 right-1 p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110 "
           title="홈으로 이동"
           aria-label="홈으로 이동"
         >
-          <img src={homeBtn} alt="홈으로 이동" className="w-10 h-10" />
+          <img src={homeBtnImg} alt="홈으로 이동" className="w-10 h-10" />
         </button>
       </div>
     </div>
