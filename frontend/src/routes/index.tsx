@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from '../pages/Home';
 import Start from '../pages/Start';
 import GameStart from '../pages/Game/GameSelect';
+import GamePlay from '../pages/Game/GamePlay';
+import GameEnd from '../pages/Game/GameEnd';
 import MyPage from '../pages/Mypage';
 import VideoChat from '../pages/Video';
 import VideoChatEndPage from '../pages/Video/videoChatEnd';
@@ -16,6 +18,8 @@ export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/gameplay" element={<GamePlay />} />
+        <Route path="/gameend" element={<GameEnd />} />
         <Route path="/board" element={<StoryGrid />} />
         <Route path="/board/:story_id" element={<BoardPage />} />
         <Route path="/board/:story_id/post/:geul_id" element={<PostDetail />} />
