@@ -1,18 +1,17 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from '../pages/Home';
-import StoryGrid from '../pages/Board/StoryGrid';
-import BoardListByStory from '../pages/Board/BoardListByStory';
-import BoardDetail from '../pages/Board/BoardDetail';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
 
-export default function Router() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/board" element={<StoryGrid />} />
-        <Route path="/board/:story_id" element={<BoardListByStory />} />
-        <Route path="/post/:geul_id" element={<BoardDetail />} />
-      </Routes>
-    </BrowserRouter>
-  );
-}
+// 전역 스타일 임포트
+import "./index.css";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+
+// StrictMode로 앱을 감싸서 잠재적인 문제를 탐지
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
