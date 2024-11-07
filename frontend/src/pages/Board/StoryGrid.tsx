@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../../api';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 interface Story {
   story_id: number;
-  title: string;
-  intro: string;
+  story_title: string;
   cover_pic: string;
 }
 
 const StoryGrid: React.FC = () => {
   const [stories, setStories] = useState<Story[]>([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await api.get('/stories');
+        const response = await axios.get('http://localhost:3000/stories');
         setStories(response.data);
       } catch (error) {
         console.error('Error fetching stories:', error);
@@ -26,33 +24,27 @@ const StoryGrid: React.FC = () => {
     fetchStories();
   }, []);
 
-  const handleStoryClick = (story_id: number) => {
-    navigate(`/board/${story_id}`);
-  };
-
   return (
-    <div className="grid grid-cols-3 gap-4 p-8">
-      {stories.map((story) => (
-        <div
-          key={story.story_id}
-          onClick={() => handleStoryClick(story.story_id)}
-          className="cursor-pointer border rounded-lg shadow p-4 hover:bg-gray-100"
-        >
-          {story.cover_pic ? (
+    <div className="p-8 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-center">Story Board</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {stories.map((story) => (
+          <Link
+            to={`/board/${story.story_id}`}
+            key={story.story_id}
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center"
+          >
+            <p className="text-gray-800 font-semibold mb-2">
+              {story.story_title}
+            </p>{' '}
+            {/* 제목을 이미지 위에만 표시 */}
             <img
               src={story.cover_pic}
-              alt={story.title}
-              className="w-full h-48 object-cover"
+              className="w-full h-40 object-cover rounded-md"
             />
-          ) : (
-            <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-              이미지 없음
-            </div>
-          )}
-          <h2 className="text-lg font-semibold mt-2">{story.title}</h2>
-          <p className="text-gray-600">{story.intro}</p>
-        </div>
-      ))}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

@@ -6,13 +6,12 @@ import HomeButton from '../../components/HomeButton';
 
 interface Post {
   geul_id: number;
-  id: number;
+  user_id: number;
   story_id: number;
-  content: string;
+  geul_content: string;
   final_pic: string;
-  title: string;
+  geul_title: string;
   uploaded_time: string;
-  author: string;
 }
 
 const BoardPage: React.FC = () => {
@@ -76,12 +75,12 @@ const BoardPage: React.FC = () => {
               key={post.geul_id}
               className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6"
             >
-              <h3 className="text-2xl font-semibold">{post.title}</h3>
+              <h3 className="text-2xl font-semibold">{post.geul_title}</h3>
               <p className="text-gray-700 mt-2">
-                {post.content.substring(0, 100)}...
+                {post.geul_content.substring(0, 100)}...
               </p>
               <div className="flex justify-between items-center mt-4 text-gray-500">
-                <span>작성자: {post.author}</span>
+                <span>작성자 ID: {post.user_id}</span>
                 <span>
                   업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
                 </span>
