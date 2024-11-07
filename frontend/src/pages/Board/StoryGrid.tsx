@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import api from "../../api"; // Axios 인스턴스 임포트
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../api';
 
 interface Story {
   story_id: number;
@@ -11,62 +11,48 @@ interface Story {
 
 const StoryGrid: React.FC = () => {
   const [stories, setStories] = useState<Story[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await api.get("/stories");
+        const response = await api.get('/stories');
         setStories(response.data);
-      } catch (error: any) {
-        console.error("Failed to fetch stories:", error);
-        setError("스토리 데이터를 불러오는 데 실패했습니다.");
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching stories:', error);
       }
     };
+
     fetchStories();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
+  const handleStoryClick = (story_id: number) => {
+    navigate(`/board/${story_id}`);
+  };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h2 className="text-2xl font-semibold mb-6 text-center">동화 선택</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {stories.map((story) => (
-          <Link
-            to={`/board/${story.story_id}`}
-            key={story.story_id}
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
-          >
+    <div className="grid grid-cols-3 gap-4 p-8">
+      {stories.map((story) => (
+        <div
+          key={story.story_id}
+          onClick={() => handleStoryClick(story.story_id)}
+          className="cursor-pointer border rounded-lg shadow p-4 hover:bg-gray-100"
+        >
+          {story.cover_pic ? (
             <img
-              src={`/${story.cover_pic}`}
+              src={story.cover_pic}
               alt={story.title}
-              className="w-full h-48 object-cover rounded-t-lg"
+              className="w-full h-48 object-cover"
             />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold">{story.title}</h3>
-              <p className="text-gray-600 mt-2">{story.intro}</p>
+          ) : (
+            <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+              이미지 없음
             </div>
-          </Link>
-        ))}
-      </div>
+          )}
+          <h2 className="text-lg font-semibold mt-2">{story.title}</h2>
+          <p className="text-gray-600">{story.intro}</p>
+        </div>
+      ))}
     </div>
   );
 };

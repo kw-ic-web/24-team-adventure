@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import api from "../../api"; // Axios 인스턴스 임포트
-import HomeButton from "../../components/HomeButton";
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import api from '../../api'; // Axios 인스턴스 임포트
+import HomeButton from '../../components/HomeButton';
 
 interface Comment {
   comment_id: number;
@@ -22,29 +22,39 @@ interface Post {
 }
 
 const PostDetail: React.FC = () => {
-  const { story_id, geul_id } = useParams<{ story_id: string; geul_id: string }>();
+  const { story_id, geul_id } = useParams<{
+    story_id: string;
+    geul_id: string;
+  }>();
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     if (!story_id || !geul_id) {
-      setError("유효하지 않은 story_id 또는 geul_id입니다.");
+      setError('유효하지 않은 story_id 또는 geul_id입니다.');
       setLoading(false);
       return;
     }
 
     const fetchData = async () => {
       try {
-        const postResponse = await api.get(`/board/${story_id}/post/${geul_id}`);
+        // 게시물 데이터 가져오기
+        const postResponse = await api.get(
+          `/board/${story_id}/post/${geul_id}`,
+        );
         setPost(postResponse.data);
 
-        const commentsResponse = await api.get(`/board/${story_id}/post/${geul_id}/comments`);
+        // 댓글 데이터 가져오기
+        const commentsResponse = await api.get(
+          `/board/${story_id}/post/${geul_id}/comments`,
+        );
         setComments(commentsResponse.data);
+        setError(''); // 오류 메시지 초기화
       } catch (err: any) {
-        console.error("Error fetching post or comments:", err);
-        setError("게시물 또는 댓글을 불러오는 데 실패했습니다.");
+        console.error('Error fetching post or comments:', err);
+        setError('게시물 또는 댓글을 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -52,6 +62,8 @@ const PostDetail: React.FC = () => {
 
     fetchData();
   }, [story_id, geul_id]);
+
+  console.log('Story ID:', story_id, 'Geul ID:', geul_id); // 추가된 디버깅 코드
 
   if (loading) {
     return (
@@ -85,16 +97,12 @@ const PostDetail: React.FC = () => {
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen max-w-4xl mx-auto">
-      {/* 포스트 제목 */}
       <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-
-      {/* 포스트 내용 */}
       <p className="text-lg text-gray-800">{post.content}</p>
+      <small className="text-gray-500">
+        업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
+      </small>
 
-      {/* 업로드 시간 */}
-      <small className="text-gray-500">업로드 시간: {new Date(post.uploaded_time).toLocaleString()}</small>
-
-      {/* 댓글 섹션 */}
       <div className="mt-8">
         <h3 className="text-2xl font-semibold mb-4">댓글</h3>
         {error && <p className="text-red-500 mb-4">{error}</p>}
