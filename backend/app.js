@@ -127,6 +127,21 @@ app.post("/board/:story_id/post/:geul_id/comments", async (req, res) => {
   }
 });
 
+/* 6. 모든 게시물 최신순 목록 조회 */
+app.get("/posts", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM geul ORDER BY uploaded_time DESC"
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+    res
+      .status(500)
+      .json({ error: "최신 게시물 데이터를 불러오는 데 실패했습니다." });
+  }
+});
+
 // **서버 시작**
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
