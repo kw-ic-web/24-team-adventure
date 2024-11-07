@@ -1,18 +1,19 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import homeBtnImg from '../assets/images/homeBtn.png';
 
 const HomeButton: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="fixed bottom-5 right-5 z-50">
-      {/* 홈 페이지로 이동하는 링크 */}
-      <Link to="/">
-        <img
-          src="/home-icon.png"
-          alt="Home"
-          className="w-12 h-12 hover:scale-110 transition-transform duration-200"
-        />
-      </Link>
-    </div>
+    <button
+      onClick={() => navigate('/home')}
+      className="absolute bottom-4 right-4 p-2 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110 hover:bg-gray-200 rounded-full"
+      title="홈으로 이동"
+      aria-label="홈으로 이동"
+    >
+      <img src={homeBtnImg} alt="홈으로 이동" className="w-10 h-10" />
+    </button>
   );
 };
 

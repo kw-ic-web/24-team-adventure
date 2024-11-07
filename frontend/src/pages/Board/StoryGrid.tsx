@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import HomeButton from '../../components/HomeButton';
 
 interface Story {
   story_id: number;
@@ -25,9 +26,9 @@ const StoryGrid: React.FC = () => {
   }, []);
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="p-8 bg-gray-100 min-h-screen relative">
       <h1 className="text-3xl font-bold mb-6 text-center">Story Board</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-6 gap-6">
         {stories.map((story) => (
           <Link
             to={`/board/${story.story_id}`}
@@ -36,8 +37,7 @@ const StoryGrid: React.FC = () => {
           >
             <p className="text-gray-800 font-semibold mb-2">
               {story.story_title}
-            </p>{' '}
-            {/* 제목을 이미지 위에만 표시 */}
+            </p>
             <img
               src={story.cover_pic}
               className="w-full h-40 object-cover rounded-md"
@@ -45,6 +45,7 @@ const StoryGrid: React.FC = () => {
           </Link>
         ))}
       </div>
+      <HomeButton />
     </div>
   );
 };
