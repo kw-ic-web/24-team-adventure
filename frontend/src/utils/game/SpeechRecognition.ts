@@ -1,3 +1,5 @@
+// /frontend/src/utils/game/SpeechRecognition.ts
+
 export const startSpeechRecognition = (onResultCallback: (result: string) => void): void => {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'ko-KR';  // 한국어 설정
@@ -15,5 +17,5 @@ export const startSpeechRecognition = (onResultCallback: (result: string) => voi
     };
   
     recognition.start();  // 음성 인식 시작
-  };
+};
   

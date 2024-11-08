@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
-import { startSpeechRecognition } from '../../utils/game/SpeechRecognition'; // 음성 인식 함수
-import { generateStoryContinuation } from '../../services/StoryService'; // 스토리 진행 함수
+import { startSpeechRecognition } from '../../utils/game/SpeechRecognition';  // 음성 인식 함수
+import { generateStoryContinuation } from '../../services/StoryService'; // front/스토리 진행 함수
 
 export default function GamePlay() {
   const pages = [
@@ -20,13 +19,10 @@ export default function GamePlay() {
   const [textBoxVisible, setTextBoxVisible] = useState(false);
   const [textBoxOpacity, setTextBoxOpacity] = useState(0);
   const [nextTextBoxVisible, setNextTextBoxVisible] = useState(false);
-
-  // 사용자 스토리와 음성 인식 결과
-  const [userStory, setUserStory] = useState('');
+  
   const [keywords, setKeywords] = useState<string[]>([]);
-  const [continuation1, setContinuation1] = useState('');
-  const [continuation2, setContinuation2] = useState('');
-
+  const [userInput, setUserInput] = useState<string>('');//userinput상태 업데이트 함수
+  
   const startGame = () => {
     setShowModal(true);
   };
@@ -101,24 +97,25 @@ export default function GamePlay() {
     }
   };
 
-  // 음성 인식 결과를 받아서 스토리 업데이트
-  const onVoiceResult = async (transcript: string) => {
-    setUserStory(transcript); // 음성 인식 결과를 사용자 스토리에 저장
-    await fetchStoryContinuation(transcript); // 사용자 스토리로 연속 이야기와 키워드 생성
-  };
+// 음성 인식 중지 함수
+const stopSpeechRecognition = () => {
+  // 음성 인식 종료 처리 (예: SpeechRecognition.stop() 호출)
+  // 이 부분은 사용하고 있는 음성 인식 라이브러리에 따라 다를 수 있습니다.
+};
 
-  // GPT API를 호출하여 스토리와 키워드 가져오기
-  const fetchStoryContinuation = async (userInput: string) => {
-    try {
-      const { continuation1, continuation2, keywords } =
-        await generateStoryContinuation(userInput);
-      setContinuation1(continuation1); // 연속 이야기 1
-      setContinuation2(continuation2); // 연속 이야기 2
-      setKeywords(keywords); // 키워드 업데이트
-    } catch (error) {
-      console.error('Error fetching story continuation:', error);
-    }
-  };
+const handleStopButtonClick = () => {
+  // 음성 인식이 끝났다고 가정하고, 정지 버튼을 클릭했을 때 실행할 코드
+
+  stopSpeechRecognition();  // 음성 인식 종료
+
+  // 음성 인식 결과를 바탕으로 이야기 생성
+  generateStoryContinuation(userInput).then((story) => {
+    setKeywords(story.keywords);  // GPT로 받은 새로운 키워드를 업데이트
+    setTextBoxVisible(true);  // 새로운 이야기 박스를 보여줌
+    setCurrentPage(currentPage + 1);  // 다음 페이지로 넘어감
+  });
+};
+
 
   return (
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
@@ -172,7 +169,6 @@ export default function GamePlay() {
         </div>
       )}
 
-      {/* 게임 진행 화면 */}
       {gameStarted && (
         <div className="relative w-full h-full bg-cover bg-center">
           {/* 프로그레스 바 */}
@@ -209,7 +205,6 @@ export default function GamePlay() {
             ></div>
           )}
 
-          {/* 첫 3페이지는 텍스트 표시 */}
           {textBoxVisible && currentPage < 3 && (
             <div className="absolute inset-x-0 bottom-8 flex items-end justify-center">
               <div
@@ -225,38 +220,57 @@ export default function GamePlay() {
             </div>
           )}
 
-          {/* 사용자가 음성으로 이야기 작성 후 키워드와 연속된 스토리 보여주기 */}
           {nextTextBoxVisible && currentPage >= 3 && (
             <div className="absolute inset-x-0 bottom-8 flex items-center justify-center">
               <div className="w-full max-w-md p-8 bg-white rounded-lg font-mono flex flex-col space-y-4 items-center shadow-lg">
                 <div className="flex flex-col space-y-2 items-center">
                   <div className="flex space-x-2">
+                  {keywords[0] && (
                     <div
                       className="text-sm px-3 bg-yellow-200 text-gray-800 rounded-full"
                       style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
                     >
-                      Badge
+                      {keywords[0]}
                     </div>
+                     )}
+                    {keywords[1] && (
                     <div
                       className="text-sm px-3 bg-red-200 text-red-800 rounded-full"
                       style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
                     >
-                      Badge
+                     {keywords[1]}
                     </div>
+                     )}
+                    {keywords[2] && (
                     <div
                       className="text-sm px-3 bg-orange-200 text-orange-800 rounded-full"
                       style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
                     >
-                      Badge
+                     {keywords[2]}
                     </div>
+                      )}
                   </div>
+                  <textarea
+                  //userInput에는 전체 내용 들어가있으니 여기선 인식된 문장만 변수에 넣고 나중에 userinput에 추가해줘야함
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    className="mt-4 p-3 w-full h-24 text-lg rounded-md bg-gray-100 focus:outline-none"
+                    placeholder="음성인식 되고 있는 문장"
+                  />
+                  <button
+                    onClick={handleStopButtonClick}
+                    className="mt-2 p-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg"
+                  >
+                    음성인식 완료
+                  </button>
+                  
                 </div>
-
-                <div className="flex items-center w-full">
+               {/*마이크 버튼이랑 handleStopButtonClick연결해야함(지금은 서로 다른 걸로 되어있음)*/}       
+                 <div className="flex items-center w-full">
                   <img src={''} alt="Mic icon" className="w-8 h-8 mr-4" />
                   <input
                     className="text-lg w-full px-6 py-4 border border-gray-300 rounded-lg shadow-md transition duration-300 ease-in-out transform focus:-translate-y-1 focus:outline-blue-400 hover:shadow-xl hover:border-blue-400 bg-gray-100"
-                    placeholder="Enter text here"
+                    placeholder="위에 나오는 문장 여기로 위치 옮기기"
                     type="text"
                   />
                 </div>
@@ -265,7 +279,7 @@ export default function GamePlay() {
           )}
         </div>
       )}
-
+         {/*음성인식, 내용생성 된 후 다음 페이지로 이동 구현 필요*/} 
       {gameStarted && (
         <>
           {currentPage > 0 && (

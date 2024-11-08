@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+import dotenv from 'dotenv';
 const pool = require('./db'); // db.js에서 Pool 인스턴스 가져오기
+const { generateStoryContinuation } = require('./services/storyService'); // storyService 가져오기
+
+dotenv.config();
 
 const app = express();
 
@@ -83,6 +87,23 @@ app.get('/board/:story_id/post/:geul_id/comments', async (req, res) => {
     } catch (err) {
         console.error('Error fetching comments:', err);
         res.status(500).json({ error: '댓글 데이터를 불러오는 데 실패했습니다.' });
+    }
+});
+
+// 5. 사용자가 입력한 문장을 기반으로 스토리 진행 생성
+app.post('/generate-story', async (req, res) => {
+    const { userInput } = req.body; // 클라이언트에서 받은 입력
+
+    if (!userInput) {
+        return res.status(400).json({ error: '사용자의 입력이 필요합니다.' });
+    }
+
+    try {
+        const { continuation1, continuation2, keywords } = await generateStoryContinuation(userInput);
+        res.json({ continuation1, continuation2, keywords });
+    } catch (error) {
+        console.error('Error generating story continuation:', error);
+        res.status(500).json({ error: '스토리 진행을 생성하는 데 실패했습니다.' });
     }
 });
 
