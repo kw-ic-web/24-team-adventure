@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
+import { startSpeechRecognition } from '../../utils/game/SpeechRecognition'; // 음성 인식 함수
+import { generateStoryContinuation } from '../../services/StoryService'; // 스토리 진행 함수
+
 export default function GamePlay() {
   const pages = [
     { backgroundImage: '', text: '첫 번째 이야기' },
@@ -17,6 +20,12 @@ export default function GamePlay() {
   const [textBoxVisible, setTextBoxVisible] = useState(false);
   const [textBoxOpacity, setTextBoxOpacity] = useState(0);
   const [nextTextBoxVisible, setNextTextBoxVisible] = useState(false);
+
+  // 사용자 스토리와 음성 인식 결과
+  const [userStory, setUserStory] = useState('');
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const [continuation1, setContinuation1] = useState('');
+  const [continuation2, setContinuation2] = useState('');
 
   const startGame = () => {
     setShowModal(true);
@@ -92,6 +101,25 @@ export default function GamePlay() {
     }
   };
 
+  // 음성 인식 결과를 받아서 스토리 업데이트
+  const onVoiceResult = async (transcript: string) => {
+    setUserStory(transcript); // 음성 인식 결과를 사용자 스토리에 저장
+    await fetchStoryContinuation(transcript); // 사용자 스토리로 연속 이야기와 키워드 생성
+  };
+
+  // GPT API를 호출하여 스토리와 키워드 가져오기
+  const fetchStoryContinuation = async (userInput: string) => {
+    try {
+      const { continuation1, continuation2, keywords } =
+        await generateStoryContinuation(userInput);
+      setContinuation1(continuation1); // 연속 이야기 1
+      setContinuation2(continuation2); // 연속 이야기 2
+      setKeywords(keywords); // 키워드 업데이트
+    } catch (error) {
+      console.error('Error fetching story continuation:', error);
+    }
+  };
+
   return (
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
       {!gameStarted && (
@@ -144,6 +172,7 @@ export default function GamePlay() {
         </div>
       )}
 
+      {/* 게임 진행 화면 */}
       {gameStarted && (
         <div className="relative w-full h-full bg-cover bg-center">
           {/* 프로그레스 바 */}
@@ -180,6 +209,7 @@ export default function GamePlay() {
             ></div>
           )}
 
+          {/* 첫 3페이지는 텍스트 표시 */}
           {textBoxVisible && currentPage < 3 && (
             <div className="absolute inset-x-0 bottom-8 flex items-end justify-center">
               <div
@@ -195,6 +225,7 @@ export default function GamePlay() {
             </div>
           )}
 
+          {/* 사용자가 음성으로 이야기 작성 후 키워드와 연속된 스토리 보여주기 */}
           {nextTextBoxVisible && currentPage >= 3 && (
             <div className="absolute inset-x-0 bottom-8 flex items-center justify-center">
               <div className="w-full max-w-md p-8 bg-white rounded-lg font-mono flex flex-col space-y-4 items-center shadow-lg">
