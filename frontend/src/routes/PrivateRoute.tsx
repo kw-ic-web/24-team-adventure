@@ -1,4 +1,5 @@
 // 로그인 했을 때 route 처리
+// frontend/src/routes/PrivateRoute.tsx
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';
@@ -14,3 +15,4 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 };
 
 export default PrivateRoute;
+
