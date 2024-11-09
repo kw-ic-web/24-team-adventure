@@ -125,3 +125,4 @@ const PostDetail: React.FC = () => {
 };
 
 export default PostDetail;
+// sd
