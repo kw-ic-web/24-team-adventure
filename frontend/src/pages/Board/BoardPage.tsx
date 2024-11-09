@@ -97,4 +97,3 @@ const BoardPage: React.FC = () => {
 };
 
 export default BoardPage;
-// sd
