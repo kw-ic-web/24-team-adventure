@@ -37,4 +37,42 @@ router.get(
   }
 );
 
+// 댓글 추가 라우트
+router.post(
+  "/board/:story_id/post/:geul_id/comments",
+  async (req: Request, res: Response): Promise<void> => {
+    const { story_id, geul_id } = req.params;
+    const { user_id, comm_content } = req.body; // comm_content로 유지
+
+    if (
+      !story_id ||
+      isNaN(parseInt(story_id)) ||
+      !geul_id ||
+      isNaN(parseInt(geul_id))
+    ) {
+      console.error("Invalid story_id or geul_id:", story_id, geul_id);
+      res
+        .status(400)
+        .json({ error: "유효하지 않은 story_id 또는 geul_id입니다." });
+      return;
+    }
+
+    if (!user_id || !comm_content) {
+      res.status(400).json({ error: "user_id와 comm_content가 필요합니다." });
+      return;
+    }
+
+    try {
+      await pool.query(
+        "INSERT INTO comment (geul_id, user_id, comm_content, created_at) VALUES ($1, $2, $3, NOW())",
+        [parseInt(geul_id), user_id, comm_content]
+      );
+      res.status(201).json({ message: "댓글이 추가되었습니다." });
+    } catch (err) {
+      console.error("Error adding comment:", err);
+      res.status(500).json({ error: "댓글 추가에 실패했습니다." });
+    }
+  }
+);
+
 export default router;

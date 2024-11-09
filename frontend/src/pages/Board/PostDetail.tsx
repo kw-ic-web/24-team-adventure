@@ -59,11 +59,10 @@ const PostDetail: React.FC = () => {
         `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
         {
           user_id: 1, // 실제 프로젝트에서 로그인된 사용자의 ID를 여기에 전달
-          comm_content: newComment,
+          comm_content: newComment, // comm_content로 유지
         },
       );
       setNewComment(''); // 댓글 입력 필드 초기화
-      // 새로 추가된 댓글 가져오기
       const commentsResponse = await axios.get(
         `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
       );
@@ -125,4 +124,3 @@ const PostDetail: React.FC = () => {
 };
 
 export default PostDetail;
-// sd
