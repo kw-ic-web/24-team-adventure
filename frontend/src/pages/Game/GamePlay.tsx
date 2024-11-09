@@ -7,9 +7,9 @@ export default function GamePlay() {
     { backgroundImage: '', text: '첫 번째 이야기' },
     { backgroundImage: '/path/to/image2.jpg', text: '두 번째 이야기' },
     { backgroundImage: '/path/to/image3.jpg', text: '세 번째 이야기' },
-    { backgroundImage: '/path/to/image4.jpg', text: '사용자 스토리 1' },
-    { backgroundImage: '/path/to/image5.jpg', text: '사용자 스토리 2' },
-    { backgroundImage: '/path/to/image6.jpg', text: '사용자 스토리 3' },
+    { backgroundImage: '/path/to/image4.jpg', text: '' },
+    { backgroundImage: '/path/to/image5.jpg', text: '' },
+    { backgroundImage: '/path/to/image6.jpg', text: '' },
   ];
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -19,10 +19,48 @@ export default function GamePlay() {
   const [textBoxVisible, setTextBoxVisible] = useState(false);
   const [textBoxOpacity, setTextBoxOpacity] = useState(0);
   const [nextTextBoxVisible, setNextTextBoxVisible] = useState(false);
+
   
   const [keywords, setKeywords] = useState<string[]>([]);
   const [userInput, setUserInput] = useState<string>('');//userinput상태 업데이트 함수
   
+
+
+  // 각 페이지별 음성 인식 상태와 스토리 관리
+  const [recognizing, setRecognizing] = useState(false);
+  const [userStories, setUserStories] = useState({
+    4: '',
+    5: '',
+    6: '',
+  });
+
+  const startStopSpeechRecognition = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    if (recognizing) {
+      recognition.stop();
+      setRecognizing(false);
+    } else {
+      recognition.onstart = () => setRecognizing(true);
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setUserStories((prev) => ({
+          ...prev,
+          [currentPage]:
+            (prev[currentPage] ? prev[currentPage] + ' ' : '') + transcript,
+        }));
+      };
+      recognition.onend = () => setRecognizing(false);
+      recognition.start();
+    }
+  };
+
+
   const startGame = () => {
     setShowModal(true);
   };
@@ -85,6 +123,12 @@ export default function GamePlay() {
 
   const nextPage = () => {
     if (currentPage < pages.length - 1) {
+      if (recognizing) {
+        const recognition = new (window.SpeechRecognition ||
+          window.webkitSpeechRecognition)();
+        recognition.stop();
+        setRecognizing(false);
+      }
       setCurrentPage(currentPage + 1);
       resetEffects();
     }
@@ -92,16 +136,17 @@ export default function GamePlay() {
 
   const prevPage = () => {
     if (currentPage > 0) {
+      if (recognizing) {
+        const recognition = new (window.SpeechRecognition ||
+          window.webkitSpeechRecognition)();
+        recognition.stop();
+        setRecognizing(false);
+      }
       setCurrentPage(currentPage - 1);
       resetEffects();
     }
   };
 
-// 음성 인식 중지 함수
-const stopSpeechRecognition = () => {
-  // 음성 인식 종료 처리 (예: SpeechRecognition.stop() 호출)
-  // 이 부분은 사용하고 있는 음성 인식 라이브러리에 따라 다를 수 있습니다.
-};
 
 const handleStopButtonClick = () => {
   // 음성 인식이 끝났다고 가정하고, 정지 버튼을 클릭했을 때 실행할 코드
@@ -116,9 +161,17 @@ const handleStopButtonClick = () => {
   });
 };
 
+  const handleStoryChange = (e) => {
+    setUserStories((prev) => ({
+      ...prev,
+      [currentPage]: e.target.value,
+    }));
+  };
+
 
   return (
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
+      {/* Start Screen */}
       {!gameStarted && (
         <div
           className="flex flex-col items-center justify-center h-full bg-cover bg-center"
@@ -136,6 +189,7 @@ const handleStopButtonClick = () => {
         </div>
       )}
 
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
           <div className="bg-gray-800 rounded-lg p-6 text-center">
@@ -145,13 +199,9 @@ const handleStopButtonClick = () => {
               ~~ 이렇게 진행될꺼야 방법이~~~~ 되겠지~ <br />
               끝나고는 화상채팅으로 이어짐 <br />
               너의 이야기는 저장되고 공유될꺼야~ <br />
-              -----------------------------------------
-              <br />
-              근데 음성인식도 쓰고 gpt도 쓸꺼임,
-              <br />
+              ----------------------------------------- <br />
+              근데 음성인식도 쓰고 gpt도 쓸꺼임, <br />
               카메라도 씀 시작전에 알려줬음 주의하셈!
-              <br />
-              (뭔가 주의표시가 아이콘 추가예정+버튼모양도 교체예정)
             </p>
             <button
               onClick={confirmStart}
@@ -169,9 +219,10 @@ const handleStopButtonClick = () => {
         </div>
       )}
 
+      {/* Game Content */}
       {gameStarted && (
         <div className="relative w-full h-full bg-cover bg-center">
-          {/* 프로그레스 바 */}
+          {/* Progress Bar */}
           <div className="fixed top-0 left-4 h-full flex flex-col justify-center items-center space-y-2 px-2 z-10">
             {Array.from({ length: pages.length }).map((_, index) => (
               <div
@@ -187,6 +238,7 @@ const handleStopButtonClick = () => {
             ))}
           </div>
 
+          {/* Background Image */}
           <div
             className="absolute inset-0"
             style={{
@@ -195,6 +247,7 @@ const handleStopButtonClick = () => {
             }}
           ></div>
 
+          {/* Blur Effect */}
           {blurLevel > 0 && (
             <div
               className="absolute inset-0 transition-opacity duration-700"
@@ -205,6 +258,7 @@ const handleStopButtonClick = () => {
             ></div>
           )}
 
+          {/* Story Text Box */}
           {textBoxVisible && currentPage < 3 && (
             <div className="absolute inset-x-0 bottom-8 flex items-end justify-center">
               <div
@@ -220,33 +274,47 @@ const handleStopButtonClick = () => {
             </div>
           )}
 
+          {/* 4페이지 이후(음성인식) 이야기박스 전체 */}
           {nextTextBoxVisible && currentPage >= 3 && (
-            <div className="absolute inset-x-0 bottom-8 flex items-center justify-center">
-              <div className="w-full max-w-md p-8 bg-white rounded-lg font-mono flex flex-col space-y-4 items-center shadow-lg">
-                <div className="flex flex-col space-y-2 items-center">
+            <div className="absolute inset-x-0 bottom-5 flex items-center justify-center">
+              <div className="w-full h-35 max-w-4xl p-3 bg-white rounded-lg shadow-lg">
+                {/* 프롬프트 위에 힌트들 */}
+                <div className="w-full flex justify-center mr-10 mb-2">
                   <div className="flex space-x-2">
                   {keywords[0] && (
                     <div
-                      className="text-sm px-3 bg-yellow-200 text-gray-800 rounded-full"
+                      className="text-2xl px-4 bg-yellow-200 text-blue-800 rounded-full"
                       style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
                     >
+
                       {keywords[0]}
+
+                   
+
                     </div>
                      )}
                     {keywords[1] && (
                     <div
-                      className="text-sm px-3 bg-red-200 text-red-800 rounded-full"
+                      className="text-2xl px-4 bg-red-200 text-red-800 rounded-full"
                       style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
                     >
+
                      {keywords[1]}
+
+                    
+
                     </div>
                      )}
                     {keywords[2] && (
                     <div
-                      className="text-sm px-3 bg-orange-200 text-orange-800 rounded-full"
+                      className="text-2xl px-4 bg-orange-200 text-orange-800 rounded-full"
                       style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
                     >
+
                      {keywords[2]}
+
+                  
+
                     </div>
                       )}
                   </div>
@@ -265,6 +333,7 @@ const handleStopButtonClick = () => {
                   </button>
                   
                 </div>
+
                {/*마이크 버튼이랑 handleStopButtonClick연결해야함(지금은 서로 다른 걸로 되어있음)*/}       
                  <div className="flex items-center w-full">
                   <img src={''} alt="Mic icon" className="w-8 h-8 mr-4" />
@@ -273,30 +342,55 @@ const handleStopButtonClick = () => {
                     placeholder="위에 나오는 문장 여기로 위치 옮기기"
                     type="text"
                   />
+
+
+                {/* 음성인식버튼과 프롬프트 */}
+                <div className="flex w-full max-w-4xl space-x-4 items-center">
+                  {/* 음성인식버튼 */}
+                  <button
+                    onClick={startStopSpeechRecognition}
+                    className="bg-green-500 p-4 rounded-full shadow-lg text-white font-bold mr-1"
+                  >
+                    {recognizing ? '인식 정지' : '인식 시작'}
+                  </button>
+
+                  {/* 프롬프트 내부 */}
+                  <div className="w-full p-8 bg-white rounded-lg shadow-lg">
+                    <textarea
+                      className="w-full h-30 p-4 border-2 border-gray-300 rounded-lg text-black"
+                      value={userStories[currentPage] || ''}
+                      onChange={handleStoryChange}
+                      placeholder="버튼을 누르고 이야기를 말해보세요."
+                    />
+                  </div>
+
                 </div>
               </div>
             </div>
           )}
         </div>
       )}
+
          {/*음성인식, 내용생성 된 후 다음 페이지로 이동 구현 필요*/} 
+
+
+      {/* Navigation */}
+
       {gameStarted && (
-        <>
-          {currentPage > 0 && (
-            <button
-              onClick={prevPage}
-              className="fixed bottom-10 left-10 p-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105"
-            >
-              뒤로가기
-            </button>
-          )}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-between px-4">
+          <button
+            onClick={prevPage}
+            className="p-2 bg-gray-600 text-white font-bold rounded-full"
+          >
+            이전
+          </button>
           <button
             onClick={nextPage}
-            className="fixed bottom-10 right-10 p-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105"
+            className="p-2 bg-blue-600 text-white font-bold rounded-full"
           >
             다음
           </button>
-        </>
+        </div>
       )}
     </div>
   );
