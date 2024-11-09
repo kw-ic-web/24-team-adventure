@@ -1,6 +1,7 @@
 // src/pages/videoChat.tsx
+import React from 'react';
 import exitImg from '../../assets/images/exitBtn.png';
-import exitCallImg from '../../assets/images/exitCallBtn.png';
+//import exitCallImg from '../../assets/images/exitCallBtn.png';
 import { handleCloseChat } from '../../utils/video/handleCloseChat';
 
 export default function VideoChatPage() {

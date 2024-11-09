@@ -1,22 +1,113 @@
 import React, { useState, useEffect } from 'react';
 
-export default function GamePlay() {
-  const pages = [
+// 타입 정의
+interface Page {
+  backgroundImage: string;
+  text: string;
+}
+
+interface UserStories {
+  [key: number]: string;
+}
+
+interface Story {
+  keywords: string[];
+}
+
+// 전역 타입 선언
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
+export default function GamePlay(): JSX.Element {
+  const pages: Page[] = [
     { backgroundImage: '', text: '첫 번째 이야기' },
     { backgroundImage: '/path/to/image2.jpg', text: '두 번째 이야기' },
     { backgroundImage: '/path/to/image3.jpg', text: '세 번째 이야기' },
-    { backgroundImage: '/path/to/image4.jpg', text: '사용자 스토리 1' },
-    { backgroundImage: '/path/to/image5.jpg', text: '사용자 스토리 2' },
-    { backgroundImage: '/path/to/image6.jpg', text: '사용자 스토리 3' },
+    { backgroundImage: '/path/to/image4.jpg', text: '' },
+    { backgroundImage: '/path/to/image5.jpg', text: '' },
+    { backgroundImage: '/path/to/image6.jpg', text: '' },
   ];
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [blurLevel, setBlurLevel] = useState(0);
-  const [textBoxVisible, setTextBoxVisible] = useState(false);
-  const [textBoxOpacity, setTextBoxOpacity] = useState(0);
-  const [nextTextBoxVisible, setNextTextBoxVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [blurLevel, setBlurLevel] = useState<number>(0);
+  const [textBoxVisible, setTextBoxVisible] = useState<boolean>(false);
+  const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0);
+  const [nextTextBoxVisible, setNextTextBoxVisible] = useState<boolean>(false);
+  const [keywords, setKeywords] = useState<string[]>([]);
+  const [userInput, setUserInput] = useState<string>('');
+  const [recognizing, setRecognizing] = useState<boolean>(false);
+  const [userStories, setUserStories] = useState<UserStories>({
+    4: '',
+    5: '',
+    6: '',
+  });
+
+  const stopSpeechRecognition = () => {
+    if (recognizing) {
+      const recognition = new (window.SpeechRecognition ||
+        window.webkitSpeechRecognition)();
+      recognition.stop();
+      setRecognizing(false);
+    }
+  };
+
+  const startStopSpeechRecognition = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    if (recognizing) {
+      recognition.stop();
+      setRecognizing(false);
+    } else {
+      recognition.onstart = () => setRecognizing(true);
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        const transcript = event.results[0][0].transcript;
+        setUserStories((prev) => ({
+          ...prev,
+          [currentPage]:
+            (prev[currentPage] ? prev[currentPage] + ' ' : '') + transcript,
+        }));
+      };
+      recognition.onend = () => setRecognizing(false);
+      recognition.start();
+    }
+  };
+
+  const handleStoryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setUserStories((prev) => ({
+      ...prev,
+      [currentPage]: e.target.value,
+    }));
+  };
+
+  const generateStoryContinuation = async (input: string): Promise<Story> => {
+    // API 호출 구현
+    // 임시 반환값
+    return { keywords: ['키워드1', '키워드2', '키워드3'] };
+  };
+
+  const handleStopButtonClick = async () => {
+    stopSpeechRecognition();
+
+    try {
+      const story = await generateStoryContinuation(userInput);
+      setKeywords(story.keywords);
+      setTextBoxVisible(true);
+      setCurrentPage(currentPage + 1);
+    } catch (error) {
+      console.error('Story generation failed:', error);
+    }
+  };
 
   const startGame = () => {
     setShowModal(true);
@@ -52,14 +143,28 @@ export default function GamePlay() {
           return prev;
         });
       }, 30);
-
-      return () => clearInterval(fadeInInterval);
     }, 2000);
 
     return () => {
       clearInterval(blurInterval);
       clearTimeout(textBoxTimer);
     };
+  };
+
+  const nextPage = () => {
+    if (currentPage < pages.length - 1) {
+      stopSpeechRecognition();
+      setCurrentPage(currentPage + 1);
+      resetEffects();
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      stopSpeechRecognition();
+      setCurrentPage(currentPage - 1);
+      resetEffects();
+    }
   };
 
   useEffect(() => {
@@ -77,20 +182,6 @@ export default function GamePlay() {
       return () => clearTimeout(nextTextBoxTimer);
     }
   }, [currentPage]);
-
-  const nextPage = () => {
-    if (currentPage < pages.length - 1) {
-      setCurrentPage(currentPage + 1);
-      resetEffects();
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-      resetEffects();
-    }
-  };
 
   return (
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
@@ -117,16 +208,9 @@ export default function GamePlay() {
             <h2 className="text-lg font-bold mb-4 text-white">안내</h2>
             <p className="mb-4 text-white">
               이 게임은 동화를 만들어 나갈꺼에요 <br />
-              ~~ 이렇게 진행될꺼야 방법이~~~~ 되겠지~ <br />
+              게임 진행 방법 설명... <br />
               끝나고는 화상채팅으로 이어짐 <br />
-              너의 이야기는 저장되고 공유될꺼야~ <br />
-              -----------------------------------------
-              <br />
-              근데 음성인식도 쓰고 gpt도 쓸꺼임,
-              <br />
-              카메라도 씀 시작전에 알려줬음 주의하셈!
-              <br />
-              (뭔가 주의표시가 아이콘 추가예정+버튼모양도 교체예정)
+              너의 이야기는 저장되고 공유될꺼야
             </p>
             <button
               onClick={confirmStart}
@@ -146,7 +230,6 @@ export default function GamePlay() {
 
       {gameStarted && (
         <div className="relative w-full h-full bg-cover bg-center">
-          {/* 프로그레스 바 */}
           <div className="fixed top-0 left-4 h-full flex flex-col justify-center items-center space-y-2 px-2 z-10">
             {Array.from({ length: pages.length }).map((_, index) => (
               <div
@@ -158,7 +241,7 @@ export default function GamePlay() {
                       : 'bg-green-500'
                     : 'bg-gray-700'
                 }`}
-              ></div>
+              />
             ))}
           </div>
 
@@ -168,7 +251,7 @@ export default function GamePlay() {
               backgroundImage: `url(${pages[currentPage].backgroundImage})`,
               backgroundSize: 'cover',
             }}
-          ></div>
+          />
 
           {blurLevel > 0 && (
             <div
@@ -177,16 +260,14 @@ export default function GamePlay() {
                 backgroundColor: 'black',
                 opacity: blurLevel / 100,
               }}
-            ></div>
+            />
           )}
 
           {textBoxVisible && currentPage < 3 && (
             <div className="absolute inset-x-0 bottom-8 flex items-end justify-center">
               <div
                 className="bg-white bg-opacity-80 p-6 rounded-lg transition-opacity duration-700"
-                style={{
-                  opacity: textBoxOpacity,
-                }}
+                style={{ opacity: textBoxOpacity }}
               >
                 <p className="text-lg md:text-2xl font-semibold text-black text-center">
                   {pages[currentPage].text}
@@ -196,38 +277,50 @@ export default function GamePlay() {
           )}
 
           {nextTextBoxVisible && currentPage >= 3 && (
-            <div className="absolute inset-x-0 bottom-8 flex items-center justify-center">
-              <div className="w-full max-w-md p-8 bg-white rounded-lg font-mono flex flex-col space-y-4 items-center shadow-lg">
-                <div className="flex flex-col space-y-2 items-center">
+            <div className="absolute inset-x-0 bottom-5 flex items-center justify-center">
+              <div className="w-full h-35 max-w-4xl p-3 bg-white rounded-lg shadow-lg">
+                <div className="w-full flex justify-center mr-10 mb-2">
                   <div className="flex space-x-2">
-                    <div
-                      className="text-sm px-3 bg-yellow-200 text-gray-800 rounded-full"
-                      style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
-                    >
-                      Badge
-                    </div>
-                    <div
-                      className="text-sm px-3 bg-red-200 text-red-800 rounded-full"
-                      style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
-                    >
-                      Badge
-                    </div>
-                    <div
-                      className="text-sm px-3 bg-orange-200 text-orange-800 rounded-full"
-                      style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
-                    >
-                      Badge
-                    </div>
+                    {keywords.map((keyword, index) => (
+                      <div
+                        key={index}
+                        className={`text-2xl px-4 ${
+                          index === 0
+                            ? 'bg-yellow-200 text-blue-800'
+                            : index === 1
+                              ? 'bg-red-200 text-red-800'
+                              : 'bg-orange-200 text-orange-800'
+                        } rounded-full`}
+                        style={{ paddingTop: '0.1em', paddingBottom: '0.1rem' }}
+                      >
+                        {keyword}
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 <div className="flex items-center w-full">
-                  <img src={''} alt="Mic icon" className="w-8 h-8 mr-4" />
-                  <input
-                    className="text-lg w-full px-6 py-4 border border-gray-300 rounded-lg shadow-md transition duration-300 ease-in-out transform focus:-translate-y-1 focus:outline-blue-400 hover:shadow-xl hover:border-blue-400 bg-gray-100"
-                    placeholder="Enter text here"
-                    type="text"
+                  <textarea
+                    value={userStories[currentPage] || ''}
+                    onChange={handleStoryChange}
+                    className="w-full p-4 border-2 border-gray-300 rounded-lg text-black"
+                    placeholder="버튼을 누르고 이야기를 말해보세요."
                   />
+                </div>
+
+                <div className="flex justify-between mt-4">
+                  <button
+                    onClick={startStopSpeechRecognition}
+                    className="bg-green-500 p-4 rounded-full shadow-lg text-white font-bold"
+                  >
+                    {recognizing ? '인식 정지' : '인식 시작'}
+                  </button>
+                  <button
+                    onClick={handleStopButtonClick}
+                    className="bg-blue-600 p-4 rounded-full shadow-lg text-white font-bold"
+                  >
+                    음성인식 완료
+                  </button>
                 </div>
               </div>
             </div>
@@ -236,22 +329,20 @@ export default function GamePlay() {
       )}
 
       {gameStarted && (
-        <>
-          {currentPage > 0 && (
-            <button
-              onClick={prevPage}
-              className="fixed bottom-10 left-10 p-4 bg-gray-600 hover:bg-gray-700 text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105"
-            >
-              뒤로가기
-            </button>
-          )}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-between px-4">
+          <button
+            onClick={prevPage}
+            className="p-2 bg-gray-600 text-white font-bold rounded-full"
+          >
+            이전
+          </button>
           <button
             onClick={nextPage}
-            className="fixed bottom-10 right-10 p-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105"
+            className="p-2 bg-blue-600 text-white font-bold rounded-full"
           >
             다음
           </button>
-        </>
+        </div>
       )}
     </div>
   );

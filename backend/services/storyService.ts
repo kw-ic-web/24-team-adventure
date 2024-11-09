@@ -53,7 +53,7 @@ export const generateKeywords = async (userInput: string) => {
 
     const content = response.choices[0]?.message?.content;
     if (content) {
-      return content.split(",").map((keyword: string) => keyword.trim());
+      return content.split(",").map((keyword: string) => keyword.trim()); // keyword: string
     }
     return [];
   } catch (error) {
