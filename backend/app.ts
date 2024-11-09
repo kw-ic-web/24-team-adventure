@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
+import storyRoutes from './routes/storyRoutes';
+import bodyParser from 'body-parser';
+
 const express = require('express');
 const cors = require('cors');
-import dotenv from 'dotenv';
 const pool = require('./db'); // db.js에서 Pool 인스턴스 가져오기
 const { generateStoryContinuation } = require('./services/storyService'); // storyService 가져오기
 
@@ -14,7 +17,12 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // 허용할 HTTP 메소드
     credentials: true, // 자격 증명 포함 여부
 }));
+
 app.use(express.json()); // JSON 파싱 미들웨어
+
+app.use(bodyParser.json());
+app.use('/api', storyRoutes);
+
 
 // **API 엔드포인트 설정**
 
@@ -90,22 +98,7 @@ app.get('/board/:story_id/post/:geul_id/comments', async (req, res) => {
     }
 });
 
-// 5. 사용자가 입력한 문장을 기반으로 스토리 진행 생성
-app.post('/generate-story', async (req, res) => {
-    const { userInput } = req.body; // 클라이언트에서 받은 입력
 
-    if (!userInput) {
-        return res.status(400).json({ error: '사용자의 입력이 필요합니다.' });
-    }
-
-    try {
-        const { continuation1, continuation2, keywords } = await generateStoryContinuation(userInput);
-        res.json({ continuation1, continuation2, keywords });
-    } catch (error) {
-        console.error('Error generating story continuation:', error);
-        res.status(500).json({ error: '스토리 진행을 생성하는 데 실패했습니다.' });
-    }
-});
 
 // **서버 시작**
 const PORT = process.env.PORT || 3000;
