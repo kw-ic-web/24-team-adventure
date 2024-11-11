@@ -30,7 +30,7 @@ router.get(
         return;
       }
 
-      if (!data || (data as any[]).length === 0) {
+      if (!data || data.length === 0) {
         res.status(404).json({ error: "댓글이 없습니다." });
         return;
       }
@@ -64,14 +64,20 @@ router.post(
     }
 
     try {
-      const { data, error } = await supabase.from("comment").insert([
-        {
-          geul_id: parseInt(geul_id),
-          user_id,
-          comm_content,
-          created_at: new Date(),
-        },
-      ]);
+      const { data, error } = await supabase
+        .from("comment")
+        .insert([
+          {
+            geul_id: parseInt(geul_id),
+            user_id,
+            comm_content,
+            created_at: new Date(),
+          },
+        ])
+        .select(); // 삽입된 데이터를 반환하도록 .select() 추가
+
+      console.log("Supabase insert response data:", data);
+      console.log("Supabase insert response error:", error);
 
       if (error) {
         console.error("Error adding comment:", error.message);
@@ -79,7 +85,15 @@ router.post(
         return;
       }
 
-      res.status(201).json({ message: "댓글이 추가되었습니다.", data });
+      if (!data || data.length === 0) {
+        console.error("No data returned after inserting comment.");
+        res.status(500).json({ error: "댓글 추가에 실패했습니다." });
+        return;
+      }
+
+      res
+        .status(201)
+        .json({ message: "댓글이 추가되었습니다.", data: data[0] });
     } catch (err) {
       console.error("Unexpected error:", err);
       res.status(500).json({ error: "댓글 추가에 실패했습니다." });
@@ -103,7 +117,11 @@ router.delete(
       const { data, error } = await supabase
         .from("comment")
         .delete()
-        .eq("comment_id", parseInt(comment_id));
+        .eq("comment_id", parseInt(comment_id))
+        .select(); // 삭제된 데이터를 반환하도록 .select() 추가
+
+      console.log("Supabase delete response data:", data);
+      console.log("Supabase delete response error:", error);
 
       if (error) {
         console.error("Error deleting comment:", error.message);
@@ -111,12 +129,14 @@ router.delete(
         return;
       }
 
-      if (!data || (data as any[]).length === 0) {
+      if (!data || data.length === 0) {
         res.status(404).json({ error: "댓글을 찾을 수 없습니다." });
         return;
       }
 
-      res.status(200).json({ message: "댓글이 삭제되었습니다." });
+      res
+        .status(200)
+        .json({ message: "댓글이 삭제되었습니다.", data: data[0] });
     } catch (err) {
       console.error("Unexpected error:", err);
       res.status(500).json({ error: "댓글 삭제에 실패했습니다." });
