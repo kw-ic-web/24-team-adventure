@@ -23,7 +23,7 @@ const PostDetail: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
-  const [loggedInUserId, setLoggedInUserId] = useState<number>(1); // 예: 로그인된 사용자 ID를 설정
+  const [loggedInUserId, setLoggedInUserId] = useState<number>(1); // 예: 로그인된 사용자 ID를 설정 (로그인 구현 후, 변경)
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -59,7 +59,7 @@ const PostDetail: React.FC = () => {
       await axios.post(
         `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
         {
-          user_id: loggedInUserId, // 실제 로그인된 사용자의 ID를 전달
+          user_id: loggedInUserId,
           comm_content: newComment,
         },
       );
@@ -79,11 +79,10 @@ const PostDetail: React.FC = () => {
         `http://localhost:3000/board/${story_id}/post/${geul_id}/comments/${comment_id}`,
       );
 
-      // 댓글 목록 갱신
-      const updatedComments = comments.filter(
-        (comment) => comment.comment_id !== comment_id,
+      // 댓글 목록을 즉시 업데이트
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment.comment_id !== comment_id),
       );
-      setComments(updatedComments);
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
