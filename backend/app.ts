@@ -25,7 +25,7 @@ app.use(storyRoutes);
 app.use(boardRoutes);
 app.use(listRoutes);
 app.use(commentRoutes);
-app.use("/auth", authRoutes);
+app.use(authRoutes);
 
 // 서버 시작
 const PORT = process.env.PORT || 3000;

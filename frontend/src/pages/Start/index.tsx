@@ -29,7 +29,7 @@ export default function Start() {
   const handleLoginSuccess = (credentialResponse: any) => {
     const token = credentialResponse.credential; // 구글에서 받은 토큰
 
-    // 서버로 토큰을 전송하여 인증 처리
+    // 백엔드에 credential을 전달
     if (token) {
       mutate(token, {
         onSuccess: () => navigate('/home'),

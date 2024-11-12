@@ -3,7 +3,7 @@ import axiosInstance from './axiosInstance';
 export const authenticateWithGoogle = async (token: string) => {
   try {
     const response = await axiosInstance.post('/api/auth/google', { token });
-    return response.data; // 서버에서 반환한 { success: boolean } 데이터
+    return response.data;
   } catch (error) {
     throw new Error('Google authentication failed');
   }
