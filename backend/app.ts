@@ -6,7 +6,6 @@ import boardRoutes from "./routes/boardRoutes";
 import listRoutes from "./routes/listRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import authRoutes from "./routes/authRoutes";
-import "express-async-errors"; //Express에서 비동기 함수에서 발생하는 오류를 자동으로 처리. try-catch 대신
 
 dotenv.config();
 
