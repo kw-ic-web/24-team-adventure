@@ -1,6 +1,6 @@
 // 스토리 목록 조회 관련 라우트
 import { Router, Request, Response } from "express";
-import supabase from "../supabaseClient";
+import supabase from "../config/supabaseClient";
 
 const router = Router();
 
