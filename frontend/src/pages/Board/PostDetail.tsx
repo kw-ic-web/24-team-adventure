@@ -23,6 +23,7 @@ const PostDetail: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
+  const [loggedInUserId, setLoggedInUserId] = useState<number>(1); // 예: 로그인된 사용자 ID를 설정 (로그인 구현 후, 변경)
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -58,19 +59,32 @@ const PostDetail: React.FC = () => {
       await axios.post(
         `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
         {
-          user_id: 1, // 실제 프로젝트에서 로그인된 사용자의 ID를 여기에 전달
-          comm_content: newComment, // 중복 제거
+          user_id: loggedInUserId,
+          comm_content: newComment,
         },
       );
-      setNewComment(''); // 댓글 입력 필드 초기화
-
-      // 새로 추가된 댓글 가져오기
+      setNewComment('');
       const commentsResponse = await axios.get(
         `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
       );
-      setComments(commentsResponse.data); // 댓글 목록 갱신
+      setComments(commentsResponse.data);
     } catch (error) {
       console.error('Error adding comment:', error);
+    }
+  };
+
+  const handleDeleteComment = async (comment_id: number) => {
+    try {
+      await axios.delete(
+        `http://localhost:3000/board/${story_id}/post/${geul_id}/comments/${comment_id}`,
+      );
+
+      // 댓글 목록을 즉시 업데이트
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment.comment_id !== comment_id),
+      );
+    } catch (error) {
+      console.error('Error deleting comment:', error);
     }
   };
 
@@ -99,6 +113,14 @@ const PostDetail: React.FC = () => {
               <p className="text-gray-500 text-sm">
                 작성자 ID: {comment.user_id}
               </p>
+              {comment.user_id === loggedInUserId && (
+                <button
+                  onClick={() => handleDeleteComment(comment.comment_id)}
+                  className="mt-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-200"
+                >
+                  Delete
+                </button>
+              )}
             </div>
           ))}
 

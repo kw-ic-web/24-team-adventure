@@ -1,13 +1,16 @@
 // 스토리 목록 조회 관련 라우트
 import { Router, Request, Response } from "express";
-import pool from "../db";
+import supabase from "../supabaseClient";
 
 const router = Router();
 
 router.get("/stories", async (req: Request, res: Response) => {
   try {
-    const result = await pool.query("SELECT * FROM story");
-    res.json(result.rows);
+    const { data, error } = await supabase.from("story").select("*");
+
+    if (error) throw error;
+
+    res.json(data);
   } catch (err) {
     console.error("Error fetching stories:", err);
     res
