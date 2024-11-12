@@ -5,6 +5,7 @@ import storyRoutes from "./routes/storyRoutes";
 import boardRoutes from "./routes/boardRoutes";
 import listRoutes from "./routes/listRoutes";
 import commentRoutes from "./routes/commentRoutes";
+import authRoutes from "./auth/authRoutes";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(storyRoutes);
 app.use(boardRoutes);
 app.use(listRoutes);
 app.use(commentRoutes);
+app.use(authRoutes);
 
 // 서버 시작
 const PORT = process.env.PORT || 3000;
