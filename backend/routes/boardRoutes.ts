@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import pool from "../db";
+import supabase from "../supabaseClient";
 
 const router = Router();
 
@@ -12,10 +12,13 @@ router.get("/board/:story_id", async (req: Request, res: Response) => {
     return;
   }
   try {
-    const result = await pool.query("SELECT * FROM geul WHERE story_id = $1", [
-      parseInt(story_id),
-    ]);
-    res.json(result.rows);
+    const { data, error } = await supabase
+      .from("geul")
+      .select("*")
+      .eq("story_id", parseInt(story_id));
+
+    if (error) throw error;
+    res.json(data);
   } catch (err) {
     console.error("Error fetching posts:", err);
     res
@@ -27,10 +30,13 @@ router.get("/board/:story_id", async (req: Request, res: Response) => {
 // 모든 게시물 최신순 조회 라우트
 router.get("/posts", async (req: Request, res: Response) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM geul ORDER BY uploaded_time DESC"
-    );
-    res.json(result.rows);
+    const { data, error } = await supabase
+      .from("geul")
+      .select("*")
+      .order("uploaded_time", { ascending: false });
+
+    if (error) throw error;
+    res.json(data);
   } catch (err) {
     console.error("Error fetching posts:", err);
     res
@@ -57,15 +63,15 @@ router.get(
       return;
     }
     try {
-      const result = await pool.query(
-        "SELECT * FROM geul WHERE story_id = $1 AND geul_id = $2",
-        [parseInt(story_id), parseInt(geul_id)]
-      );
-      if (result.rows.length === 0) {
-        res.status(404).json({ error: "게시물을 찾을 수 없습니다." });
-        return;
-      }
-      res.json(result.rows[0]);
+      const { data, error } = await supabase
+        .from("geul")
+        .select("*")
+        .eq("story_id", parseInt(story_id))
+        .eq("geul_id", parseInt(geul_id))
+        .single();
+
+      if (error) throw error;
+      res.json(data);
     } catch (err) {
       console.error("Error fetching post:", err);
       res

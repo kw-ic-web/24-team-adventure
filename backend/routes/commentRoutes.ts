@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import pool from "../db";
+import supabase from "../supabaseClient";
 
 const router = Router();
 
@@ -7,29 +7,37 @@ const router = Router();
 router.get(
   "/board/:story_id/post/:geul_id/comments",
   async (req: Request, res: Response): Promise<void> => {
-    const { story_id, geul_id } = req.params;
+    const { geul_id } = req.params;
 
-    if (
-      !story_id ||
-      isNaN(parseInt(story_id)) ||
-      !geul_id ||
-      isNaN(parseInt(geul_id))
-    ) {
-      console.error("Invalid story_id or geul_id:", story_id, geul_id);
-      res
-        .status(400)
-        .json({ error: "유효하지 않은 story_id 또는 geul_id입니다." });
-      return; // 함수 종료
+    if (!geul_id || isNaN(parseInt(geul_id))) {
+      console.error("Invalid geul_id:", geul_id);
+      res.status(400).json({ error: "유효하지 않은 geul_id입니다." });
+      return;
     }
 
     try {
-      const result = await pool.query(
-        "SELECT * FROM comment WHERE geul_id = $1 ORDER BY created_at ASC",
-        [parseInt(geul_id)]
-      );
-      res.json(result.rows); // 응답 전송
+      const { data, error } = await supabase
+        .from("comment")
+        .select("*")
+        .eq("geul_id", parseInt(geul_id))
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching comments:", error.message);
+        res
+          .status(500)
+          .json({ error: "댓글 데이터를 불러오는 데 실패했습니다." });
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        res.status(404).json({ error: "댓글이 없습니다." });
+        return;
+      }
+
+      res.json(data);
     } catch (err) {
-      console.error("Error fetching comments:", err);
+      console.error("Unexpected error:", err);
       res
         .status(500)
         .json({ error: "댓글 데이터를 불러오는 데 실패했습니다." });
@@ -41,19 +49,12 @@ router.get(
 router.post(
   "/board/:story_id/post/:geul_id/comments",
   async (req: Request, res: Response): Promise<void> => {
-    const { story_id, geul_id } = req.params;
-    const { user_id, comm_content } = req.body; // comm_content로 유지
+    const { geul_id } = req.params;
+    const { user_id, comm_content } = req.body;
 
-    if (
-      !story_id ||
-      isNaN(parseInt(story_id)) ||
-      !geul_id ||
-      isNaN(parseInt(geul_id))
-    ) {
-      console.error("Invalid story_id or geul_id:", story_id, geul_id);
-      res
-        .status(400)
-        .json({ error: "유효하지 않은 story_id 또는 geul_id입니다." });
+    if (!geul_id || isNaN(parseInt(geul_id))) {
+      console.error("Invalid geul_id:", geul_id);
+      res.status(400).json({ error: "유효하지 않은 geul_id입니다." });
       return;
     }
 
@@ -63,14 +64,82 @@ router.post(
     }
 
     try {
-      await pool.query(
-        "INSERT INTO comment (geul_id, user_id, comm_content, created_at) VALUES ($1, $2, $3, NOW())",
-        [parseInt(geul_id), user_id, comm_content]
-      );
-      res.status(201).json({ message: "댓글이 추가되었습니다." });
+      const { data, error } = await supabase
+        .from("comment")
+        .insert([
+          {
+            geul_id: parseInt(geul_id),
+            user_id,
+            comm_content,
+            created_at: new Date(),
+          },
+        ])
+        .select(); // 삽입된 데이터를 반환하도록 .select() 추가
+
+      console.log("Supabase insert response data:", data);
+      console.log("Supabase insert response error:", error);
+
+      if (error) {
+        console.error("Error adding comment:", error.message);
+        res.status(500).json({ error: "댓글 추가에 실패했습니다." });
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.error("No data returned after inserting comment.");
+        res.status(500).json({ error: "댓글 추가에 실패했습니다." });
+        return;
+      }
+
+      res
+        .status(201)
+        .json({ message: "댓글이 추가되었습니다.", data: data[0] });
     } catch (err) {
-      console.error("Error adding comment:", err);
+      console.error("Unexpected error:", err);
       res.status(500).json({ error: "댓글 추가에 실패했습니다." });
+    }
+  }
+);
+
+// 댓글 삭제 라우트
+router.delete(
+  "/board/:story_id/post/:geul_id/comments/:comment_id",
+  async (req: Request, res: Response): Promise<void> => {
+    const { comment_id } = req.params;
+
+    if (!comment_id || isNaN(parseInt(comment_id))) {
+      console.error("Invalid comment_id:", comment_id);
+      res.status(400).json({ error: "유효하지 않은 comment_id입니다." });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("comment")
+        .delete()
+        .eq("comment_id", parseInt(comment_id))
+        .select(); // 삭제된 데이터를 반환하도록 .select() 추가
+
+      console.log("Supabase delete response data:", data);
+      console.log("Supabase delete response error:", error);
+
+      if (error) {
+        console.error("Error deleting comment:", error.message);
+        res.status(500).json({ error: "댓글 삭제에 실패했습니다." });
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        res.status(404).json({ error: "댓글을 찾을 수 없습니다." });
+        return;
+      }
+
+      res
+        .status(200)
+        .json({ message: "댓글이 삭제되었습니다.", data: data[0] });
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      res.status(500).json({ error: "댓글 삭제에 실패했습니다." });
     }
   }
 );
