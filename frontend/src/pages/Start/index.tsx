@@ -1,5 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
+import useGoogleAuthMutation from '../../hooks/useGoogleAuthMutation';
 
 /*
 To do:
@@ -20,6 +22,28 @@ const users: User[] = [
 ];
 
 export default function Start() {
+  const navigate = useNavigate(); // 페이지 이동을 위해 useNavigate 훅 사용
+
+  // TanStack Query의 useMutation을 사용하여 구글 로그인 후 인증 요청 처리
+  const { mutate } = useGoogleAuthMutation();
+  const handleLoginSuccess = (credentialResponse: any) => {
+    const token = credentialResponse.credential; // 구글에서 받은 토큰
+
+    // 서버로 토큰을 전송하여 인증 처리
+    if (token) {
+      mutate(token, {
+        onSuccess: () => navigate('/home'),
+      });
+    } else {
+      console.error('No credential token received');
+    }
+  };
+
+  // 구글 로그인 실패 시 호출되는 함수 (error 파라미터를 받음)
+  const handleLoginFailure = () => {
+    console.error('Google login failed');
+  };
+
   return (
     <div className="min-h-screen bg-light-green flex w-screen bg-[#b3ae56] justify-center items-center font-noto">
       {/* 중앙 배경화면 박스 */}
@@ -54,12 +78,11 @@ export default function Start() {
           <img src="/path/to/your/logo.png" alt="Game Logo" className="mb-4" />
 
           {/* 구글 로그인 버튼 */}
-          <Link
-            to="/Home"
-            className="bg-white px-4 py-2 shadow-md rounded-md font-semibold"
-          >
-            Google Oauth Log in
-          </Link>
+          <GoogleLogin
+            onSuccess={handleLoginSuccess} // 로그인 성공 시 호출되는 함수
+            onError={handleLoginFailure} // 로그인 실패 시 호출되는 함수
+            useOneTap // One Tap 로그인 기능을 활성화
+          />
         </div>
       </div>
     </div>
