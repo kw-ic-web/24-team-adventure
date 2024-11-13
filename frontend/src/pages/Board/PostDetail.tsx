@@ -6,7 +6,7 @@ interface Comment {
   comment_id: number;
   comm_content: string;
   created_at: string;
-  user_id: number;
+  user_id: string; // user_id를 문자열로 변경
 }
 
 interface Post {
@@ -23,7 +23,7 @@ const PostDetail: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
-  const [loggedInUserId, setLoggedInUserId] = useState<number>(1); // 예: 로그인된 사용자 ID를 설정 (로그인 구현 후, 변경)
+  const [loggedInUserId, setLoggedInUserId] = useState<string>('1'); // 문자열로 변경
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -59,7 +59,7 @@ const PostDetail: React.FC = () => {
       await axios.post(
         `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
         {
-          user_id: loggedInUserId,
+          user_id: loggedInUserId, // 문자열로 전달
           comm_content: newComment,
         },
       );

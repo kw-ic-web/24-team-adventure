@@ -1839,7 +1839,7 @@ globalthis@^1.0.3:
     define-properties "^1.2.1"
     gopd "^1.0.1"
 
-google-auth-library@^9.0.0, google-auth-library@^9.7.0:
+google-auth-library@^9.0.0, google-auth-library@^9.14.2, google-auth-library@^9.7.0:
   version "9.14.2"
   resolved "https://registry.npmjs.org/google-auth-library/-/google-auth-library-9.14.2.tgz"
   integrity sha512-R+FRIfk1GBo3RdlRYWPdwk8nmtVUOn6+BkDomAC46KoU8kzXzE1HLmOasSCbWUByMMAGkknVF0G5kQ69Vj7dlA==
