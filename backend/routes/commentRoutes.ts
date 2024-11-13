@@ -18,8 +18,8 @@ router.get(
     try {
       const { data, error } = await supabase
         .from("comment")
-        .select("*")
-        .eq("geul_id", parseInt(geul_id))
+        .select("comment_id, user_id, comm_content, created_at")
+        .eq("geul_id", geul_id)
         .order("created_at", { ascending: true });
 
       if (error) {
@@ -74,10 +74,7 @@ router.post(
             created_at: new Date(),
           },
         ])
-        .select(); // 삽입된 데이터를 반환하도록 .select() 추가
-
-      console.log("Supabase insert response data:", data);
-      console.log("Supabase insert response error:", error);
+        .select("comment_id, user_id, comm_content, created_at");
 
       if (error) {
         console.error("Error adding comment:", error.message);
@@ -118,10 +115,7 @@ router.delete(
         .from("comment")
         .delete()
         .eq("comment_id", parseInt(comment_id))
-        .select(); // 삭제된 데이터를 반환하도록 .select() 추가
-
-      console.log("Supabase delete response data:", data);
-      console.log("Supabase delete response error:", error);
+        .select("comment_id, user_id, comm_content, created_at");
 
       if (error) {
         console.error("Error deleting comment:", error.message);
