@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import './StoryGrid.css';
 
 interface Story {
   story_id: number;
@@ -21,7 +22,6 @@ const StoryGrid: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedStoryId, setSelectedStoryId] = useState<number | null>(null);
 
-  // 동화 목록 가져오기
   useEffect(() => {
     const fetchStories = async () => {
       try {
@@ -34,7 +34,6 @@ const StoryGrid: React.FC = () => {
     fetchStories();
   }, []);
 
-  // 게시물 목록 가져오기 (최신순)
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -60,53 +59,46 @@ const StoryGrid: React.FC = () => {
     : posts;
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-center">Story Board</h1>
+    <div className="story-grid-container">
+      <h1 className="story-grid-title">Story Board</h1>
 
-      <div className="grid grid-cols-6 gap-6">
+      <div className="story-grid">
         {stories.map((story) => (
           <div
             key={story.story_id}
             onClick={() => handleStorySelect(story.story_id)}
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-4 text-center cursor-pointer"
+            className="story-card"
           >
-            <p className="text-gray-800 font-semibold mb-2">
-              {story.story_title}
-            </p>
+            <p className="story-title">{story.story_title}</p>
             <img
-              src={`http://localhost:3000/${story.cover_pic}`} // 이미지 경로 설정
-              className="w-full h-40 object-cover rounded-md"
+              src={`http://localhost:3000/${story.cover_pic}`}
+              className="story-image"
               alt={story.story_title}
             />
           </div>
         ))}
       </div>
 
-      <h2 className="text-2xl font-bold mt-10 mb-4 text-center">
-        Latest Posts
-      </h2>
+      <h2 className="posts-title">Latest Posts</h2>
 
       {selectedStoryId && (
-        <div className="text-center mb-4">
-          <button
-            onClick={handleShowAllPosts}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"
-          >
+        <div className="show-all-button-container">
+          <button onClick={handleShowAllPosts} className="show-all-button">
             전체 게시물 보기
           </button>
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="posts-list">
         {filteredPosts.map((post) => (
           <Link
             key={post.geul_id}
             to={`/board/${post.story_id}/post/${post.geul_id}`}
-            className="block bg-white rounded-lg shadow-md p-4 hover:bg-gray-100 transition"
+            className="post-link"
           >
-            <h3 className="text-xl font-semibold">{post.geul_title}</h3>
-            <p className="text-gray-700">{post.geul_content}</p>
-            <p className="text-gray-500 text-sm">
+            <h3 className="post-title">{post.geul_title}</h3>
+            <p className="post-content">{post.geul_content}</p>
+            <p className="post-time">
               업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
             </p>
           </Link>

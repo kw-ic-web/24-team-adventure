@@ -1,0 +1,16 @@
+.home-button-container {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 50;
+}
+
+.home-button-image {
+  width: 3rem;
+  height: 3rem;
+  transition: transform 0.2s;
+}
+
+.home-button-image:hover {
+  transform: scale(1.1);
+}

@@ -71,7 +71,6 @@ router.post(
             geul_id: parseInt(geul_id),
             user_id,
             comm_content,
-            created_at: new Date(),
           },
         ])
         .select("comment_id, user_id, comm_content, created_at");
