@@ -1,16 +1,32 @@
 // frontend/src/store/useAuthStore.ts
 import { create } from 'zustand';
 
+interface User {
+  id: string;
+}
+
 interface AuthState {
   isAuthenticated: boolean;
-  login: () => void;
+  user: User | null;
+  login: (token: string, user: User) => void;
   logout: () => void;
 }
 
 const useAuthStore = create<AuthState>((set) => ({
-  isAuthenticated: true, // 테스트를 위해 임시로 true로 설정
-  login: () => set({ isAuthenticated: true }),
-  logout: () => set({ isAuthenticated: false }),
+  isAuthenticated: !!localStorage.getItem('token'), // 토큰 유무로 초기 상태 설정
+  user: null,
+
+  // 로그인 함수
+  login: (token, user) => {
+    localStorage.setItem('token', token); // 토큰을 localStorage에 저장
+    set({ isAuthenticated: true, user });
+  },
+
+  // 로그아웃 함수
+  logout: () => {
+    localStorage.removeItem('token'); // 토큰 제거
+    set({ isAuthenticated: false, user: null });
+  },
 }));
 
 export default useAuthStore;
