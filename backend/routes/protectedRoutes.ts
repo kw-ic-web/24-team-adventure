@@ -12,7 +12,7 @@ const router = express.Router();
 
 // `/protected` 엔드포인트
 router.get(
-  "/protected",
+  "/user",
   authenticateJWT,
   (req: AuthenticatedRequest, res: Response) => {
     if (req.user) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 /*
 To do:
 동화선택 화면과 연결, 호버 기능
@@ -37,6 +37,14 @@ const posts: Post[] = [
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // 토큰 삭제
+    console.log('로그아웃 완료: JWT 토큰 삭제됨');
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen bg-light-green flex w-screen bg-[#b3ae56] justify-center items-center font-noto">
       {/* 중앙 배경화면 박스 */}
@@ -97,9 +105,9 @@ export default function Home() {
         </div>
 
         {/* 로그아웃 버튼 */}
-        <Link to="/" className="logout-button">
+        <button className="logout-button" onClick={handleLogout}>
           로그아웃
-        </Link>
+        </button>
       </div>
     </div>
   );
