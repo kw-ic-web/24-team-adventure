@@ -1,6 +1,6 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import { useNavigate } from 'react-router-dom';
+
 import useGoogleAuthMutation from '../../hooks/useGoogleAuthMutation';
 
 /*
@@ -22,21 +22,13 @@ const users: User[] = [
 ];
 
 export default function Start() {
-  const navigate = useNavigate(); // 페이지 이동을 위해 useNavigate 훅 사용
-
   // TanStack Query의 useMutation을 사용하여 구글 로그인 후 인증 요청 처리
   const { mutate } = useGoogleAuthMutation();
   const handleLoginSuccess = (credentialResponse: any) => {
-    const token = credentialResponse.credential; // 구글에서 받은 토큰
-
+    const { credential } = credentialResponse;
+    console.log('구글 로그인 성공:', credential);
     // 백엔드에 credential을 전달
-    if (token) {
-      mutate(token, {
-        onSuccess: () => navigate('/home'),
-      });
-    } else {
-      console.error('No credential token received');
-    }
+    mutate(credential);
   };
 
   // 구글 로그인 실패 시 호출되는 함수 (error 파라미터를 받음)
@@ -81,6 +73,7 @@ export default function Start() {
           <GoogleLogin
             onSuccess={handleLoginSuccess} // 로그인 성공 시 호출되는 함수
             onError={handleLoginFailure} // 로그인 실패 시 호출되는 함수
+            width={'300px'}
             useOneTap // One Tap 로그인 기능을 활성화
           />
         </div>
