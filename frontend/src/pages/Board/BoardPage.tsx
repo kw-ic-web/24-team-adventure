@@ -5,7 +5,7 @@ import Loader from '../../components/Loader';
 import HomeButton from '../../components/HomeButton';
 interface Post {
   geul_id: number;
-  user_id: number;
+  user_id: string;
   story_id: number;
   geul_content: string;
   final_pic: string;
