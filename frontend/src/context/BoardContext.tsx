@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect } from "react";
-import api from "../api"; // Axios 인스턴스 임포트
+import React, { createContext, useState, useEffect } from 'react';
+import api from '../api'; // Axios 인스턴스 임포트
 
 // Story와 Post의 타입 정의
 interface Story {
@@ -33,30 +33,32 @@ export const BoardContext = createContext<BoardContextType>({
   stories: [],
   posts: [],
   loading: true,
-  error: "",
+  error: '',
 });
 
 // 컨텍스트 제공자 컴포넌트
-export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [stories, setStories] = useState<Story[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     // 스토리와 게시물을 백엔드에서 가져오는 함수
     const fetchData = async () => {
       try {
         // 스토리 데이터 가져오기
-        const storiesResponse = await api.get("/stories");
+        const storiesResponse = await api.get('/stories');
         setStories(storiesResponse.data);
 
         // 모든 게시물 데이터 가져오기
-        const postsResponse = await api.get("/posts");
+        const postsResponse = await api.get('/posts');
         setPosts(postsResponse.data);
       } catch (err: any) {
-        console.error("Error fetching board data:", err);
-        setError("보드 데이터를 불러오는 데 실패했습니다.");
+        console.error('Error fetching board data:', err);
+        setError('보드 데이터를 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);
       }

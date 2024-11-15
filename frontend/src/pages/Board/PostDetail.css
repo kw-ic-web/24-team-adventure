@@ -1,21 +1,35 @@
-/* 전체 페이지 컨테이너 */
+/* 전체 컨테이너 스타일 */
 .post-detail-container {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
-  background-color: #f9f9f9; /* 배경색 통일 */
 }
 
-/* 게시물 제목 */
+/* 제목 스타일 */
 .post-title {
   font-size: 24px;
   font-weight: bold;
-  text-align: center;
+  margin-bottom: 10px;
+  text-align: left; /* 왼쪽 정렬 */
+}
+
+/* 작성자 ID와 업로드 시간을 포함하는 메타 정보 스타일 */
+.post-meta {
+  font-size: 14px;
+  color: gray;
+  text-align: left; /* 왼쪽 정렬 */
+  margin-bottom: 5px;
+}
+
+.post-time {
+  font-size: 14px;
+  color: gray;
+  text-align: left; /* 왼쪽 정렬 */
   margin-bottom: 20px;
 }
 
-/* 이미지 스타일 */
+/* 게시물 이미지 스타일 */
 .final-image {
   width: 100%;
   height: auto;
@@ -23,48 +37,46 @@
   margin-bottom: 20px;
 }
 
-/* 소개 텍스트 및 본문 */
+/* 각 단락 및 본문 내용 스타일 */
 .intro-text,
 .post-content {
   font-size: 16px;
   line-height: 1.6;
   margin-bottom: 15px;
+  text-align: left; /* 왼쪽 정렬 */
 }
 
-/* 업로드 시간 */
-.post-time {
-  font-size: 14px;
-  color: gray;
-  text-align: right;
-  margin-top: 10px;
-}
-
-/* 구분선 */
+/* 구분선 스타일 */
 .divider {
   border: none;
   border-top: 1px solid #ddd;
   margin: 20px 0;
 }
 
-/* 댓글 영역 */
+/* 댓글 스타일 */
 .comment {
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
+  text-align: left; /* 왼쪽 정렬 */
 }
 
-/* 댓글 작성 시간 */
+.comment:last-child {
+  border-bottom: none;
+}
+
+/* 댓글 작성 시간 스타일 */
 .comment-time {
   font-size: 12px;
   color: gray;
 }
 
-/* 댓글 작성자 */
+/* 댓글 작성자 ID 스타일 */
 .comment-author {
   font-size: 12px;
   font-weight: bold;
 }
 
-/* 삭제 버튼 */
+/* 댓글 삭제 버튼 스타일 */
 .delete-button {
   background-color: #ff6b6b;
   color: white;
@@ -76,22 +88,23 @@
   font-size: 12px;
 }
 
-/* 새 댓글 입력 섹션 */
+/* 새로운 댓글 입력 섹션 스타일 */
 .new-comment {
   display: flex;
   margin-top: 15px;
 }
 
-/* 새 댓글 입력창 */
+/* 새로운 댓글 입력 필드 스타일 */
 .new-comment-input {
   flex: 1;
   padding: 8px;
   font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  margin-right: 10px;
 }
 
-/* 제출 버튼 */
+/* 댓글 제출 버튼 스타일 */
 .submit-button {
   background-color: #007bff;
   color: white;
