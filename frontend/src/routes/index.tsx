@@ -4,6 +4,7 @@ import Home from '../pages/Home';
 import Start from '../pages/Start';
 import GameStart from '../pages/Game/GameSelect';
 import GamePlay from '../pages/Game/GamePlay';
+import Testgpt from '../pages/Game/Testgpt';
 import GameEnd from '../pages/Game/GameEnd';
 import MyPage from '../pages/Mypage';
 import VideoChat from '../pages/Video';
@@ -22,16 +23,17 @@ export default function Router() {
         <Route path="/home" element={<Home />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/video-chat" element={<VideoChat />} />
-        //video/end 변경 예정
+        {/*video/end 변경 예정*/}
         <Route path="/video-end" element={<VideoChatEndPage />} />
         <Route path="/games" element={<GameStart />} />
-        // 게임 api가 만들어지면, 각 동화(게임)별로 URL이동 ex. /games/:gameId
+       {/* 게임 api가 만들어지면, 각 동화(게임)별로 URL이동 ex. /games/:gameId*/}
         <Route path="/gameplay" element={<GamePlay />} />
-        // 마찬가지로 /games/:gameId/result 변경 예정
+        {/*마찬가지로 /games/:gameId/result 변경 예정*/}
+        <Route path="/testgpt" element={<Testgpt />} />
         <Route path="/gameend" element={<GameEnd />} />
         <Route path="/board" element={<StoryGrid />} />
         <Route path="/board/:story_id" element={<BoardPage />} />
-        //post는 수정 예정
+        {/*post는 수정 예정*/}
         <Route path="/board/:story_id/post/:geul_id" element={<PostDetail />} />
       </Routes>
     </BrowserRouter>

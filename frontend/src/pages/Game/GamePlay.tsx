@@ -39,8 +39,10 @@ export default function GamePlay(): JSX.Element {
   const [textBoxVisible, setTextBoxVisible] = useState<boolean>(false);
   const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0);
   const [nextTextBoxVisible, setNextTextBoxVisible] = useState<boolean>(false);
+
   const [keywords, setKeywords] = useState<string[]>([]);
   const [userInput, setUserInput] = useState<string>('');
+
   const [recognizing, setRecognizing] = useState<boolean>(false);
   const [userStories, setUserStories] = useState<UserStories>({
     4: '',
@@ -55,6 +57,7 @@ export default function GamePlay(): JSX.Element {
       recognition.stop();
       setRecognizing(false);
     }
+    
   };
 
   const startStopSpeechRecognition = () => {
@@ -81,6 +84,7 @@ export default function GamePlay(): JSX.Element {
       recognition.onend = () => setRecognizing(false);
       recognition.start();
     }
+    
   };
 
   const handleStoryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -90,24 +94,95 @@ export default function GamePlay(): JSX.Element {
     }));
   };
 
-  const generateStoryContinuation = async (input: string): Promise<Story> => {
-    // API 호출 구현
-    // 임시 반환값
-    return { keywords: ['키워드1', '키워드2', '키워드3'] };
-  };
+  ////////////////////////////////////////////////
+ /*
+ userInput: 초기 내용 generated: 초기내용
+ 1. 3페이지 들어가면, generated으로 키워드 생성 *전체 내용으로
+  -generated를 <gpt키워드생성함수>에 넣어서 키워드 받음
 
+ 2. 처음부터 음성인식 추가한 것까지 gpt에 던져서 다음 내용 생성 *전체 내용으로
+ -음성인식한 내용 generated에 (*)대입, userInput에 주가. 
+ -userInput을 <gpt내용생성함수> 한테 던져서 내용생성
+ -<gpt내용생성함수>가 생성내용 continuation 반환
+ -continuation-> generated에 추가, userInput에 추가
+
+ 3. 음성인식 끝나면 방금 음성인식한 내용+생성내용으로 이미지 생성 *현재 생성 내용으로
+ -generated를 <gpt이미지생성함수>에 넣어서 다음 이미지 한장 생성
+
+ 4. 생성한 이미지랑 글 보여주고
+ -continuation 글 보여줌
+ -생성 이미지 보여줌
+
+ 5. 그 생성된 내용에서 키워드 생성 *현재 생성 내용으로
+ -generated를 <gpt키워드생성함수>에 넣어서 키워드 받음
+
+ (반복*3)
+ 
+ 7. 마지막에 지금까지 내용userInput이랑 맨 마지막 이미지 dp에 저장
+
+
+*/
+/*
   const handleStopButtonClick = async () => {
-    stopSpeechRecognition();
+    //음성인식 중지 버튼 클릭 하면
+    stopSpeechRecognition();//음성인식 끝나면
 
     try {
       const story = await generateStoryContinuation(userInput);
-      setKeywords(story.keywords);
-      setTextBoxVisible(true);
-      setCurrentPage(currentPage + 1);
+      setKeywords(story.keywords);//새로운 키워드 업데이트
+      setTextBoxVisible(true);//새로운 이야기 박스
+      setCurrentPage(currentPage + 1);//다음 페이지로
     } catch (error) {
       console.error('Story generation failed:', error);
     }
   };
+  */
+  useEffect(() => {
+    console.log("현재 userInput:", userInput);
+  }, [userInput]); // userInput이 변경될 때마다 이 코드가 실행됨
+
+  const handleStopButtonClick = async () => {
+    console.log("음성 인식 종료 중..."); // 음성 인식 종료 단계 확인
+    stopSpeechRecognition(); // 음성 인식 종료
+    
+    setUserInput("백설공주가 살았는데 여왕과 사이가 좋았습니다."); 
+    console.log("현재 userInput:", userInput);
+
+    // userInput이 비어있으면 경고를 띄워주기
+    /*if (!userInput.trim()) {
+      console.warn("사용자가 입력을 하지 않았습니다.");
+      return;
+    }*/
+    try {
+      console.log("스토리 생성 요청 중..."); // 스토리 생성 요청 단계 확인
+      // generateStoryContinuation 함수 호출하여 스토리 내용 생성
+      const storyData = await generateStoryContinuation(userInput);
+      
+      console.log("스토리 생성 완료:", storyData); // 스토리 생성 완료 후 확인
+      const continuation = storyData.continuation; // 생성된 내용
+  
+      console.log("생성된 내용:", continuation); // 생성된 내용 확인
+  
+      // 생성된 내용을 처리할 작업
+      setUserStories((prev) => ({
+        ...prev,
+        [currentPage]: (prev[currentPage] ? prev[currentPage] + ' ' : '') + continuation,
+      }));
+  
+      console.log("스토리 업데이트 완료"); // 스토리 업데이트 완료 확인
+  
+      // 페이지 업데이트
+      setTextBoxVisible(true);
+      setCurrentPage(currentPage + 1); // 다음 페이지로 이동
+  
+      console.log("페이지 업데이트 완료"); // 페이지 업데이트 완료 확인
+    } catch (error) {
+      console.error('스토리 생성 중 에러 발생:', error); // 에러 발생 시 확인
+    }
+   
+  };
+  
+//////////////////////////////////////////////////////////////////////
 
   const startGame = () => {
     setShowModal(true);
@@ -248,7 +323,7 @@ export default function GamePlay(): JSX.Element {
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `url(${pages[currentPage].backgroundImage})`,
+              //backgroundImage: `url(${pages[currentPage].backgroundImage})`,
               backgroundSize: 'cover',
             }}
           />

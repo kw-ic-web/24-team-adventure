@@ -1,3 +1,4 @@
+// /frontend/src/api
 import axios from "axios";
 
 // Axios 인스턴스 생성 및 기본 설정
