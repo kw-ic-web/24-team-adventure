@@ -68,7 +68,6 @@ export default function Start() {
         <div className="flex flex-col items-center justify-center absolute inset-0 m-auto">
           {/* 프로그램 로고 */}
           <img src="/path/to/your/logo.png" alt="Game Logo" className="mb-4" />
-
           {/* 구글 로그인 버튼 */}
           <GoogleLogin
             onSuccess={handleLoginSuccess} // 로그인 성공 시 호출되는 함수

@@ -1,15 +1,16 @@
+// backend/routes/storyRoutes.ts
 import express from "express";
 import {
   generateStory,
-  generateStoryKeywords,
+  generateStory_end,
+  generateKeywords,
+  generateImage,
 } from "../controllers/storyController"; // 각 함수 가져오기
 
 const router = express.Router();
 
-// 사용자가 입력한 문장을 기반으로 스토리 진행 생성
-router.post("/generate-story", generateStory);
-
-// 사용자가 입력한 문장을 기반으로 키워드 생성
-router.post("/generate-keywords", generateStoryKeywords);
-
+router.post("/api/generate-story", generateStory);
+router.post("/api/generate-story", generateStory_end);
+router.post("/api/generate-keywords", generateKeywords);
+router.post("/api/generate-image", generateImage);
 export default router;
