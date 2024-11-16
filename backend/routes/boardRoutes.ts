@@ -63,15 +63,44 @@ router.get(
       return;
     }
     try {
-      const { data, error } = await supabase
+      // geul 데이터 가져오기
+      const { data: geulData, error: geulError } = await supabase
         .from("geul")
         .select("*")
         .eq("story_id", parseInt(story_id))
         .eq("geul_id", parseInt(geul_id))
         .single();
 
-      if (error) throw error;
-      res.json(data);
+      if (geulError || !geulData) {
+        console.error("Error fetching geul data:", geulError?.message);
+        res
+          .status(500)
+          .json({ error: "게시물 데이터를 불러오는 데 실패했습니다." });
+        return;
+      }
+
+      // story 데이터 가져오기
+      const { data: storyData, error: storyError } = await supabase
+        .from("story")
+        .select("intro1, intro2, intro3")
+        .eq("story_id", parseInt(story_id))
+        .single();
+
+      if (storyError || !storyData) {
+        console.error("Error fetching story data:", storyError?.message);
+        res
+          .status(500)
+          .json({ error: "스토리 데이터를 불러오는 데 실패했습니다." });
+        return;
+      }
+
+      // geulData와 storyData를 합쳐서 응답 데이터 생성
+      const responseData = {
+        ...geulData,
+        ...storyData,
+      };
+
+      res.json(responseData);
     } catch (err) {
       console.error("Error fetching post:", err);
       res

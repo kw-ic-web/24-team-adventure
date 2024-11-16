@@ -1,15 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './HomeButton.css';
 
 const HomeButton: React.FC = () => {
   return (
-    <div className="fixed bottom-5 right-5 z-50">
-      {/* 홈 페이지로 이동하는 링크 */}
+    <div className="home-button-container">
       <Link to="/">
         <img
-          src="/home-icon.png"
+          src="/src/assets/images/homeBtn.png"
           alt="Home"
-          className="w-12 h-12 hover:scale-110 transition-transform duration-200"
+          className="home-button-image"
         />
       </Link>
     </div>
@@ -17,4 +17,3 @@ const HomeButton: React.FC = () => {
 };
 
 export default HomeButton;
-// sd

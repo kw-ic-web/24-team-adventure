@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import './PostDetail.css';
 
 interface Comment {
   comment_id: number;
   comm_content: string;
   created_at: string;
-  user_id: number;
+  user_id: string;
 }
 
 interface Post {
   geul_title: string;
   geul_content: string;
   uploaded_time: string;
+  final_pic: string;
+  intro1: string;
+  intro2: string;
+  intro3: string;
+  user_id: string;
 }
 
 const PostDetail: React.FC = () => {
@@ -20,12 +26,15 @@ const PostDetail: React.FC = () => {
     story_id: string;
     geul_id: string;
   }>();
-  const [post, setPost] = useState<Post | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState<string>('');
-  const [loggedInUserId, setLoggedInUserId] = useState<number>(1); // 예: 로그인된 사용자 ID를 설정 (로그인 구현 후, 변경)
 
+  const [post, setPost] = useState<Post | null>(null); // 게시물 데이터 상태
+  const [comments, setComments] = useState<Comment[]>([]); // 댓글 데이터 상태
+  const [newComment, setNewComment] = useState<string>(''); // 새로운 댓글 입력 상태
+  const [loggedInUserId, setLoggedInUserId] = useState<string>('1'); // 로그인된 사용자 ID
+
+  // 게시물과 댓글 데이터를 가져오는 useEffect
   useEffect(() => {
+    // 게시물 데이터 가져오기 함수
     const fetchPost = async () => {
       try {
         const postResponse = await axios.get(
@@ -37,6 +46,7 @@ const PostDetail: React.FC = () => {
       }
     };
 
+    // 댓글 데이터 가져오기 함수
     const fetchComments = async () => {
       try {
         const commentsResponse = await axios.get(
@@ -52,6 +62,7 @@ const PostDetail: React.FC = () => {
     fetchComments();
   }, [story_id, geul_id]);
 
+  // 댓글 추가 함수
   const handleCommentSubmit = async () => {
     if (!newComment.trim()) return;
 
@@ -73,13 +84,13 @@ const PostDetail: React.FC = () => {
     }
   };
 
+  // 댓글 삭제 함수
   const handleDeleteComment = async (comment_id: number) => {
     try {
       await axios.delete(
         `http://localhost:3000/board/${story_id}/post/${geul_id}/comments/${comment_id}`,
       );
 
-      // 댓글 목록을 즉시 업데이트
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.comment_id !== comment_id),
       );
@@ -89,34 +100,50 @@ const PostDetail: React.FC = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="post-detail-container">
       {post ? (
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-3xl font-bold mb-4">{post.geul_title}</h2>
-          <p className="text-gray-700 mb-4">{post.geul_content}</p>
-          <p className="text-gray-500 text-sm">
+        <div className="post-detail">
+          {/* 게시물 제목 */}
+          <h2 className="post-title">{post.geul_title}</h2>
+
+          {/* 작성자 ID */}
+          <p className="post-meta">작성자 ID: {post.user_id}</p>
+
+          {/* 업로드 시간 */}
+          <p className="post-time">
             업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
           </p>
 
-          <hr className="my-6" />
+          {/* 게시물 이미지 */}
+          {post.final_pic && (
+            <img
+              src={`http://localhost:3000/${post.final_pic}`}
+              alt="Final"
+              className="final-image"
+            />
+          )}
 
-          <h3 className="text-2xl font-semibold mb-4">Comments:</h3>
+          {/* 각 단락 출력 */}
+          <p className="intro-text">{post.intro1}</p>
+          <p className="intro-text">{post.intro2}</p>
+          <p className="intro-text">{post.intro3}</p>
+          <p className="post-content">{post.geul_content}</p>
+
+          <hr className="divider" />
+
+          {/* 댓글 섹션 */}
           {comments.map((comment) => (
-            <div
-              key={comment.comment_id}
-              className="mb-4 p-4 border rounded-md"
-            >
+            <div key={comment.comment_id} className="comment">
+              <p className="comment-author">작성자 ID: {comment.user_id}</p>
               <p>{comment.comm_content}</p>
-              <p className="text-gray-500 text-sm">
+              <p className="comment-time">
                 {new Date(comment.created_at).toLocaleString()}
               </p>
-              <p className="text-gray-500 text-sm">
-                작성자 ID: {comment.user_id}
-              </p>
+
               {comment.user_id === loggedInUserId && (
                 <button
                   onClick={() => handleDeleteComment(comment.comment_id)}
-                  className="mt-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-200"
+                  className="delete-button"
                 >
                   Delete
                 </button>
@@ -124,18 +151,16 @@ const PostDetail: React.FC = () => {
             </div>
           ))}
 
-          <div className="mt-6">
+          {/* 새로운 댓글 입력 섹션 */}
+          <div className="new-comment">
             <input
               type="text"
-              className="w-full p-2 border rounded-md"
+              className="new-comment-input"
               placeholder="Add a comment"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
             />
-            <button
-              onClick={handleCommentSubmit}
-              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200"
-            >
+            <button onClick={handleCommentSubmit} className="submit-button">
               Submit
             </button>
           </div>
