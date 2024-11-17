@@ -22,6 +22,7 @@ const pages: Page[] = [
     backgroundImage: backgroundImage3,
     text: '그 후, 루미와 피노는 길을 잃은 새를 위해 길을 안내하고, 시들어가는 꽃들에게 물을 주어 생명을 불어넣으며 숲속 친구들에게 친절을 베풀었습니다. 그렇게 작은 일들을 하나씩 해나가며 루미는 자신이 마법이 없어도 다른 생명들에게 큰 기쁨과 도움을 줄 수 있다는 사실을 깨닫게 되었습니다.',
   },
+  { backgroundImage: backgroundImage3, text: '음성인식' },
 ];
 
 export default function GamePlay(): JSX.Element {
@@ -149,6 +150,21 @@ export default function GamePlay(): JSX.Element {
       {/* 게임 화면 */}
       {gameStarted && (
         <div className="relative w-full h-full">
+          {/* 동화 진행 프로그레스바 */}
+          <div className="fixed top-0 left-4 h-full flex flex-col justify-center items-center space-y-2 px-2 z-10">
+            {Array.from({ length: pages.length }).map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-10 rounded-full transition-colors duration-300 ${
+                  index < currentPage + 1
+                    ? index < 3
+                      ? 'bg-blue-500'
+                      : 'bg-green-500'
+                    : 'bg-gray-700'
+                }`}
+              />
+            ))}
+          </div>
           <div
             className="absolute inset-0"
             style={{
