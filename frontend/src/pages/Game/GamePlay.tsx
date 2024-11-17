@@ -94,12 +94,14 @@ export default function GamePlay(): JSX.Element {
   // 페이지 이동
   const nextPage = () => {
     if (currentPage < pages.length - 1) {
+      setShowImageOnly(false); // "이미지 보기" 상태 리셋
       setCurrentPage(currentPage + 1);
     }
   };
 
   const prevPage = () => {
     if (currentPage > 0) {
+      setShowImageOnly(false); // "이미지 보기" 상태 리셋
       setCurrentPage(currentPage - 1);
     }
   };
