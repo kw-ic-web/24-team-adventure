@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+
+import StartModal from '../../components/game/StartModal';
+import ProgressBar from '../../components/game/ProgressBar';
+
 import backgroundImage1 from './Wish_1.jpg';
 import backgroundImage2 from './Wish_2.jpg';
 import backgroundImage3 from './Wish_3.jpg';
@@ -66,7 +70,7 @@ export default function GamePlay(): JSX.Element {
           return prev;
         });
       }, 30);
-    }, 2000);
+    }, 1000);
   };
 
   // 텍스트 박스 서서히 나타나게 하기
@@ -127,44 +131,21 @@ export default function GamePlay(): JSX.Element {
 
       {/* 모달 창 */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-10">
-          <div className="bg-gray-800 rounded-lg p-6 text-center">
-            <h2 className="text-lg font-bold mb-4 text-white">안내</h2>
-            <p className="mb-4 text-white">게임을 시작하시겠습니까?</p>
-            <button
-              onClick={confirmStart}
-              className="p-2 bg-blue-600 text-white font-bold rounded-lg"
-            >
-              시작
-            </button>
-            <button
-              onClick={closeModal}
-              className="p-2 bg-gray-300 text-gray-800 font-bold rounded-lg ml-2"
-            >
-              취소
-            </button>
-          </div>
-        </div>
+        <StartModal
+          isOpen={showModal}
+          title="안내"
+          message="게임을 시작하시겠습니까?"
+          onConfirm={confirmStart}
+          onClose={closeModal}
+        />
       )}
 
       {/* 게임 화면 */}
       {gameStarted && (
         <div className="relative w-full h-full">
           {/* 동화 진행 프로그레스바 */}
-          <div className="fixed top-0 left-4 h-full flex flex-col justify-center items-center space-y-2 px-2 z-10">
-            {Array.from({ length: pages.length }).map((_, index) => (
-              <div
-                key={index}
-                className={`w-2 h-10 rounded-full transition-colors duration-300 ${
-                  index < currentPage + 1
-                    ? index < 3
-                      ? 'bg-blue-500'
-                      : 'bg-green-500'
-                    : 'bg-gray-700'
-                }`}
-              />
-            ))}
-          </div>
+          <ProgressBar currentPage={currentPage} totalPages={pages.length} />
+
           <div
             className="absolute inset-0"
             style={{
