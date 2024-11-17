@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
-
+import SpeechRecognition from '../../components/game/SpeechRecognition';
 import backgroundImage1 from './Wish_1.jpg';
 import backgroundImage2 from './Wish_2.jpg';
 import backgroundImage3 from './Wish_3.jpg';
@@ -37,6 +37,12 @@ export default function GamePlay(): JSX.Element {
   const [textBoxVisible, setTextBoxVisible] = useState<boolean>(false);
   const [textOpacity, setTextOpacity] = useState<number>(0);
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false);
+
+  const [userText, setUserText] = useState<string>('');
+
+  const handleSpeechResult = (transcript: string) => {
+    setUserText((prev) => (prev ? prev + ' ' : '') + transcript);
+  };
 
   // "시작하기" 버튼 클릭 시 모달 창 열기
   const openModal = () => {
@@ -119,7 +125,7 @@ export default function GamePlay(): JSX.Element {
           className="flex flex-col items-center justify-center h-full bg-cover bg-center"
           style={{ backgroundImage: 'url(/images/start-image.jpg)' }}
         >
-          <h1 className="text-4xl font-bold mb-4">동화 이야기 시작</h1>
+          <h1 className="text-4xl font-bold mb-4">동화 제목</h1>
           <button
             onClick={openModal}
             className="p-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full"
@@ -183,6 +189,30 @@ export default function GamePlay(): JSX.Element {
                   <p className="text-black text-2xl font-bold text-center break-words leading-relaxed">
                     {pages[currentPage].text}
                   </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/*
+  4, 5, 6 페이지에서만 StoryInputBox를 표시
+*/}
+          {gameStarted && currentPage >= 3 && textBoxVisible && (
+            <div className="absolute inset-x-0 bottom-5 flex items-center justify-center">
+              <div className="w-full h-35 max-w-4xl p-3 bg-white rounded-lg shadow-lg">
+                <div className="flex justify-between items-center">
+                  {/* 음성 인식 버튼 (왼쪽으로 이동) */}
+                  <SpeechRecognition
+                    language="ko-KR"
+                    onResult={handleSpeechResult}
+                  />
+                  {/* 텍스트 입력창 */}
+                  <textarea
+                    value={userText}
+                    onChange={(e) => setUserText(e.target.value)}
+                    className="w-full p-4 border-2 border-gray-300 rounded-lg text-black ml-4"
+                    placeholder="버튼을 누르고 이야기를 말해보세요."
+                  />
                 </div>
               </div>
             </div>
