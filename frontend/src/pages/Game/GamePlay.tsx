@@ -25,8 +25,15 @@ export default function GamePlay(): JSX.Element {
   const [blurLevel, setBlurLevel] = useState<number>(0); // 블러 효과 상태 (사진에만 적용)
   const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 글 배경 및 텍스트의 투명도
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기 여부
-  const [userText, setUserText] = useState<string>(''); // 음성 인식 텍스트 상태
-  const [gptText, setGptText] = useState<string>(''); // GPT로부터 받은 텍스트
+
+  // 각 페이지별 상태
+  const [page4Text, setPage4Text] = useState<string>(''); // 4페이지 음성 인식 텍스트
+  const [page4GptText, setPage4GptText] = useState<string>(''); // 4페이지 GPT 결과
+  const [page5Text, setPage5Text] = useState<string>(''); // 5페이지 음성 인식 텍스트
+  const [page5GptText, setPage5GptText] = useState<string>(''); // 5페이지 GPT 결과
+  const [page6Text, setPage6Text] = useState<string>(''); // 6페이지 음성 인식 텍스트
+  const [page6GptText, setPage6GptText] = useState<string>(''); // 6페이지 GPT 결과
+
   const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화 상태
 
   // Supabase에서 이야기 데이터를 가져오는 함수
@@ -47,22 +54,33 @@ export default function GamePlay(): JSX.Element {
     fetchStoryData();
   }, []);
 
-  // 음성 인식 결과 처리 함수
   const handleSpeechResult = (transcript: string) => {
-    setUserText((prev) => (prev ? prev + ' ' : '') + transcript);
+    if (currentPage === 4) {
+      setPage4Text((prev) => (prev ? prev + ' ' : '') + transcript);
+    } else if (currentPage === 5) {
+      setPage5Text((prev) => (prev ? prev + ' ' : '') + transcript);
+    } else if (currentPage === 6) {
+      setPage6Text((prev) => (prev ? prev + ' ' : '') + transcript);
+    }
   };
 
   const fetchGptResult = async () => {
-    if (!userText.trim()) {
-      console.warn('No input provided for GPT.');
-      return;
-    }
-
     setGptButtonDisabled(true); // GPT 버튼 비활성화
     try {
-      const response = await generateStoryContinuation(userText);
-      const continuation = response.continuation;
-      setGptText((prev) => prev + ' ' + continuation); // GPT 결과 추가
+      let gptResponse = '';
+      if (currentPage === 4) {
+        const response = await generateStoryContinuation(page4Text);
+        gptResponse = response.continuation;
+        setPage4GptText(gptResponse);
+      } else if (currentPage === 5) {
+        const response = await generateStoryContinuation(page5Text);
+        gptResponse = response.continuation;
+        setPage5GptText(gptResponse);
+      } else if (currentPage === 6) {
+        const response = await generateStoryContinuation(page6Text);
+        gptResponse = response.continuation;
+        setPage6GptText(gptResponse);
+      }
     } catch (error) {
       console.error('Error fetching GPT result:', error);
     } finally {
@@ -195,8 +213,10 @@ export default function GamePlay(): JSX.Element {
                     {currentPage <= 3
                       ? pages[currentPage - 1]?.intro1
                       : currentPage === 4
-                        ? userText
-                        : gptText}
+                        ? page4Text || page4GptText
+                        : currentPage === 5
+                          ? page5Text || page5GptText
+                          : page6Text || page6GptText}
                   </p>
                 </div>
               </div>
@@ -211,8 +231,20 @@ export default function GamePlay(): JSX.Element {
                 onResult={handleSpeechResult}
               />
               <textarea
-                value={userText}
-                onChange={(e) => setUserText(e.target.value)}
+                value={
+                  currentPage === 4
+                    ? page4Text
+                    : currentPage === 5
+                      ? page5Text
+                      : page6Text
+                }
+                onChange={(e) =>
+                  currentPage === 4
+                    ? setPage4Text(e.target.value)
+                    : currentPage === 5
+                      ? setPage5Text(e.target.value)
+                      : setPage6Text(e.target.value)
+                }
                 className="w-3/5 p-4 border-2 border-gray-300 rounded-lg text-black"
                 placeholder="버튼을 눌러 이야기를 말해보세요."
               />
