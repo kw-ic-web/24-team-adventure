@@ -1,73 +1,36 @@
-@keyframes pop {
-  0% {
-    transform: scale(0.8) skew(-10deg);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1) skew(-10deg);
-    opacity: 1;
-  }
-}
-
-.card-title {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  mix-blend-mode: difference;
-  color: white;
-}
-
-* {
-  backface-visibility: hidden;
-}
-
-html {
-  min-height: 100vh;
-  background: linear-gradient(to top, #ece9e6, white);
+/* 전체 컨테이너 스타일 */
+.game-select-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding: 2rem;
 }
 
-body {
-  margin: 0;
-  height: 100%;
-  width: 100%;
-  font-family: 'Montserrat', sans-serif;
-  text-align: center;
-}
-
-.header {
-  width: 100%;
+/* 헤더 스타일 */
+.game-select-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-}
-
-.header h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 0;
-}
-
-h6 {
-  font-size: 1.2rem;
-  margin: 0;
-  font-weight: 300;
-}
-
-p {
+  width: 100%;
+  max-width: 1200px;
   margin-bottom: 2rem;
 }
 
+/* 타이틀 스타일 */
+.game-select-title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  flex-grow: 1;
+}
+
+/* 나가기 버튼 스타일 */
 .exit-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 0.5rem 1rem;
   background-color: #ff4757;
   color: white;
   border: none;
   border-radius: 20px;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -77,163 +40,58 @@ p {
   background-color: #ff6b81;
 }
 
+/* 카드 그리드 컨테이너 */
 .container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr); /* 한 행에 3개의 카드 */
+  gap: 1.5rem; /* 카드 간격 */
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.wrapper {
-  transform: skew(-10deg);
-  position: relative;
-}
-
-.wrapper:before {
-  content: '';
-  left: 0;
-  top: 0;
-  height: calc(100% - 20px);
-  width: calc(100% - 20px);
-  border-radius: 40px;
-  opacity: 0;
-  border: 2px solid #ece9e6;
-  position: absolute;
-  z-index: -1;
-  transition: 0.5s 0.05s;
-}
-
-.wrapper:hover {
-  transform: translateY(-1rem) skew(-10deg);
-}
-
-.wrapper:hover:before {
-  opacity: 1;
-  transform: translateY(1.5rem) translateX(1.5rem);
-}
-
+/* 카드 기본 스타일 */
 .card {
   background-color: white;
-  border-radius: 40px;
-  height: 14rem;
-  width: 400px;
-  padding: 2rem;
-  position: relative;
-  overflow: hidden;
-  margin: 1rem 0;
-}
-
-.card:after {
-  content: '';
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: #373f51;
-  background-blend-mode: screen;
-  transform: skew(10deg) scale(1.1);
-  transition: 0.2s;
-}
-
-.wrapper:hover .card:after {
-  background-blend-mode: normal;
-}
-
-.wrapper:hover .card {
-  box-shadow: 0 8px 16px rgba(1, 1, 1, 1);
-}
-
-.card .icon {
-  position: absolute;
-  bottom: -1rem;
-  right: 3rem;
-  border-radius: 100%;
-  padding: 1rem;
-  font-size: 1.5rem;
-  color: #373f51;
-  z-index: 1;
-  transform: skew(10deg) translateY(80%);
-  text-align: center;
-  transition: 0.25s;
-  background-color: rgba(255, 255, 255, 0.8);
-}
-
-.wrapper:hover .card .icon {
-  bottom: 4rem;
-}
-
-.wrapper:nth-child(1) .card:after {
-  background-image: url(./elsa.jpg);
-}
-.wrapper:nth-child(2) .card:after {
-  background-image: url(./topia.png);
-}
-.wrapper:nth-child(3) .card:after {
-  background-image: url(./rabbit.png);
-}
-.wrapper:nth-child(4) .card:after {
-  background-image: url(./baksul.png);
-}
-.wrapper:nth-child(5) .card:after {
-  background-image: url(./heung.png);
-}
-.wrapper:nth-child(6) .card:after {
-  background-image: url(poinrt.png);
-}
-
-.toggle-button {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  background-color: #e5e7eb;
   border-radius: 20px;
-  padding: 5px;
-  width: 100px;
-  justify-content: space-between;
-  position: relative;
-  transition: background-color 0.3s ease;
-  margin: 20px 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+  text-align: center;
+  padding: 1rem;
 }
 
-.toggle-button.active {
-  background-color: #60a5fa;
+.card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
 }
 
-.toggle-button-circle {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: white;
-  position: absolute;
-  transition: transform 0.3s ease;
+/* 카드 이미지 */
+.card img {
+  width: 100%;
+  height: auto;
+  border-bottom: 2px solid #ddd;
 }
 
-.toggle-button-circle.ko {
-  transform: translateX(0);
-}
-
-.toggle-button-circle.en {
-  transform: translateX(60px);
-}
-
-.language-indicator {
-  margin-top: 20px;
-  font-size: 1.5rem;
-  color: #373f51;
-}
-
-.language-label {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: rgba(255, 255, 255, 0.7);
-  padding: 0.5rem;
-  border-radius: 5px;
+/* 카드 제목 */
+.card-title {
+  font-size: 1.2rem;
   font-weight: bold;
+  margin-top: 0.5rem;
   color: #373f51;
-  z-index: 1;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr); /* 한 행에 2개의 카드 */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    grid-template-columns: 1fr; /* 한 행에 1개의 카드 */
+  }
 }
