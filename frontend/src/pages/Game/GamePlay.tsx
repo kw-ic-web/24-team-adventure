@@ -1,66 +1,68 @@
 import React, { useState, useEffect } from 'react';
+import supabase from '../Game/supabaseClient';
 
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
-import backgroundImage1 from './Wish_1.jpg';
-import backgroundImage2 from './Wish_2.jpg';
-import backgroundImage3 from './Wish_3.jpg';
 import back from './동화배경5.png';
 
-interface Page {
-  backgroundImage: string;
-  text: string;
+interface StoryPage {
+  story_id: number;
+  story_title: string;
+  cover_pic: string;
+  intro1: string;
+  intro2: string;
+  intro3: string;
+  intro_pic1: string;
+  intro_pic2: string;
+  intro_pic3: string;
 }
 
-const pages: Page[] = [
-  {
-    backgroundImage: backgroundImage1,
-    text: '하늘에서 빛나는 작은 별이었던 루미는 누구보다 사람들의 소원을 들어주는 일을 소중히 여겼습니다. 하지만 어느 날 밤, 갑자기 마법의 힘을 잃고 지구로 떨어지게 된 루미는 자신이 이제 아무도 도울 수 없다는 절망에 빠졌습니다. 소원을 들어줄 수 없다는 사실에 슬픔에 잠긴 루미는 다시는 밤하늘로 돌아갈 수 없을 거라 생각하며 홀로 외로움을 느끼고 있었습니다.',
-  },
-  {
-    backgroundImage: backgroundImage2,
-    text: '그러던 중, 숲속을 거닐던 용감한 나무 요정 피노가 루미의 곁에 다가왔습니다. 피노는 루미가 슬픔에 빠진 이유를 듣고는 “소원을 들어주는 능력이 아니더라도, 함께라면 다른 방법으로도 생명들을 도울 수 있어,”라며 따뜻하게 격려했습니다. 피노의 말에 힘을 얻은 루미는 다시 희망을 품기 시작했고, 피노와 함께 작은 도움을 주는 모험을 시작하기로 결심했습니다.',
-  },
-  {
-    backgroundImage: backgroundImage3,
-    text: '그 후, 루미와 피노는 길을 잃은 새를 위해 길을 안내하고, 시들어가는 꽃들에게 물을 주어 생명을 불어넣으며 숲속 친구들에게 친절을 베풀었습니다. 그렇게 작은 일들을 하나씩 해나가며 루미는 자신이 마법이 없어도 다른 생명들에게 큰 기쁨과 도움을 줄 수 있다는 사실을 깨닫게 되었습니다.',
-  },
-  { backgroundImage: backgroundImage3, text: '음성인식' },
-];
-
 export default function GamePlay(): JSX.Element {
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [gameStarted, setGameStarted] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [blurLevel, setBlurLevel] = useState<number>(0);
-  const [textBoxVisible, setTextBoxVisible] = useState<boolean>(false);
-  const [textOpacity, setTextOpacity] = useState<number>(0);
-  const [showImageOnly, setShowImageOnly] = useState<boolean>(false);
+  const [pages, setPages] = useState<StoryPage[]>([]); // 스토리 페이지 데이터 상태 관리
+  const [currentPage, setCurrentPage] = useState<number>(0); // 현재 페이지 관리
+  const [gameStarted, setGameStarted] = useState<boolean>(false); // 게임 시작 여부 상태
+  const [showModal, setShowModal] = useState<boolean>(false); // 모달 표시 상태
+  const [blurLevel, setBlurLevel] = useState<number>(0); // 블러 효과 상태
+  const [textBoxVisible, setTextBoxVisible] = useState<boolean>(false); // 텍스트 박스 표시 여부
+  const [textOpacity, setTextOpacity] = useState<number>(0); // 텍스트의 투명도 상태
+  const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기 여부
+  const [userText, setUserText] = useState<string>(''); // 음성 인식 텍스트 상태
 
-  const [userText, setUserText] = useState<string>('');
+  // Supabase에서 이야기 데이터를 가져오는 함수
+  useEffect(() => {
+    const fetchStoryData = async () => {
+      const { data, error } = await supabase
+        .from('story') // 'story' 테이블에서 데이터 조회
+        .select(
+          'story_id, story_title, cover_pic, intro1, intro2, intro3, intro_pic1, intro_pic2, intro_pic3', // 필요한 컬럼 선택
+        )
+        .order('story_id', { ascending: true }); // story_id 순서대로 정렬
 
+      if (error) {
+        console.error('Error fetching story data:', error);
+      } else if (data) {
+        console.log('Story Data:', data); // 데이터 확인
+        setPages(data); // 가져온 데이터를 상태에 저장
+      }
+    };
+
+    fetchStoryData(); // 데이터 가져오기 실행
+  }, []);
+
+  // 음성 인식 결과 처리 함수
   const handleSpeechResult = (transcript: string) => {
     setUserText((prev) => (prev ? prev + ' ' : '') + transcript);
   };
 
-  // "시작하기" 버튼 클릭 시 모달 창 열기
-  const openModal = () => {
-    setShowModal(true);
-  };
-
-  // 모달에서 "시작" 버튼 클릭 시 게임 시작
+  const openModal = () => setShowModal(true); // 모달 열기
   const confirmStart = () => {
     setShowModal(false);
-    setGameStarted(true);
+    setGameStarted(true); // 게임 시작
   };
+  const closeModal = () => setShowModal(false); // 모달 닫기
 
-  // 모달에서 "취소" 버튼 클릭 시 모달 닫기
-  const closeModal = () => {
-    setShowModal(false);
-  };
-
-  // 서서히 블러 효과 적용 후 텍스트 박스를 서서히 표시
+  // 블러 효과 적용 함수
   const applyBlurEffect = () => {
     setBlurLevel(0);
     setTextBoxVisible(false);
@@ -79,7 +81,7 @@ export default function GamePlay(): JSX.Element {
     }, 1000);
   };
 
-  // 텍스트 박스 서서히 나타나게 하기
+  // 텍스트 박스 페이드 인 효과 함수
   const fadeInTextBox = () => {
     const fadeInInterval = setInterval(() => {
       setTextOpacity((prev) => {
@@ -90,36 +92,34 @@ export default function GamePlay(): JSX.Element {
     }, 50);
   };
 
-  // "이미지 보기" 버튼 클릭 처리
-  const toggleImageVisibility = () => {
-    setShowImageOnly((prev) => !prev);
-  };
+  // 이미지 보이기/숨기기 토글 함수
+  const toggleImageVisibility = () => setShowImageOnly((prev) => !prev);
 
-  // 페이지 변경 시 블러 효과 적용
+  // 페이지 전환
   useEffect(() => {
     if (gameStarted) {
-      applyBlurEffect();
+      applyBlurEffect(); // 게임 시작 시 블러 효과 적용
     }
   }, [currentPage, gameStarted]);
 
-  // 페이지 이동
+  // 다음 페이지로 이동
   const nextPage = () => {
     if (currentPage < pages.length - 1) {
-      setShowImageOnly(false); // "이미지 보기" 상태 리셋
+      setShowImageOnly(false);
       setCurrentPage(currentPage + 1);
     }
   };
 
+  // 이전 페이지로 이동
   const prevPage = () => {
     if (currentPage > 0) {
-      setShowImageOnly(false); // "이미지 보기" 상태 리셋
+      setShowImageOnly(false);
       setCurrentPage(currentPage - 1);
     }
   };
 
   return (
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
-      {/* 게임 시작 화면 */}
       {!gameStarted && (
         <div
           className="flex flex-col items-center justify-center h-full bg-cover bg-center"
@@ -135,7 +135,6 @@ export default function GamePlay(): JSX.Element {
         </div>
       )}
 
-      {/* 모달 창 */}
       {showModal && (
         <StartModal
           isOpen={showModal}
@@ -146,22 +145,29 @@ export default function GamePlay(): JSX.Element {
         />
       )}
 
-      {/* 게임 화면 */}
-      {gameStarted && (
+      {gameStarted && pages.length > 0 && (
         <div className="relative w-full h-full">
-          {/* 동화 진행 프로그레스바 */}
           <ProgressBar currentPage={currentPage} totalPages={pages.length} />
 
+          {/* 이미지가 정상적으로 보이도록 수정 */}
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage: `url(${pages[currentPage].backgroundImage})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
-          />
+          >
+            {/* 이미지 로드가 되지 않으면 대체 텍스트와 함께 확인 */}
+            <img
+              src={
+                'https://dlocvyyvttlltaybmexy.supabase.co/storage/v1/object/sign/pic/New_Wish_1.jpg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJwaWMvTmV3X1dpc2hfMS5qcGciLCJpYXQiOjE3MzE5MjcyNjcsImV4cCI6MTc2MzQ2MzI2N30.cZM0jHG0lul-X1f5UpDeru8IuNXeiJlprllR0QvX-Kw&t=2024-11-18T10%3A54%3A27.944Z'
+              }
+              alt="Cover Image"
+              className="w-full h-full object-cover"
+              onError={() => console.log('이미지 로드 오류')}
+            />
+          </div>
 
-          {/* 서서히 블러 효과 */}
           {!showImageOnly && blurLevel > 0 && (
             <div
               className="absolute inset-0 transition-opacity duration-700"
@@ -172,7 +178,6 @@ export default function GamePlay(): JSX.Element {
             />
           )}
 
-          {/* 텍스트 박스 (서서히 나타나기) */}
           {textBoxVisible && !showImageOnly && (
             <div
               className="absolute inset-x-0 bottom-0 flex justify-center mb-10"
@@ -187,48 +192,35 @@ export default function GamePlay(): JSX.Element {
                 />
                 <div className="absolute inset-0 flex items-center justify-center p-8">
                   <p className="text-black text-2xl font-bold text-center break-words leading-relaxed">
-                    {pages[currentPage].text}
+                    {pages[currentPage]?.intro1}
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          {/*
-  4, 5, 6 페이지에서만 StoryInputBox를 표시
-*/}
           {gameStarted && currentPage >= 3 && textBoxVisible && (
             <div className="absolute inset-x-0 bottom-5 flex items-center justify-center">
-              <div className="w-full h-35 max-w-4xl p-3 bg-white rounded-lg shadow-lg">
-                <div className="flex justify-between items-center">
-                  {/* 음성 인식 버튼 (왼쪽으로 이동) */}
-                  <SpeechRecognition
-                    language="ko-KR"
-                    onResult={handleSpeechResult}
-                  />
-                  {/* 텍스트 입력창 */}
-                  <textarea
-                    value={userText}
-                    onChange={(e) => setUserText(e.target.value)}
-                    className="w-full p-4 border-2 border-gray-300 rounded-lg text-black ml-4"
-                    placeholder="버튼을 누르고 이야기를 말해보세요."
-                  />
-                </div>
-              </div>
+              <SpeechRecognition
+                language="ko-KR"
+                onResult={handleSpeechResult}
+              />
+              <textarea
+                value={userText}
+                onChange={(e) => setUserText(e.target.value)}
+                className="w-full p-4 border-2 border-gray-300 rounded-lg text-black ml-4"
+                placeholder="버튼을 누르고 이야기를 말해보세요."
+              />
             </div>
           )}
 
-          {/* 이미지 보기 버튼 */}
-          {textBoxVisible && (
-            <button
-              onClick={toggleImageVisibility}
-              className="absolute top-4 right-4 p-2 bg-blue-600 text-white font-bold rounded-full z-10"
-            >
-              {showImageOnly ? '글 보기' : '이미지 보기'}
-            </button>
-          )}
+          <button
+            onClick={toggleImageVisibility}
+            className="absolute top-4 right-4 p-2 bg-blue-600 text-white font-bold rounded-full z-10"
+          >
+            {showImageOnly ? '글 보기' : '이미지 보기'}
+          </button>
 
-          {/* 페이지 전환 버튼 */}
           <div className="absolute bottom-4 left-0 right-0 flex justify-between px-4">
             <button
               onClick={prevPage}
