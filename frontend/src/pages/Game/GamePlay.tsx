@@ -6,6 +6,8 @@ import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
 import back from './동화배경5.png';
 
+import { generateStoryContinuation } from '../../services/StoryService';
+
 interface StoryPage {
   story_id: number;
   story_title: string;
@@ -25,6 +27,7 @@ export default function GamePlay(): JSX.Element {
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기 여부
   const [userText, setUserText] = useState<string>(''); // 음성 인식 텍스트 상태
   const [gptText, setGptText] = useState<string>(''); // GPT로부터 받은 텍스트
+  const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화 상태
 
   // Supabase에서 이야기 데이터를 가져오는 함수
   useEffect(() => {
@@ -47,19 +50,23 @@ export default function GamePlay(): JSX.Element {
   // 음성 인식 결과 처리 함수
   const handleSpeechResult = (transcript: string) => {
     setUserText((prev) => (prev ? prev + ' ' : '') + transcript);
-
-    if (currentPage >= 4) {
-      fetchGptResult(userText + ' ' + transcript);
-    }
   };
 
-  const fetchGptResult = async (text: string) => {
+  const fetchGptResult = async () => {
+    if (!userText.trim()) {
+      console.warn('No input provided for GPT.');
+      return;
+    }
+
+    setGptButtonDisabled(true); // GPT 버튼 비활성화
     try {
-      const response = await generateStoryContinuation(text);
+      const response = await generateStoryContinuation(userText);
       const continuation = response.continuation;
-      setGptText(continuation);
+      setGptText((prev) => prev + ' ' + continuation); // GPT 결과 추가
     } catch (error) {
       console.error('Error fetching GPT result:', error);
+    } finally {
+      setGptButtonDisabled(false); // GPT 버튼 활성화
     }
   };
 
@@ -198,7 +205,7 @@ export default function GamePlay(): JSX.Element {
 
           {/* 음성 인식 및 프롬프터 */}
           {currentPage >= 4 && (
-            <div className="absolute inset-x-0 bottom-5 flex items-center justify-center">
+            <div className="absolute inset-x-0 bottom-5 flex items-center justify-center gap-4">
               <SpeechRecognition
                 language="ko-KR"
                 onResult={handleSpeechResult}
@@ -209,6 +216,17 @@ export default function GamePlay(): JSX.Element {
                 className="w-3/5 p-4 border-2 border-gray-300 rounded-lg text-black"
                 placeholder="버튼을 눌러 이야기를 말해보세요."
               />
+              <button
+                onClick={fetchGptResult}
+                disabled={gptButtonDisabled}
+                className={`p-4 rounded-full ${
+                  gptButtonDisabled
+                    ? 'bg-gray-500 text-white'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                {gptButtonDisabled ? 'GPT 처리 중...' : 'GPT로 보내기'}
+              </button>
             </div>
           )}
 
