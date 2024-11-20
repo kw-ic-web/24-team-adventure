@@ -18,7 +18,9 @@ router.get(
     try {
       const { data, error } = await supabase
         .from("comment")
-        .select("comment_id, user_id, comm_content, created_at")
+        .select(
+          "comment_id, comm_content, created_at, user_id, user(name)" // user 테이블의 name 필드를 포함
+        )
         .eq("geul_id", geul_id)
         .order("created_at", { ascending: true });
 
@@ -30,12 +32,7 @@ router.get(
         return;
       }
 
-      if (!data || data.length === 0) {
-        res.status(404).json({ error: "댓글이 없습니다." });
-        return;
-      }
-
-      res.json(data);
+      res.json(data || []);
     } catch (err) {
       console.error("Unexpected error:", err);
       res
@@ -73,16 +70,10 @@ router.post(
             comm_content,
           },
         ])
-        .select("comment_id, user_id, comm_content, created_at");
+        .select("comment_id, comm_content, created_at, user_id, user(name)"); // user 테이블의 name 필드 포함
 
       if (error) {
         console.error("Error adding comment:", error.message);
-        res.status(500).json({ error: "댓글 추가에 실패했습니다." });
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        console.error("No data returned after inserting comment.");
         res.status(500).json({ error: "댓글 추가에 실패했습니다." });
         return;
       }
@@ -114,7 +105,7 @@ router.delete(
         .from("comment")
         .delete()
         .eq("comment_id", parseInt(comment_id))
-        .select("comment_id, user_id, comm_content, created_at");
+        .select("comment_id, comm_content, created_at, user_id, user(name)"); // user 테이블의 name 필드 포함
 
       if (error) {
         console.error("Error deleting comment:", error.message);
