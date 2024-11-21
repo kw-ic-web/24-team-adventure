@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import supabase from '../Game/supabaseClient';
 
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';

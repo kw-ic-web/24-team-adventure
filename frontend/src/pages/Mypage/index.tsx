@@ -2,53 +2,20 @@
 import { useNavigate } from 'react-router-dom';
 import homeBtnImg from '../../assets/images/homeBtn.png';
 import PostCard from '../../components/myPage/PostCard';
+import { useGeulData } from '../../hooks/mypage/useGeulData';
 
-export default function Mypage() {
+interface MypageProps {
+  user_id: string;
+}
+
+export default function Mypage({ user_id }: MypageProps) {
   const navigate = useNavigate();
 
-  // 임시 데이터
-  const posts = [
-    {
-      imageUrl: 'https://via.placeholder.com/150',
-      title: '게시물 제목 1',
-      description: '게시판 설명 예시 텍스트 1',
-    },
-    {
-      imageUrl: 'https://via.placeholder.com/150',
-      title: '게시물 제목 2',
-      description: '게시판 설명 예시 텍스트 2',
-    },
-    {
-      imageUrl: 'https://via.placeholder.com/150',
-      title: '게시물 제목 3',
-      description: '게시판 설명 예시 텍스트 3',
-    },
-    {
-      imageUrl: 'https://via.placeholder.com/150',
-      title: '게시물 제목 4',
-      description: '게시판 설명 예시 텍스트 4',
-    },
-    {
-      imageUrl: 'https://via.placeholder.com/150',
-      title: '게시물 제목 5',
-      description: '게시판 설명 예시 텍스트 5',
-    },
-    {
-      imageUrl: 'https://via.placeholder.com/150',
-      title: '게시물 제목 6',
-      description: '게시판 설명 예시 텍스트 6',
-    },
-    {
-      imageUrl: 'https://via.placeholder.com/150',
-      title: '게시물 제목 7',
-      description: '게시판 설명 예시 텍스트 7',
-    },
-    {
-      imageUrl: 'https://via.placeholder.com/150',
-      title: '게시물 제목 8',
-      description: '게시판 설명 예시 텍스트 8',
-    },
-  ];
+  // React Query로 geul 데이터를 가져옴
+  const { userGeul, isLoading, isError } = useGeulData(user_id);
+
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>오류 발생</div>;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-600 to-emerald-700">
@@ -57,12 +24,12 @@ export default function Mypage() {
         {/* Left Side: 게시물 리스트 */}
         <div className="flex-1 overflow-y-auto pr-4">
           <div className="grid grid-cols-2 gap-4">
-            {posts.map((post, index) => (
+            {userGeul.map((post: any) => (
               <PostCard
-                key={index}
-                imageUrl={post.imageUrl}
-                title={post.title}
-                description={post.description}
+                key={post.id}
+                imageUrl={post.final_pic}
+                title={post.geul_title}
+                description={post.geul_content}
               />
             ))}
           </div>

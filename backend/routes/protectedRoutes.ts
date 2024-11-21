@@ -1,4 +1,5 @@
 // src/routes/protectedRoutes.ts
+// 일단 넣은 코드
 import express, { Request, Response } from "express";
 import authenticateJWT from "../middleware/authenticateJWT";
 import { User } from "../models/userModel";

@@ -1,3 +1,4 @@
+//일단 넣은 코드
 import { Request, Response, NextFunction } from "express";
 const jwt = require("jsonwebtoken");
 import { JWT_SECRET } from "../config/keys";
