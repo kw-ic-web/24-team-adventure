@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import supabase from '../Game/supabaseClient';
 
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
@@ -48,23 +47,20 @@ export default function GamePlay(): JSX.Element {
   // 이야기 데이터를 가져오는 함수
   useEffect(() => {
     const fetchStoryData = async () => {
-      const { data, error } = await supabase
-        .from('story')
-        .select('story_id, story_title, cover_pic, intro1, intro2, intro3')
-        .order('story_id', { ascending: true });
+      setIsLoading(true); // 로딩 시작
+      try {
+        const response = await fetch('http://localhost:3000/game/stories'); // 백엔드 API 호출
+        const result = await response.json();
 
-      if (error) {
-        console.error('Error fetching story data:', error);
-      } else if (data) {
-        setPages(data);
-        setPageTexts([
-          data[1]?.intro1 || '',
-          data[2]?.intro2 || '',
-          data[3]?.intro3 || '',
-          '', // 4페이지는 사용자 입력으로 채움
-          '', // 5페이지
-          '', // 6페이지
-        ]);
+        if (result.success) {
+          setPages(result.data); // 데이터를 상태에 저장
+        } else {
+          console.error('Failed to fetch stories:', result.message);
+        }
+      } catch (error) {
+        console.error('Error fetching stories:', error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
       }
     };
 
