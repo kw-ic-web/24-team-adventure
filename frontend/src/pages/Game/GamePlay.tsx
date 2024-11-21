@@ -18,25 +18,34 @@ interface StoryPage {
 }
 
 export default function GamePlay(): JSX.Element {
-  const [pages, setPages] = useState<StoryPage[]>([]); // 스토리 페이지 데이터 상태 관리
-  const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지 관리 (1부터 시작)
-  const [gameStarted, setGameStarted] = useState<boolean>(false); // 게임 시작 여부 상태
+  const [pages, setPages] = useState<StoryPage[]>([]); // 스토리 페이지 데이터 상태
+  const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
+  const [gameStarted, setGameStarted] = useState<boolean>(false); // 게임 시작 여부
   const [showModal, setShowModal] = useState<boolean>(false); // 모달 표시 상태
-  const [blurLevel, setBlurLevel] = useState<number>(0); // 블러 효과 상태 (사진에만 적용)
-  const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 글 배경 및 텍스트의 투명도
-  const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기 여부
+  const [blurLevel, setBlurLevel] = useState<number>(0); // 블러 효과
+  const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 텍스트 투명도
+  const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기
 
   // 각 페이지별 상태
-  const [page4Text, setPage4Text] = useState<string>(''); // 4페이지 음성 인식 텍스트
-  const [page4GptText, setPage4GptText] = useState<string>(''); // 4페이지 GPT 결과
-  const [page5Text, setPage5Text] = useState<string>(''); // 5페이지 음성 인식 텍스트
-  const [page5GptText, setPage5GptText] = useState<string>(''); // 5페이지 GPT 결과
-  const [page6Text, setPage6Text] = useState<string>(''); // 6페이지 음성 인식 텍스트
-  const [page6GptText, setPage6GptText] = useState<string>(''); // 6페이지 GPT 결과
+  const [pageTexts, setPageTexts] = useState<string[]>([
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ]); // 각 페이지의 최종 텍스트
+  const [promptTexts, setPromptTexts] = useState<string[]>([
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ]); // 각 페이지의 프롬프터 상태
+  const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화
 
-  const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화 상태
-
-  // Supabase에서 이야기 데이터를 가져오는 함수
+  // 이야기 데이터를 가져오는 함수
   useEffect(() => {
     const fetchStoryData = async () => {
       const { data, error } = await supabase
@@ -47,72 +56,104 @@ export default function GamePlay(): JSX.Element {
       if (error) {
         console.error('Error fetching story data:', error);
       } else if (data) {
-        setPages(data); // 가져온 데이터를 상태에 저장
+        setPages(data); // 데이터 저장
+        setPageTexts([
+          data[1]?.intro1 || '',
+          data[2]?.intro2 || '',
+          data[3]?.intro3 || '',
+          '', // 4페이지는 사용자 입력으로 채움
+          '', // 5페이지
+          '', // 6페이지
+        ]);
       }
     };
 
     fetchStoryData();
   }, []);
 
+  // 음성 인식 결과 처리
   const handleSpeechResult = (transcript: string) => {
-    if (currentPage === 4) {
-      setPage4Text((prev) => (prev ? prev + ' ' : '') + transcript);
-    } else if (currentPage === 5) {
-      setPage5Text((prev) => (prev ? prev + ' ' : '') + transcript);
-    } else if (currentPage === 6) {
-      setPage6Text((prev) => (prev ? prev + ' ' : '') + transcript);
-    }
+    setPromptTexts((prev) => {
+      const updatedPrompts = [...prev];
+      updatedPrompts[currentPage] = transcript;
+      return updatedPrompts;
+    });
+    setPageTexts((prev) => {
+      const updatedTexts = [...prev];
+      updatedTexts[currentPage] =
+        (updatedTexts[currentPage] || '') + ' ' + transcript;
+      return updatedTexts;
+    });
   };
 
+  // GPT 결과 처리
   const fetchGptResult = async () => {
-    setGptButtonDisabled(true); // GPT 버튼 비활성화
+    setGptButtonDisabled(true);
     try {
-      let gptResponse = '';
-      if (currentPage === 4) {
-        const response = await generateStoryContinuation(page4Text);
-        gptResponse = response.continuation;
-        setPage4GptText(gptResponse);
-      } else if (currentPage === 5) {
-        const response = await generateStoryContinuation(page5Text);
-        gptResponse = response.continuation;
-        setPage5GptText(gptResponse);
-      } else if (currentPage === 6) {
-        const response = await generateStoryContinuation(page6Text);
-        gptResponse = response.continuation;
-        setPage6GptText(gptResponse);
-      }
+      const response = await generateStoryContinuation(
+        promptTexts[currentPage],
+      );
+      const gptResponse = response.continuation;
+
+      setPageTexts((prev) => {
+        const updatedTexts = [...prev];
+        updatedTexts[currentPage] =
+          (updatedTexts[currentPage] || '') + ' ' + gptResponse;
+        return updatedTexts;
+      });
     } catch (error) {
-      console.error('Error fetching GPT result:', error);
+      console.error(
+        `Error fetching GPT result for page ${currentPage}:`,
+        error,
+      );
     } finally {
-      setGptButtonDisabled(false); // GPT 버튼 활성화
+      setGptButtonDisabled(false);
     }
   };
 
-  const openModal = () => setShowModal(true); // 모달 열기
+  // 페이지 전환 시 프롬프터 초기화
+  const nextPage = () => {
+    if (currentPage < pages.length + 2) {
+      setCurrentPage((prev) => prev + 1);
+      setPromptTexts((prev) => {
+        const updatedPrompts = [...prev];
+        updatedPrompts[currentPage + 1] = ''; // 다음 페이지 프롬프터 초기화
+        return updatedPrompts;
+      });
+      setShowImageOnly(false);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+      setShowImageOnly(false);
+    }
+  };
+
+  const openModal = () => setShowModal(true);
   const confirmStart = () => {
     setShowModal(false);
-    setGameStarted(true); // 게임 시작
+    setGameStarted(true);
   };
-  const closeModal = () => setShowModal(false); // 모달 닫기
+  const closeModal = () => setShowModal(false);
 
   const applyEffects = () => {
-    // 사진 블러 효과
     setBlurLevel(0);
-    setTextBoxOpacity(0); // 글 배경 및 텍스트는 투명도 0부터 시작
+    setTextBoxOpacity(0);
 
     setTimeout(() => {
       const blurInterval = setInterval(() => {
         setBlurLevel((prev) => {
-          if (prev < 70) return prev + 1; // 블러 효과 증가
+          if (prev < 70) return prev + 1;
           clearInterval(blurInterval);
           return prev;
         });
       }, 30);
 
-      // 글 배경 및 텍스트 페이드 인 효과
       const textFadeInterval = setInterval(() => {
         setTextBoxOpacity((prev) => {
-          if (prev < 1) return prev + 0.05; // 글 배경 및 텍스트 투명도 증가
+          if (prev < 1) return prev + 0.05;
           clearInterval(textFadeInterval);
           return prev;
         });
@@ -125,22 +166,6 @@ export default function GamePlay(): JSX.Element {
       applyEffects();
     }
   }, [currentPage, gameStarted]);
-
-  const nextPage = () => {
-    if (currentPage < pages.length + 2) {
-      setShowImageOnly(false);
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setShowImageOnly(false);
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const toggleImageVisibility = () => setShowImageOnly((prev) => !prev);
 
   return (
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
@@ -182,7 +207,7 @@ export default function GamePlay(): JSX.Element {
             style={{
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              filter: `blur(${blurLevel}px)`, // 블러 효과 적용
+              filter: `blur(${blurLevel}px)`,
             }}
           >
             <img
@@ -192,7 +217,7 @@ export default function GamePlay(): JSX.Element {
             />
           </div>
 
-          {/* 글자 배경 및 텍스트 */}
+          {/* 텍스트 영역 */}
           {!showImageOnly && (
             <div
               className="absolute inset-x-0 bottom-0 flex justify-center mb-10"
@@ -210,20 +235,14 @@ export default function GamePlay(): JSX.Element {
                 />
                 <div className="absolute inset-0 flex items-center justify-center p-8">
                   <p className="text-black text-2xl font-bold text-center break-words leading-relaxed">
-                    {currentPage <= 3
-                      ? pages[currentPage - 1]?.intro1
-                      : currentPage === 4
-                        ? page4Text || page4GptText
-                        : currentPage === 5
-                          ? page5Text || page5GptText
-                          : page6Text || page6GptText}
+                    {pageTexts[currentPage]}
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* 음성 인식 및 프롬프터 */}
+          {/* 음성 인식 및 GPT */}
           {currentPage >= 4 && (
             <div className="absolute inset-x-0 bottom-5 flex items-center justify-center gap-4">
               <SpeechRecognition
@@ -231,20 +250,12 @@ export default function GamePlay(): JSX.Element {
                 onResult={handleSpeechResult}
               />
               <textarea
-                value={
-                  currentPage === 4
-                    ? page4Text
-                    : currentPage === 5
-                      ? page5Text
-                      : page6Text
-                }
-                onChange={(e) =>
-                  currentPage === 4
-                    ? setPage4Text(e.target.value)
-                    : currentPage === 5
-                      ? setPage5Text(e.target.value)
-                      : setPage6Text(e.target.value)
-                }
+                value={promptTexts[currentPage]}
+                onChange={(e) => {
+                  const newPromptTexts = [...promptTexts];
+                  newPromptTexts[currentPage] = e.target.value;
+                  setPromptTexts(newPromptTexts);
+                }}
                 className="w-3/5 p-4 border-2 border-gray-300 rounded-lg text-black"
                 placeholder="버튼을 눌러 이야기를 말해보세요."
               />
@@ -264,7 +275,7 @@ export default function GamePlay(): JSX.Element {
 
           {/* 전환 버튼 */}
           <button
-            onClick={toggleImageVisibility}
+            onClick={() => setShowImageOnly((prev) => !prev)}
             className="absolute top-4 right-4 p-4 bg-blue-600 text-white rounded-full z-10"
           >
             {showImageOnly ? '글 보기' : '이미지 보기'}
