@@ -49,7 +49,7 @@ export default function GamePlay(): JSX.Element {
     const fetchStoryData = async () => {
       setIsLoading(true); // 로딩 시작
       try {
-        const response = await fetch('http://localhost:3000/game/stories'); // 백엔드 API 호출
+        const response = await fetch('http://localhost:3000/stories'); // 백엔드 API 호출
         const result = await response.json();
 
         if (result.success) {
