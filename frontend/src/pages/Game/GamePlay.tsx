@@ -255,13 +255,26 @@ export default function GamePlay(): JSX.Element {
               <textarea
                 value={promptTexts[currentPage]}
                 onChange={(e) => {
-                  const newPromptTexts = [...promptTexts];
-                  newPromptTexts[currentPage] = e.target.value;
-                  setPromptTexts(newPromptTexts);
+                  const updatedPrompt = e.target.value;
+
+                  // 프롬프터 업데이트
+                  setPromptTexts((prev) => {
+                    const updatedPrompts = [...prev];
+                    updatedPrompts[currentPage] = updatedPrompt;
+                    return updatedPrompts;
+                  });
+
+                  // 최종 텍스트 업데이트
+                  setPageTexts((prev) => {
+                    const updatedTexts = [...prev];
+                    updatedTexts[currentPage] = updatedPrompt; // 프롬프터 내용으로 동기화
+                    return updatedTexts;
+                  });
                 }}
                 className="w-3/5 p-4 border-2 border-gray-300 rounded-lg text-black"
                 placeholder="버튼을 눌러 이야기를 말해보세요."
               />
+
               <button
                 onClick={fetchGptResult}
                 disabled={gptButtonDisabled}
