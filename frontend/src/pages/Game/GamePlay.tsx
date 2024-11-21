@@ -98,7 +98,7 @@ export default function GamePlay(): JSX.Element {
       setPageTexts((prev) => {
         const updatedTexts = [...prev];
         updatedTexts[currentPage] =
-          (updatedTexts[currentPage] || '') + ' ' + gptResponse;
+          (updatedTexts[currentPage] || '') + '\n' + gptResponse; // 줄바꿈 추가
         return updatedTexts;
       });
     } catch (error) {
@@ -234,7 +234,10 @@ export default function GamePlay(): JSX.Element {
                   style={{ opacity: 0.9 }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <p className="text-black text-2xl font-bold text-center break-words leading-relaxed">
+                  <p
+                    className="text-black text-2xl font-bold text-center break-words leading-relaxed"
+                    style={{ whiteSpace: 'pre-line' }} // 줄바꿈 처리
+                  >
                     {pageTexts[currentPage]}
                   </p>
                 </div>
