@@ -26,7 +26,6 @@ export default function GamePlay(): JSX.Element {
   const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 텍스트 투명도
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기
 
-  // 각 페이지별 상태
   const [pageTexts, setPageTexts] = useState<string[]>([
     '',
     '',
@@ -44,6 +43,7 @@ export default function GamePlay(): JSX.Element {
     '',
   ]); // 각 페이지의 프롬프터 상태
   const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태
 
   // 이야기 데이터를 가져오는 함수
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function GamePlay(): JSX.Element {
       if (error) {
         console.error('Error fetching story data:', error);
       } else if (data) {
-        setPages(data); // 데이터 저장
+        setPages(data);
         setPageTexts([
           data[1]?.intro1 || '',
           data[2]?.intro2 || '',
@@ -89,6 +89,7 @@ export default function GamePlay(): JSX.Element {
   // GPT 결과 처리
   const fetchGptResult = async () => {
     setGptButtonDisabled(true);
+    setIsLoading(true); // 로딩 시작
     try {
       const response = await generateStoryContinuation(
         promptTexts[currentPage],
@@ -108,6 +109,7 @@ export default function GamePlay(): JSX.Element {
       );
     } finally {
       setGptButtonDisabled(false);
+      setIsLoading(false); // 로딩 종료
     }
   };
 
@@ -194,6 +196,15 @@ export default function GamePlay(): JSX.Element {
         />
       )}
 
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-white">GPT로 처리 중...</p>
+          </div>
+        </div>
+      )}
+
       {gameStarted && pages.length > 0 && (
         <div className="relative w-full h-full">
           <ProgressBar
@@ -257,24 +268,21 @@ export default function GamePlay(): JSX.Element {
                 onChange={(e) => {
                   const updatedPrompt = e.target.value;
 
-                  // 프롬프터 업데이트
                   setPromptTexts((prev) => {
                     const updatedPrompts = [...prev];
                     updatedPrompts[currentPage] = updatedPrompt;
                     return updatedPrompts;
                   });
 
-                  // 최종 텍스트 업데이트
                   setPageTexts((prev) => {
                     const updatedTexts = [...prev];
-                    updatedTexts[currentPage] = updatedPrompt; // 프롬프터 내용으로 동기화
+                    updatedTexts[currentPage] = updatedPrompt;
                     return updatedTexts;
                   });
                 }}
                 className="w-3/5 p-4 border-2 border-gray-300 rounded-lg text-black"
                 placeholder="버튼을 눌러 이야기를 말해보세요."
               />
-
               <button
                 onClick={fetchGptResult}
                 disabled={gptButtonDisabled}
