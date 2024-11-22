@@ -191,7 +191,9 @@ export default function GamePlay(): JSX.Element {
           className="flex flex-col items-center justify-center h-full bg-cover bg-center"
           style={{ backgroundImage: 'url(/images/start-image.jpg)' }}
         >
-          <h1 className="text-4xl font-bold mb-4">동화 제목</h1>
+          <h1 className="text-4xl font-bold mb-4">
+            {pages[0]?.story_title || '동화 제목'}
+          </h1>
           <button
             onClick={openModal}
             className="p-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full"
