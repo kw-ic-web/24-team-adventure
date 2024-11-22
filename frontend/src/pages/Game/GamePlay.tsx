@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { useParams } from 'react-router-dom';
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
@@ -17,6 +17,7 @@ interface StoryPage {
 }
 
 export default function GamePlay(): JSX.Element {
+  const { story_id } = useParams<{ story_id: string }>(); // URL에서 story_id 추출
   const [pages, setPages] = useState<StoryPage[]>([]); // 스토리 페이지 데이터 상태
   const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
   const [gameStarted, setGameStarted] = useState<boolean>(false); // 게임 시작 여부
@@ -49,13 +50,36 @@ export default function GamePlay(): JSX.Element {
     const fetchStoryData = async () => {
       setIsLoading(true); // 로딩 시작
       try {
-        const response = await fetch('http://localhost:3000/stories'); // 백엔드 API 호출
+        const response = await fetch(
+          `http://localhost:3000/gameplay/${story_id}`,
+        ); // API 호출 수정
         const result = await response.json();
 
-        if (result.success) {
-          setPages(result.data); // 데이터를 상태에 저장
+        if (result && result.length > 0) {
+          const storyData = result[0];
+          setPages([
+            {
+              story_id: storyData.story_id,
+              story_title: storyData.story_title,
+              cover_pic: storyData.cover_pic,
+              intro1: storyData.intro1,
+              intro2: storyData.intro2,
+              intro3: storyData.intro3,
+            },
+          ]);
+
+          // 초기 페이지 데이터 설정
+          setPageTexts([
+            storyData.intro1 || '',
+            storyData.intro2 || '',
+            storyData.intro3 || '',
+            '', // 4~6 페이지는 빈값으로 초기화
+            '',
+            '',
+          ]);
+          setCurrentPage(1); // 초기 페이지 설정
         } else {
-          console.error('Failed to fetch stories:', result.message);
+          console.error('No story data found.');
         }
       } catch (error) {
         console.error('Error fetching stories:', error);
@@ -65,37 +89,36 @@ export default function GamePlay(): JSX.Element {
     };
 
     fetchStoryData();
-  }, []);
+  }, [story_id]);
 
-  // 음성 인식 결과 처리
+  // GPT와 음성 인식을 포함한 페이지 데이터 관리
   const handleSpeechResult = (transcript: string) => {
     setPromptTexts((prev) => {
       const updatedPrompts = [...prev];
-      updatedPrompts[currentPage] = transcript;
+      updatedPrompts[currentPage - 1] = transcript;
       return updatedPrompts;
     });
     setPageTexts((prev) => {
       const updatedTexts = [...prev];
-      updatedTexts[currentPage] =
-        (updatedTexts[currentPage] || '') + ' ' + transcript;
+      updatedTexts[currentPage - 1] =
+        (updatedTexts[currentPage - 1] || '') + ' ' + transcript;
       return updatedTexts;
     });
   };
 
-  // GPT 결과 처리
   const fetchGptResult = async () => {
     setGptButtonDisabled(true);
     setIsLoading(true); // 로딩 시작
     try {
       const response = await generateStoryContinuation(
-        promptTexts[currentPage],
+        promptTexts[currentPage - 1],
       );
       const gptResponse = response.continuation;
 
       setPageTexts((prev) => {
         const updatedTexts = [...prev];
-        updatedTexts[currentPage] =
-          (updatedTexts[currentPage] || '') + '\n' + gptResponse; // 줄바꿈 추가
+        updatedTexts[currentPage - 1] =
+          (updatedTexts[currentPage - 1] || '') + '\n' + gptResponse; // 줄바꿈 추가
         return updatedTexts;
       });
     } catch (error) {
@@ -109,25 +132,21 @@ export default function GamePlay(): JSX.Element {
     }
   };
 
-  // 페이지 전환 시 프롬프터 초기화
-  const nextPage = () => {
-    if (currentPage < pages.length + 2) {
-      setCurrentPage((prev) => prev + 1);
-      setPromptTexts((prev) => {
-        const updatedPrompts = [...prev];
-        updatedPrompts[currentPage + 1] = ''; // 다음 페이지 프롬프터 초기화
-        return updatedPrompts;
-      });
-      setShowImageOnly(false);
-    }
+  const changePage = (direction: 'next' | 'prev') => {
+    setShowImageOnly(false);
+
+    setCurrentPage((prev) => {
+      if (direction === 'next' && prev < 6) {
+        return prev + 1;
+      } else if (direction === 'prev' && prev > 1) {
+        return prev - 1;
+      }
+      return prev;
+    });
   };
 
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-      setShowImageOnly(false);
-    }
-  };
+  const nextPage = () => changePage('next');
+  const prevPage = () => changePage('prev');
 
   const openModal = () => setShowModal(true);
   const confirmStart = () => {
@@ -205,7 +224,7 @@ export default function GamePlay(): JSX.Element {
         <div className="relative w-full h-full">
           <ProgressBar
             currentPage={currentPage - 1}
-            totalPages={pages.length + 2}
+            totalPages={6} // 전체 페이지 6개
           />
 
           {/* 이미지 영역 */}
@@ -245,7 +264,7 @@ export default function GamePlay(): JSX.Element {
                     className="text-black text-2xl font-bold text-center break-words leading-relaxed"
                     style={{ whiteSpace: 'pre-line' }} // 줄바꿈 처리
                   >
-                    {pageTexts[currentPage]}
+                    {pageTexts[currentPage - 1]}
                   </p>
                 </div>
               </div>
@@ -260,19 +279,19 @@ export default function GamePlay(): JSX.Element {
                 onResult={handleSpeechResult}
               />
               <textarea
-                value={promptTexts[currentPage]}
+                value={promptTexts[currentPage - 1]}
                 onChange={(e) => {
                   const updatedPrompt = e.target.value;
 
                   setPromptTexts((prev) => {
                     const updatedPrompts = [...prev];
-                    updatedPrompts[currentPage] = updatedPrompt;
+                    updatedPrompts[currentPage - 1] = updatedPrompt;
                     return updatedPrompts;
                   });
 
                   setPageTexts((prev) => {
                     const updatedTexts = [...prev];
-                    updatedTexts[currentPage] = updatedPrompt;
+                    updatedTexts[currentPage - 1] = updatedPrompt;
                     return updatedTexts;
                   });
                 }}
