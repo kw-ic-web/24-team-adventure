@@ -7,7 +7,8 @@ import boardRoutes from "./routes/boardRoutes";
 import listRoutes from "./routes/listRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import authRoutes from "./routes/authRoutes";
-
+import mypageRoutes from "./routes/mypageRoutes";
+import protectedRoutes from "./routes/protectedRoutes";
 dotenv.config();
 
 const app = express();
@@ -34,6 +35,8 @@ app.use(boardRoutes);
 app.use(listRoutes);
 app.use(commentRoutes);
 app.use(authRoutes);
+app.use(mypageRoutes);
+app.use(protectedRoutes);
 
 // 서버 시작
 const PORT = process.env.PORT || 3000;

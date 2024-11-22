@@ -13,7 +13,8 @@ function App() {
         <div className="App font-mono h-screen">
           <Router />
         </div>
-        <ToastContainer />
+        {/* 진행 표시줄을 숨김 */}
+        <ToastContainer hideProgressBar={true} />
       </GoogleOAuthProvider>
     </QueryClientProvider>
   );

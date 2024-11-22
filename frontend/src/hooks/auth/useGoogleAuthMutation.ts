@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { authenticateWithGoogle } from '../apis/googleAuth';
+import { authenticateWithGoogle } from '../../apis/googleAuth';
 import { useNavigate } from 'react-router-dom';
 // Google OAuth2 인증을 위한 Mutation 훅
 const useGoogleAuthMutation = () => {
