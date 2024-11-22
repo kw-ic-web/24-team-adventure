@@ -2,6 +2,25 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './StoryGrid.css';
+import Background from '../../components/ui/Background';
+import SmallBox from '../../components/ui/SmallBox';
+import Profile from '../../components/ui/Profile';
+import UserList from '../../components/ui/Userlist';
+import HomeBtn from '../../components/ui/HomeBtn';
+import HeaderLogo from '../../components/ui/HeaderLogo';
+
+
+//db연결 전 **임시** 사용자 정보 
+interface User {
+  id: number;
+  name: string;
+  online: boolean;
+}
+const users: User[] = [
+  { id: 1, name: 'user1', online: true },
+  { id: 2, name: 'user2', online: false },
+  // 추가 사용자 데이터...
+];
 
 // 스토리 데이터 타입 정의
 interface Story {
@@ -67,7 +86,10 @@ const StoryGrid: React.FC = () => {
     : posts;
 
   return (
-    <div className="story-grid-container">
+
+    <div ><Background />
+    <div><HeaderLogo/></div>
+    <SmallBox>
       {/* 스토리 제목 */}
       <h1 className="story-grid-title">Story Board</h1>
 
@@ -126,6 +148,15 @@ const StoryGrid: React.FC = () => {
           </Link>
         ))}
       </div>
+      </SmallBox>
+      <div>
+          <Profile />
+        </div>
+        {/* Userlist Box */}
+        <div>
+          <UserList users={users} />
+        </div>
+        <div><HomeBtn/></div>
     </div>
   );
 };

@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './GameSelect.css';
+import { useNavigate } from 'react-router-dom';
 import LanguageToggle from '../../components/game/LanguageToggle.tsx';
 import GameSelectCard from '../../components/game/GameSelectCard.tsx';
+
 import { toggleLanguage, Language } from '../../utils/game/languageUtils.ts';
+import Background from '../../components/ui/Background';
+import BigBox from '../../components/ui/BigBox.tsx';
+import HomeBtnforBigbox from '../../components/ui/HomeBtnforBigbox';
+import HeaderLogo from '../../components/ui/HeaderLogo';
+
 
 // 스토리 데이터 타입 정의
 interface Story {
@@ -13,6 +20,7 @@ interface Story {
 }
 
 const GameSelect: React.FC = () => {
+  const navigate = useNavigate();
   const [language, setLanguage] = useState<Language>('ko'); // 언어 상태 관리
   const [stories, setStories] = useState<Story[]>([]); // 서버에서 가져온 스토리 데이터를 저장하는 상태
 
@@ -28,11 +36,12 @@ const GameSelect: React.FC = () => {
 
   // 나가기 버튼 클릭 핸들러
   const handleExit = () => {
-    console.log('Exiting...');
+    navigate('/home');
   };
 
   // 스토리 데이터를 서버에서 가져오는 함수
   useEffect(() => {
+    
     const fetchStories = async () => {
       try {
         const response = await axios.get('http://localhost:3000/stories'); // API 호출
@@ -51,13 +60,15 @@ const GameSelect: React.FC = () => {
   }, []); // 컴포넌트 마운트 시 한 번 실행
 
   return (
-    <div className="game-select-container">
+    <div>
+      <Background />
+      <div><HeaderLogo/></div>
+      <BigBox>
+    <div className="game-select-container" style={{ marginTop: '-30px' }}>
       <div className="game-select-header">
         <LanguageToggle language={language} onToggle={handleToggleLanguage} />
         <h1 className="game-select-title">동화 선택</h1>
-        <button className="exit-button" onClick={handleExit}>
-          나가기
-        </button>
+        
       </div>
       <div className="container">
         {stories.map((story) => (
@@ -67,6 +78,9 @@ const GameSelect: React.FC = () => {
           </div>
         ))}
       </div>
+    </div>
+    </BigBox>
+    <div><HomeBtnforBigbox/></div>
     </div>
   );
 };

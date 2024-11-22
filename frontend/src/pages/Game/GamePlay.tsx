@@ -6,6 +6,11 @@ import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
 import back from './동화배경5.png';
 
+import BigBox from '../../components/ui/BigBox.tsx';
+import Background from '../../components/ui/Background';
+import HomeBtnforBigbox from '../../components/ui/HomeBtnforBigbox';
+import HeaderLogo from '../../components/ui/HeaderLogo';
+
 import { generateStoryContinuation } from '../../services/StoryService';
 
 interface StoryPage {
@@ -143,7 +148,10 @@ export default function GamePlay(): JSX.Element {
   const toggleImageVisibility = () => setShowImageOnly((prev) => !prev);
 
   return (
-    <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
+    <div > <Background />
+    <div><HeaderLogo/></div>
+
+    <BigBox>
       {!gameStarted && (
         <div
           className="flex flex-col items-center justify-center h-full bg-cover bg-center"
@@ -287,6 +295,8 @@ export default function GamePlay(): JSX.Element {
           </div>
         </div>
       )}
+      </BigBox>
+      <div><HomeBtnforBigbox/></div>
     </div>
   );
 }

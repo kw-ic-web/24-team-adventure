@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+/** {
   font-family:
     'Pretendard Variable',
     Pretendard,
@@ -21,7 +21,20 @@
     'Segoe UI Emoji',
     'Segoe UI Symbol',
     sans-serif;
+}*/
+
+*{
+  font-family: 'S-CoreDream-3Light';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+  font-style: normal;
+  }
+
+
+/* 전체 페이지에 적용 */
+body {
+  font-family: 'HS-Regular', sans-serif;
 }
+
 
 /*
 font-thin: 폰트 두께가 100 (얇은 글꼴)

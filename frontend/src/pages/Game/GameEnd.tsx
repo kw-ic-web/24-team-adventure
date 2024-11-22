@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 
+import Background from '../../components/ui/Background';
+import BigBox from '../../components/ui/BigBox.tsx';
+import HeaderLogo from '../../components/ui/HeaderLogo';
+
+
 //import bookImage from './book.png';
 //import contentImage from './topia.png';
 //import iconImage from './icon.png';
@@ -30,7 +35,9 @@ export default function GameEnd() {
   };
 
   return (
-    <div className="relative h-screen w-full flex items-center justify-center bg-gray-100">
+    <div > <Background />
+    <div><HeaderLogo/></div>
+    <BigBox>
       {/* 초기 책 모양 이미지와 아이콘, 제목 */}
       {!isExpanded && (
         <div className="flex flex-col items-center">
@@ -94,6 +101,7 @@ export default function GameEnd() {
           )}
         </div>
       )}
+      </BigBox>
     </div>
   );
 }

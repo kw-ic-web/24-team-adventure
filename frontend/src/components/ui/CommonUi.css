@@ -1,170 +1,190 @@
+@font-face {
+  font-family: 'S-CoreDream-3Light';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+/* 전체 페이지에 적용 */
+body {
+  font-family: 'HS-Regular', sans-serif;
+}
+
+/* 특정 클래스에 폰트 적용 */
+.hakgyo-font {
+  font-family: 'EF_jejudoldam', sans-serif;
+  font-weight: 400; /* 지정된 굵기 적용 */
+}
+
+
 /* Full-page Background Style */
+/*1158*696*/
 .full-page-bg {
-    position: fixed; /* 배경 고정 */
-    top: 0;
-    left: 0;
-    width: 100vw; /* 브라우저 너비 전체 */
-    height: 100vh; /* 브라우저 높이 전체 */
-    background-image: url('/images/bg_withyellow.jpg'); /* 이미지 경로 */
-    background-size: cover; /* 가로로 꽉 채우기 */
-    background-position: left 70%; /* 이미지의 중앙 기준 */
-    background-repeat: no-repeat; /* 이미지 반복 없음 */
-    z-index: -1; /* 콘텐츠 뒤로 보내기 */
-  }
+  position: absolute; /* 배경 고정 */
+  top: 0;
+  left: 0;
+  width: 100vw; /* 브라우저 너비 전체 */
+  height: 100vh; /* 브라우저 높이 전체 */
+}
+
+.small-main-box {
+  position: absolute; /* 배치 */
+  bottom: 10%;
+  left: 13%;
+  width: 1000px;
+  height: 570px;
+  background-color: white; /* 배경색 */
+  border-radius: 50px; /* 둥근 모서리 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
+  padding: 40px; 
+}
+
+.big-main-box {
+  position: absolute; /* 배치 */
+  bottom: 10%;
+  left: 8%;
+  width: 1200px;
+  height: 570px;
+  background-color: white; /* 배경색 */
+  border-radius: 50px; /* 둥근 모서리 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
+   
+
+}
+.big-main-box > div {
+  transform: scale(0.8); /* 콘텐츠 축소 */
+  transition: transform 0.3s ease-in-out; /* 축소할 때 애니메이션 추가 */
+}
+
+/*/////////////////////////small///////////////////////////*/
+/* Board Link Button */
+.board-link-button {
+  position: absolute;
+  top: 51%;
+  left: 81%;
+  background-color: white;
+  padding: 16px;
+  width: 143px;
+  height: 39px;
+  border: 4px solid #c8a2c8;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 19px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Profile Box */
+.profile-box {
+  position: absolute;
+  top: 11%;
+  left: 81%;
+  background-color: white;
+  padding: 10px;
+  width: 143px;
+  height: 39px;
+  border: 4px solid #c8a2c8;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  border-radius: 19px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-box .profile-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: cover; /* 이미지를 비율에 맞게 잘라서 맞추기 */
+  border-radius: 50%; /* 원형으로 만들기  */
+}
+
+.profile-box .profile-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/*/////////////////////////big///////////////////////////*/
+/* Post List Box */
+.post-list-box {
+  position: absolute;
+  top: 58%;
+  left: 80%;
+  background-color: white;
+  padding: 16px;
+  width: 173px;
+  height: 168px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.post-list-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* User List Box */
+.user-list-box {
+  position: absolute;
+  top: 18%;
+  left: 80%;
+  background-color: white;
+  padding: 16px;
+  width: 173px;
+  height: 168px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+.user-list-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.user-item-flex {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* space-x-2 */
+}
+
+.user-list-item .user-name {
+  font-size: 14px;
+}
+
+.user-list-item .status-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+/* Logout Button Styles */
+.logout-button {
+  position: absolute; /* 배치 */
+  bottom: 180px;
+  left: 30px;
+  width: 100px;
+  height: 40px;
+  border: 4px solid #c8a2c8;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 19px;
+  text-align: center;
+  padding: 0; /* 이미지에 불필요한 여백 제거 */
+  background-color: white;
+  display: inline-flex; /* 버튼 안에 이미지와 텍스트를 넣기 위한 flexbox */
+  justify-content: center; /* 텍스트 수평 중앙 정렬 */
+  align-items: center; /* 텍스트 수직 중앙 정렬 */
+  cursor: pointer; /* 마우스 커서 스타일 */
   
-  .main-box {
-    position: absolute; /* 배치 */
-    bottom: 5%;
-    left: 10%;
-    width: 60%; /* 너비 */
-    height: 38%; /* 높이 */
-    background-color: white; /* 배경색 */
-    border-radius: 50px; /* 둥근 모서리 */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
-  }
-  
-  /* 화면 너비가 1024px 이하일 경우 */
-  @media (max-width: 1024px) {
-    .main-box {
-      width: 900px;
-      height: 500px;
-    }
-  }
-  
-  /* 화면 너비가 768px 이하일 경우 */
-  @media (max-width: 768px) {
-    .main-box {
-      width: 600px;
-      height: 335px;
-    }
-  }
-  
-  /* 화면 너비가 1440px 이상일 경우 */
-  @media (min-width: 1440px) {
-    .main-box {
-      width: 1350px;
-      height: 750px;
-    }
-  }
-  
-  /* Profile Box */
-  .profile-box {
-    position: absolute;
-    top: 10%;
-    left: 80%;
-    background-color: white;
-    padding: 16px;
-    width: 200px;
-    height: 50px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .profile-box .profile-icon {
-    font-size: 20px;
-  }
-  
-  .profile-box .profile-name {
-    font-size: 16px;
-    font-weight: 600;
-  }
-  
-  /* User List Box */
-  .user-list-box {
-    position: fixed;
-    top: 18%;
-    left: 80%;
-    background-color: white;
-    padding: 16px;
-    width: 200px;
-    height: 200px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow-y: auto;
-  }
-  
-  .user-list-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
-  
-  .user-list-item .user-name {
-    font-size: 16px;
-  }
-  
-  .user-list-item .status-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-  }
-  
-  /* Board Link Button */
-  .board-link-button {
-    position: absolute;
-    top: 50%;
-    left: 80%;
-    background-color: white;
-    padding: 16px;
-    width: 200px;
-    height: 50px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-size: 16px;
-    font-weight: 600;
-  }
-  
-  /* Post List Box */
-  .post-list-box {
-    position: absolute;
-    top: 58%;
-    left: 80%;
-    background-color: white;
-    padding: 16px;
-    width: 200px;
-    height: 200px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  .post-list-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
-  /* Logout Button Styles */
-  .logout-button {
-    position: absolute; /* 배치 */
-    bottom: 100px;
-    left: 30px;
-    padding: 0;  /* 이미지에 불필요한 여백 제거 */
-    border: none; /* 기본 버튼 테두리 제거 */
-    background: transparent;
-    display: inline-flex; /* 버튼 안에 이미지와 텍스트를 넣기 위한 flexbox */
-    justify-content: center; /* 텍스트 수평 중앙 정렬 */
-    align-items: center; /* 텍스트 수직 중앙 정렬 */
-    cursor: pointer; /* 마우스 커서 스타일 */
-    width: 100px; /* 이미지 크기에 맞춰 설정 */
-    height: 100px; /* 이미지 크기에 맞춰 설정 */
-    overflow: hidden; /* 이미지 외부로 나가는 부분을 숨기기 */
-  }
-  
-  .logout-button img {
-    width: 100%; /* 버튼 크기에 맞게 이미지 확대/축소 */
-     /* 버튼 크기에 맞게 이미지 확대/축소 */
-    object-fit: cover; /* 이미지 비율 유지하며 크기 맞추기 */
-    position: absolute; /* 버튼 내에서 이미지가 배경처럼 뒤에 위치하도록 설정 */
-  }
-  
-  /* 텍스트 스타일 */
-  .logout-button .logout-text {
-    position: absolute; /* 텍스트를 이미지 위에 겹치게 배치 */
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    z-index: 1; /* 텍스트가 이미지 위로 오도록 설정 */
-  }
+}
+
+/* 텍스트 스타일 */
+.logout-button .logout-text {
+  position: absolute; /* 텍스트를 이미지 위에 겹치게 배치 */
+  color: black;
+  font-size: 15px;
+  font-weight: semibold;
+  z-index: 1; /* 텍스트가 이미지 위로 오도록 설정 */
+}
