@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './GameSelect.css';
+import { useNavigate } from 'react-router-dom'; // React Router navigate 사용
 import LanguageToggle from '../../components/game/LanguageToggle';
 import { toggleLanguage, Language } from '../../utils/game/languageUtils';
 
@@ -14,17 +15,19 @@ interface Story {
 const GameSelect = () => {
   const [language, setLanguage] = useState<Language>('ko');
   const [stories, setStories] = useState<Story[]>([]);
+  const navigate = useNavigate(); // 페이지 이동을 위한 navigate hook
 
   const handleToggleLanguage = () => {
     setLanguage(toggleLanguage(language));
   };
 
-  const handleClick = (name: string) => {
-    console.log(`${name} clicked`);
+  const handleClick = (id: number) => {
+    navigate(`/gameplay/${id}`); // 스토리 ID를 기반으로 페이지 이동
   };
 
   const handleExit = () => {
     console.log('Exiting...');
+    navigate('/'); // 홈 또는 다른 페이지로 이동
   };
 
   useEffect(() => {
@@ -61,7 +64,7 @@ const GameSelect = () => {
           <div
             key={story.id}
             className="card"
-            onClick={() => handleClick(story.name[language])}
+            onClick={() => handleClick(story.id)}
           >
             <img src={story.imageUrl} alt={story.name[language]} />
             <p className="card-title">{story.name[language]}</p>

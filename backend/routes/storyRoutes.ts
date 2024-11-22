@@ -35,6 +35,27 @@ router.get("/stories", async (req, res) => {
       .json({ success: false, message: "Failed to fetch stories." });
   }
 });
+// gameplay에서 데이터를 가져오는 API
+router.get("/gameplay/:story_id", async (req, res) => {
+  const { story_id } = req.params;
+  try {
+    const { data, error } = await supabase
+      .from("story")
+      .select(
+        "story_id, story_title, cover_pic, intro1, intro2, intro3, intro_pic1, intro_pic2, intro_pic3"
+      )
+      .eq("story_id", story_id);
+
+    if (error) throw error; // 에러 처리
+
+    res.status(200).json(data); // 배열만 반환
+  } catch (error) {
+    console.error("Error fetching minimal stories:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to fetch minimal stories." });
+  }
+});
 
 //gameselect 관련
 router.get("/stories/select", async (req, res) => {
