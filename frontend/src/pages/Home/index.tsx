@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import '../../index.css';
 /*
 To do:
 동화선택 화면과 연결, 호버 기능
@@ -46,11 +47,14 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-light-green flex w-screen bg-[#b3ae56] justify-center items-center font-noto">
+    <div className="full-page-bg">
       {/* 중앙 배경화면 박스 */}
-      <div className="fixed-box">
+      <div className="main-box">
+
+      </div>
         {/* 오른쪽 고정 박스들 */}
-        <div className="flex flex-col gap-4 w-1/4 ml-auto">
+
+        <div className="flex flex-col gap-2 w-1/6 ml-auto">
           {/* 프로필 박스 */}
           <Link to="/MyPage" className="profile-box">
             <span role="img" aria-label="user-profile" className="profile-icon">
@@ -106,9 +110,10 @@ export default function Home() {
 
         {/* 로그아웃 버튼 */}
         <button className="logout-button" onClick={handleLogout}>
-          로그아웃
+        <img src="/images/logoutBtn.png" alt="로그아웃 버튼" />
+        <span className="logout-text">&nbsp;&nbsp;LOG OUT</span>
         </button>
-      </div>
+      
     </div>
   );
 }
