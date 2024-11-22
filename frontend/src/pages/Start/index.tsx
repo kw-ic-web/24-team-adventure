@@ -1,7 +1,7 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 
-import useGoogleAuthMutation from '../../hooks/useGoogleAuthMutation';
+import useGoogleAuthMutation from '../../hooks/auth/useGoogleAuthMutation';
 
 /*
 To do:
