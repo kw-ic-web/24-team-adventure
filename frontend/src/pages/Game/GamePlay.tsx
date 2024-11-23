@@ -281,7 +281,7 @@ export default function GamePlay(): JSX.Element {
                   ? pages[0]?.intro_pic1
                   : currentPage === 2
                     ? pages[0]?.intro_pic2
-                    : currentPage === 3
+                    : currentPage === 3 || currentPage === 4 // 3, 4페이지 모두 intro_pic3 표시
                       ? pages[0]?.intro_pic3
                       : pages[0]?.cover_pic
               }
