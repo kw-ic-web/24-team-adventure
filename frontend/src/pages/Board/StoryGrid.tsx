@@ -81,7 +81,7 @@ const StoryGrid: React.FC = () => {
           >
             {/* 스토리 이미지 */}
             <img
-              src={`http://localhost:3000/${story.cover_pic}`} // 스토리 커버 이미지 경로
+              src={story.cover_pic} // 스토리 커버 이미지 경로
               alt={story.story_title}
               className="story-image"
             />
