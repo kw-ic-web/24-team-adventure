@@ -39,7 +39,7 @@ const GameSelect = () => {
         const fetchedStories = response.data.map((story: any) => ({
           id: story.story_id,
           name: { ko: story.story_title, en: story.story_title_en },
-          imageUrl: `http://localhost:3000/${story.cover_pic}`,
+          imageUrl: story.cover_pic, // DB에서 가져온 URL을 그대로 사용
         }));
         setStories(fetchedStories);
       } catch (error) {
