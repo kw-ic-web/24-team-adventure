@@ -6,7 +6,7 @@ export default function HomeBtn() {
   return (
     <button
     onClick={() => navigate('/home')}
-    className="absolute bottom-[30px] right-[115px] w-[100px] h-[200px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
+    className="absolute bottom-[30px] right-[10px] w-[100px] h-[200px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
     title="홈으로 이동"
     aria-label="홈으로 이동"
   >

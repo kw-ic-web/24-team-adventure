@@ -68,10 +68,9 @@ const GameSelect = () => {
       <Background />
       <div><HeaderLogo/></div>
       <BigBox>
-    <div className="game-select-container" style={{ marginTop: '-30px' }}>
+    <div className="game-select-container" style={{ marginTop: '0px' }}>
       <div className="game-select-header">
-        <LanguageToggle language={language} onToggle={handleToggleLanguage} />
-        <h1 className="game-select-title">동화 선택</h1>
+        
         
       </div>
       <div className="container">

@@ -3,7 +3,6 @@ import { GoogleLogin } from '@react-oauth/google';
 import UserList from '../../components/ui/Userlist';
 import useGoogleAuthMutation from '../../hooks/auth/useGoogleAuthMutation';
 
-import Background from '../../components/ui/Background';
 
 /*
 To do:
@@ -37,8 +36,16 @@ export default function Start() {
   };
 
   return (
-    <div>
-      <Background />
+    <div
+    className="full-page-bg"
+    style={{
+      backgroundImage: "url('/images/bg_withpink.jpg')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'left 70%',
+      backgroundRepeat: "no-repeat",
+      zIndex: -1, 
+    }}
+  >
       {/* 실시간 사용자 목록 박스 */}
       <div>
         <UserList users={users} />
