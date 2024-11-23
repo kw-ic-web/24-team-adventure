@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
 import back from './동화배경5.png';
+
 import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 
@@ -220,7 +222,9 @@ export default function GamePlay(): JSX.Element {
     }
   }, [pages]);
   return (
-    <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
+   
+
+ 
       {!gameStarted && (
         <div
           className="flex flex-col items-center justify-center h-full bg-cover bg-center"
@@ -403,6 +407,8 @@ export default function GamePlay(): JSX.Element {
           </div>
         </div>
       )}
+      
+     
     </div>
   );
 }
