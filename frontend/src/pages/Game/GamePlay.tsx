@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-
+import { useParams } from 'react-router-dom';
 
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
 import back from './동화배경5.png';
 
-import BigBox from '../../components/ui/BigBox.tsx';
-import Background from '../../components/ui/Background';
-import HomeBtnforBigbox from '../../components/ui/HomeBtnforBigbox';
-import HeaderLogo from '../../components/ui/HeaderLogo';
-
+import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 
 interface StoryPage {
@@ -20,144 +16,225 @@ interface StoryPage {
   intro1: string;
   intro2: string;
   intro3: string;
+  intro_pic1: string;
+  intro_pic2: string;
+  intro_pic3: string;
 }
 
 export default function GamePlay(): JSX.Element {
-  const [pages, setPages] = useState<StoryPage[]>([]); // 스토리 페이지 데이터 상태 관리
-  const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지 관리 (1부터 시작)
-  const [gameStarted, setGameStarted] = useState<boolean>(false); // 게임 시작 여부 상태
+  const { story_id } = useParams<{ story_id: string }>(); // URL에서 story_id 추출
+  const [pages, setPages] = useState<StoryPage[]>([]); // 스토리 페이지 데이터 상태
+  const [coverImage, setCoverImage] = useState<string>(''); // 이미지 URL 상태
+  const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
+  const [gameStarted, setGameStarted] = useState<boolean>(false); // 게임 시작 여부
   const [showModal, setShowModal] = useState<boolean>(false); // 모달 표시 상태
-  const [blurLevel, setBlurLevel] = useState<number>(0); // 블러 효과 상태 (사진에만 적용)
-  const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 글 배경 및 텍스트의 투명도
-  const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기 여부
+  const [blurLevel, setBlurLevel] = useState<number>(0); // 블러 효과
+  const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 텍스트 투명도
+  const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기
 
-  // 각 페이지별 상태
-  const [page4Text, setPage4Text] = useState<string>(''); // 4페이지 음성 인식 텍스트
-  const [page4GptText, setPage4GptText] = useState<string>(''); // 4페이지 GPT 결과
-  const [page5Text, setPage5Text] = useState<string>(''); // 5페이지 음성 인식 텍스트
-  const [page5GptText, setPage5GptText] = useState<string>(''); // 5페이지 GPT 결과
-  const [page6Text, setPage6Text] = useState<string>(''); // 6페이지 음성 인식 텍스트
-  const [page6GptText, setPage6GptText] = useState<string>(''); // 6페이지 GPT 결과
+  const [pageTexts, setPageTexts] = useState<string[]>([
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ]); // 각 페이지의 최종 텍스트
+  const [promptTexts, setPromptTexts] = useState<string[]>([
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+  ]); // 각 페이지의 프롬프터 상태
+  const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화
+  const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태
 
-  const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화 상태
-
-  // Supabase에서 이야기 데이터를 가져오는 함수
+  // 이야기 데이터를 가져오는 함수
   useEffect(() => {
     const fetchStoryData = async () => {
-      const { data, error } = await supabase
-        .from('story')
-        .select('story_id, story_title, cover_pic, intro1, intro2, intro3')
-        .order('story_id', { ascending: true });
+      setIsLoading(true); // 로딩 시작
+      try {
+        const response = await fetch(
+          `http://localhost:3000/gameplay/${story_id}`,
+        ); // API 호출 수정
+        const result = await response.json();
 
-      if (error) {
-        console.error('Error fetching story data:', error);
-      } else if (data) {
-        setPages(data); // 가져온 데이터를 상태에 저장
+        if (result && result.length > 0) {
+          const storyData = result[0];
+          setPages([
+            {
+              story_id: storyData.story_id,
+              story_title: storyData.story_title,
+              cover_pic: storyData.cover_pic,
+              intro_pic1: storyData.intro_pic1,
+              intro_pic2: storyData.intro_pic2,
+              intro_pic3: storyData.intro_pic3,
+              intro1: storyData.intro1,
+              intro2: storyData.intro2,
+              intro3: storyData.intro3,
+            },
+          ]);
+
+          // 초기 페이지 데이터 설정
+          setPageTexts([
+            storyData.intro1 || '',
+            storyData.intro2 || '',
+            storyData.intro3 || '',
+            '', // 4~6 페이지는 빈값으로 초기화
+            '',
+            '',
+          ]);
+          setCurrentPage(1); // 초기 페이지 설정
+        } else {
+          console.error('No story data found.');
+        }
+      } catch (error) {
+        console.error('Error fetching stories:', error);
+      } finally {
+        setIsLoading(false); // 로딩 종료
       }
     };
 
     fetchStoryData();
-  }, []);
+  }, [story_id]);
 
+  // GPT와 음성 인식을 포함한 페이지 데이터 관리
   const handleSpeechResult = (transcript: string) => {
-    if (currentPage === 4) {
-      setPage4Text((prev) => (prev ? prev + ' ' : '') + transcript);
-    } else if (currentPage === 5) {
-      setPage5Text((prev) => (prev ? prev + ' ' : '') + transcript);
-    } else if (currentPage === 6) {
-      setPage6Text((prev) => (prev ? prev + ' ' : '') + transcript);
-    }
+    setPromptTexts((prev) => {
+      const updatedPrompts = [...prev];
+      updatedPrompts[currentPage - 1] = transcript;
+      return updatedPrompts;
+    });
+    setPageTexts((prev) => {
+      const updatedTexts = [...prev];
+      updatedTexts[currentPage - 1] =
+        (updatedTexts[currentPage - 1] || '') + ' ' + transcript;
+      return updatedTexts;
+    });
   };
 
   const fetchGptResult = async () => {
-    setGptButtonDisabled(true); // GPT 버튼 비활성화
+    setGptButtonDisabled(true);
+    setIsLoading(true); // 로딩 시작
     try {
-      let gptResponse = '';
-      if (currentPage === 4) {
-        const response = await generateStoryContinuation(page4Text);
-        gptResponse = response.continuation;
-        setPage4GptText(gptResponse);
-      } else if (currentPage === 5) {
-        const response = await generateStoryContinuation(page5Text);
-        gptResponse = response.continuation;
-        setPage5GptText(gptResponse);
-      } else if (currentPage === 6) {
-        const response = await generateStoryContinuation(page6Text);
-        gptResponse = response.continuation;
-        setPage6GptText(gptResponse);
-      }
+      const response = await generateStoryContinuation(
+        promptTexts[currentPage - 1],
+      );
+      const gptResponse = response.continuation;
+
+      setPageTexts((prev) => {
+        const updatedTexts = [...prev];
+        updatedTexts[currentPage - 1] =
+          (updatedTexts[currentPage - 1] || '') + '\n' + gptResponse; // 줄바꿈 추가
+        return updatedTexts;
+      });
     } catch (error) {
-      console.error('Error fetching GPT result:', error);
+      console.error(
+        `Error fetching GPT result for page ${currentPage}:`,
+        error,
+      );
     } finally {
-      setGptButtonDisabled(false); // GPT 버튼 활성화
+      setGptButtonDisabled(false);
+      setIsLoading(false); // 로딩 종료
     }
   };
 
-  const openModal = () => setShowModal(true); // 모달 열기
+  const changePage = (direction: 'next' | 'prev') => {
+    setShowImageOnly(false);
+
+    setCurrentPage((prev) => {
+      if (direction === 'next' && prev < 6) {
+        return prev + 1;
+      } else if (direction === 'prev' && prev > 1) {
+        return prev - 1;
+      }
+      return prev;
+    });
+  };
+
+  const nextPage = () => changePage('next');
+  const prevPage = () => changePage('prev');
+
+  const openModal = () => setShowModal(true);
   const confirmStart = () => {
     setShowModal(false);
-    setGameStarted(true); // 게임 시작
+    setGameStarted(true);
   };
-  const closeModal = () => setShowModal(false); // 모달 닫기
+  const closeModal = () => setShowModal(false);
 
   const applyEffects = () => {
-    // 사진 블러 효과
     setBlurLevel(0);
-    setTextBoxOpacity(0); // 글 배경 및 텍스트는 투명도 0부터 시작
+    setTextBoxOpacity(0);
 
     setTimeout(() => {
       const blurInterval = setInterval(() => {
         setBlurLevel((prev) => {
-          if (prev < 70) return prev + 1; // 블러 효과 증가
+          if (prev < 50) return prev + 1;
           clearInterval(blurInterval);
           return prev;
         });
-      }, 30);
+      }, 20);
 
-      // 글 배경 및 텍스트 페이드 인 효과
       const textFadeInterval = setInterval(() => {
         setTextBoxOpacity((prev) => {
-          if (prev < 1) return prev + 0.05; // 글 배경 및 텍스트 투명도 증가
+          if (prev < 1) return prev + 0.05;
           clearInterval(textFadeInterval);
           return prev;
         });
-      }, 50);
-    }, 1000);
+      }, 30);
+    }, 1500);
   };
-
+  useEffect(() => {
+    console.log('Cover Pic URL:', pages[0]?.cover_pic);
+  }, [pages]);
   useEffect(() => {
     if (gameStarted) {
       applyEffects();
     }
   }, [currentPage, gameStarted]);
 
-  const nextPage = () => {
-    if (currentPage < pages.length + 2) {
-      setShowImageOnly(false);
-      setCurrentPage(currentPage + 1);
+  //cover이미지 불러오기
+  useEffect(() => {
+    console.log('Pages:', pages); // 페이지 데이터 확인
+    console.log('Cover Pic:', pages[0]?.cover_pic); // cover_pic 경로 확인
+  }, [pages]);
+  useEffect(() => {
+    const fetchCoverImage = async () => {
+      try {
+        if (pages.length > 0 && pages[0]?.cover_pic) {
+          const imageUrl = encodeURI(pages[0].cover_pic);
+          console.log('Generated Image URL:', imageUrl); // 디버깅 로그
+          setCoverImage(imageUrl);
+        } else {
+          console.warn('No cover_pic found. Using default image.');
+          setCoverImage('/images/default-cover.jpg'); // 기본 이미지 설정
+        }
+      } catch (error) {
+        console.error('Error generating cover image URL:', error);
+        setCoverImage('/images/default-cover.jpg'); // 오류 시 기본 이미지 설정
+      }
+    };
+
+    if (pages.length > 0 && pages[0]?.cover_pic) {
+      fetchCoverImage();
     }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setShowImageOnly(false);
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const toggleImageVisibility = () => setShowImageOnly((prev) => !prev);
-
+  }, [pages]);
   return (
-    <div > <Background />
-    <div><HeaderLogo/></div>
+   
 
-    <BigBox>
+ 
       {!gameStarted && (
         <div
           className="flex flex-col items-center justify-center h-full bg-cover bg-center"
-          style={{ backgroundImage: 'url(/images/start-image.jpg)' }}
+          style={{
+            backgroundImage: `url(${coverImage || '/images/default-cover.jpg'})`,
+          }}
         >
-          <h1 className="text-4xl font-bold mb-4">동화 제목</h1>
+          <h1 className="text-4xl font-bold mb-4">
+            {pages[0]?.story_title || '동화 제목'}
+          </h1>
           <button
             onClick={openModal}
             className="p-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full"
@@ -177,11 +254,20 @@ export default function GamePlay(): JSX.Element {
         />
       )}
 
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-white">GPT로 처리 중...</p>
+          </div>
+        </div>
+      )}
+
       {gameStarted && pages.length > 0 && (
         <div className="relative w-full h-full">
           <ProgressBar
             currentPage={currentPage - 1}
-            totalPages={pages.length + 2}
+            totalPages={6} // 전체 페이지 6개
           />
 
           {/* 이미지 영역 */}
@@ -190,17 +276,25 @@ export default function GamePlay(): JSX.Element {
             style={{
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              filter: `blur(${blurLevel}px)`, // 블러 효과 적용
+              filter: `blur(${blurLevel}px)`,
             }}
           >
             <img
-              src={pages[currentPage - 1]?.cover_pic || ''}
-              alt="Cover Image"
+              src={
+                currentPage === 1
+                  ? pages[0]?.intro_pic1
+                  : currentPage === 2
+                    ? pages[0]?.intro_pic2
+                    : currentPage === 3 || currentPage === 4 // 3, 4페이지 모두 intro_pic3 표시
+                      ? pages[0]?.intro_pic3
+                      : pages[0]?.cover_pic
+              }
+              alt="Page Image"
               className="w-full h-full object-cover"
             />
           </div>
 
-          {/* 글자 배경 및 텍스트 */}
+          {/* 텍스트 영역 */}
           {!showImageOnly && (
             <div
               className="absolute inset-x-0 bottom-0 flex justify-center mb-10"
@@ -217,21 +311,18 @@ export default function GamePlay(): JSX.Element {
                   style={{ opacity: 0.9 }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <p className="text-black text-2xl font-bold text-center break-words leading-relaxed">
-                    {currentPage <= 3
-                      ? pages[currentPage - 1]?.intro1
-                      : currentPage === 4
-                        ? page4Text || page4GptText
-                        : currentPage === 5
-                          ? page5Text || page5GptText
-                          : page6Text || page6GptText}
+                  <p
+                    className="text-black text-2xl font-bold text-center break-words leading-relaxed"
+                    style={{ whiteSpace: 'pre-line' }} // 줄바꿈 처리
+                  >
+                    {pageTexts[currentPage - 1]}
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          {/* 음성 인식 및 프롬프터 */}
+          {/* 음성 인식 및 GPT */}
           {currentPage >= 4 && (
             <div className="absolute inset-x-0 bottom-5 flex items-center justify-center gap-4">
               <SpeechRecognition
@@ -239,20 +330,22 @@ export default function GamePlay(): JSX.Element {
                 onResult={handleSpeechResult}
               />
               <textarea
-                value={
-                  currentPage === 4
-                    ? page4Text
-                    : currentPage === 5
-                      ? page5Text
-                      : page6Text
-                }
-                onChange={(e) =>
-                  currentPage === 4
-                    ? setPage4Text(e.target.value)
-                    : currentPage === 5
-                      ? setPage5Text(e.target.value)
-                      : setPage6Text(e.target.value)
-                }
+                value={promptTexts[currentPage - 1]}
+                onChange={(e) => {
+                  const updatedPrompt = e.target.value;
+
+                  setPromptTexts((prev) => {
+                    const updatedPrompts = [...prev];
+                    updatedPrompts[currentPage - 1] = updatedPrompt;
+                    return updatedPrompts;
+                  });
+
+                  setPageTexts((prev) => {
+                    const updatedTexts = [...prev];
+                    updatedTexts[currentPage - 1] = updatedPrompt;
+                    return updatedTexts;
+                  });
+                }}
                 className="w-3/5 p-4 border-2 border-gray-300 rounded-lg text-black"
                 placeholder="버튼을 눌러 이야기를 말해보세요."
               />
@@ -272,7 +365,26 @@ export default function GamePlay(): JSX.Element {
 
           {/* 전환 버튼 */}
           <button
-            onClick={toggleImageVisibility}
+            onClick={() => {
+              setShowImageOnly((prev) => {
+                if (!prev) {
+                  // 이미지 보기 상태
+                  setBlurLevel(0); // 블러 해제
+                  setTextBoxOpacity(0); // 텍스트 박스 숨김
+                } else {
+                  // 글 보기 상태
+                  setTextBoxOpacity(1); // 텍스트 박스를 즉시 표시
+                  const blurInterval = setInterval(() => {
+                    setBlurLevel((prev) => {
+                      if (prev < 50) return prev + 1; // 블러 점진적 증가
+                      clearInterval(blurInterval);
+                      return prev;
+                    });
+                  }, 20); // 블러 증가 속도
+                }
+                return !prev;
+              });
+            }}
             className="absolute top-4 right-4 p-4 bg-blue-600 text-white rounded-full z-10"
           >
             {showImageOnly ? '글 보기' : '이미지 보기'}
@@ -295,8 +407,8 @@ export default function GamePlay(): JSX.Element {
           </div>
         </div>
       )}
-      </BigBox>
-      <div><HomeBtnforBigbox/></div>
+      
+     
     </div>
   );
 }

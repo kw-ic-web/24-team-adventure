@@ -154,13 +154,9 @@ const PostDetail: React.FC = () => {
             </p>
 
             {/* 게시물 이미지 */}
-            {post.final_pic && (
-              <img
-                src={`http://localhost:3000/${post.final_pic}`}
-                alt="Final"
-                className="final-image"
-              />
-            )}
+          {post.final_pic && (
+            <img src={post.final_pic} alt="Final" className="final-image" />
+          )}
 
             {/* 게시물 본문 */}
             <p className="intro-text">{post.intro1}</p>
