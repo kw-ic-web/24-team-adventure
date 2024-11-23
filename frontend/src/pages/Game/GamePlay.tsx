@@ -14,6 +14,9 @@ interface StoryPage {
   intro1: string;
   intro2: string;
   intro3: string;
+  intro_pic1: string;
+  intro_pic2: string;
+  intro_pic3: string;
 }
 
 export default function GamePlay(): JSX.Element {
@@ -63,6 +66,9 @@ export default function GamePlay(): JSX.Element {
               story_id: storyData.story_id,
               story_title: storyData.story_title,
               cover_pic: storyData.cover_pic,
+              intro_pic1: storyData.intro_pic1,
+              intro_pic2: storyData.intro_pic2,
+              intro_pic3: storyData.intro_pic3,
               intro1: storyData.intro1,
               intro2: storyData.intro2,
               intro3: storyData.intro3,
@@ -270,8 +276,16 @@ export default function GamePlay(): JSX.Element {
             }}
           >
             <img
-              src={pages[currentPage - 1]?.cover_pic || ''}
-              alt="Cover Image"
+              src={
+                currentPage === 1
+                  ? pages[0]?.intro_pic1
+                  : currentPage === 2
+                    ? pages[0]?.intro_pic2
+                    : currentPage === 3
+                      ? pages[0]?.intro_pic3
+                      : pages[0]?.cover_pic
+              }
+              alt="Page Image"
               className="w-full h-full object-cover"
             />
           </div>
