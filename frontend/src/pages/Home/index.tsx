@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import UserList from '../../components/ui/Userlist';
 import Background from '../../components/ui/Background';
-import SmallBox from '../../components/ui/SmallBox';
 import Profile from '../../components/ui/Profile';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 
@@ -107,44 +106,14 @@ export default function Home() {
       <div>
         <HeaderLogo />
       </div>
-      <SmallBox>
-        <button
-          className="
-      absolute 
-      inset-0  
-      bg-white 
-      rounded-[50px] 
-      shadow-md 
-      
-      cursor-pointer 
-      transition-transform 
-      origin-center 
-      hover:scale-105 
-      hover:shadow-lg
-      p-16
-      
-    "
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-2/3 -translate-y-1/2">
+        <img
+          src="/images/GameStart3.png"
+          alt="Game Start"
           onClick={() => navigate('/games')}
-          
-        >
-          <div className="game-select-header transform scale-90" style={{ marginTop: '-20px' }}>
-            <LanguageToggle
-              language={language}
-              onToggle={handleToggleLanguage}
-            />
-            <h1 className="game-select-title ">동화 선택</h1>
-          </div>
-          <div className="container transform scale-95">
-            {stories.map((story) => (
-              <div key={story.id} className="card">
-                <img src={story.imageUrl} alt={story.name[language]} />
-                <p className="card-title">{story.name[language]}</p>
-              </div>
-            ))}
-          </div>
-        </button>
-      </SmallBox>
-
+          style={{ width: '200px', height: 'auto', cursor: 'pointer' }}
+        />
+      </div>
       {/* Profile Box */}
       <Link to="/MyPage">
         <Profile />
@@ -175,12 +144,10 @@ export default function Home() {
         ))}
       </div>
       {/* 로그아웃 버튼 */}
-      <button
-        className="logout-button transition-all duration-200 ease-in-out transform hover:scale-110 "
-        onClick={handleLogout}
-      >
-        <span className="logout-text">&nbsp;LOG OUT</span>
-      </button>
+      <button className="logout-button" onClick={handleLogout}>
+        <img src="/images/logoutBtn.png" alt="로그아웃 버튼" />
+        <span className="logout-text">&nbsp;로그아웃</span>
+        </button>
     </div>
   );
 }
