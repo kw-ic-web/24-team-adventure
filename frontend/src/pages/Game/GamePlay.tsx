@@ -4,7 +4,7 @@ import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
 import back from './동화배경5.png';
-
+import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 
 interface StoryPage {
@@ -19,6 +19,7 @@ interface StoryPage {
 export default function GamePlay(): JSX.Element {
   const { story_id } = useParams<{ story_id: string }>(); // URL에서 story_id 추출
   const [pages, setPages] = useState<StoryPage[]>([]); // 스토리 페이지 데이터 상태
+  const [coverImage, setCoverImage] = useState<string>(''); // 이미지 URL 상태
   const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
   const [gameStarted, setGameStarted] = useState<boolean>(false); // 게임 시작 여부
   const [showModal, setShowModal] = useState<boolean>(false); // 모달 표시 상태
@@ -177,19 +178,49 @@ export default function GamePlay(): JSX.Element {
       }, 50);
     }, 1000);
   };
-
+  useEffect(() => {
+    console.log('Cover Pic URL:', pages[0]?.cover_pic);
+  }, [pages]);
   useEffect(() => {
     if (gameStarted) {
       applyEffects();
     }
   }, [currentPage, gameStarted]);
 
+  //cover이미지 불러오기
+  useEffect(() => {
+    console.log('Pages:', pages); // 페이지 데이터 확인
+    console.log('Cover Pic:', pages[0]?.cover_pic); // cover_pic 경로 확인
+  }, [pages]);
+  useEffect(() => {
+    const fetchCoverImage = async () => {
+      try {
+        if (pages.length > 0 && pages[0]?.cover_pic) {
+          const imageUrl = encodeURI(pages[0].cover_pic);
+          console.log('Generated Image URL:', imageUrl); // 디버깅 로그
+          setCoverImage(imageUrl);
+        } else {
+          console.warn('No cover_pic found. Using default image.');
+          setCoverImage('/images/default-cover.jpg'); // 기본 이미지 설정
+        }
+      } catch (error) {
+        console.error('Error generating cover image URL:', error);
+        setCoverImage('/images/default-cover.jpg'); // 오류 시 기본 이미지 설정
+      }
+    };
+
+    if (pages.length > 0 && pages[0]?.cover_pic) {
+      fetchCoverImage();
+    }
+  }, [pages]);
   return (
     <div className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
       {!gameStarted && (
         <div
           className="flex flex-col items-center justify-center h-full bg-cover bg-center"
-          style={{ backgroundImage: 'url(/images/start-image.jpg)' }}
+          style={{
+            backgroundImage: `url(${coverImage || '/images/default-cover.jpg'})`,
+          }}
         >
           <h1 className="text-4xl font-bold mb-4">
             {pages[0]?.story_title || '동화 제목'}
