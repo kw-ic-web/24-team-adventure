@@ -169,11 +169,11 @@ export default function GamePlay(): JSX.Element {
     setTimeout(() => {
       const blurInterval = setInterval(() => {
         setBlurLevel((prev) => {
-          if (prev < 70) return prev + 1;
+          if (prev < 50) return prev + 1;
           clearInterval(blurInterval);
           return prev;
         });
-      }, 30);
+      }, 20);
 
       const textFadeInterval = setInterval(() => {
         setTextBoxOpacity((prev) => {
@@ -181,8 +181,8 @@ export default function GamePlay(): JSX.Element {
           clearInterval(textFadeInterval);
           return prev;
         });
-      }, 50);
-    }, 1000);
+      }, 30);
+    }, 1500);
   };
   useEffect(() => {
     console.log('Cover Pic URL:', pages[0]?.cover_pic);
