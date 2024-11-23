@@ -361,7 +361,26 @@ export default function GamePlay(): JSX.Element {
 
           {/* 전환 버튼 */}
           <button
-            onClick={() => setShowImageOnly((prev) => !prev)}
+            onClick={() => {
+              setShowImageOnly((prev) => {
+                if (!prev) {
+                  // 이미지 보기 상태
+                  setBlurLevel(0); // 블러 해제
+                  setTextBoxOpacity(0); // 텍스트 박스 숨김
+                } else {
+                  // 글 보기 상태
+                  setTextBoxOpacity(1); // 텍스트 박스를 즉시 표시
+                  const blurInterval = setInterval(() => {
+                    setBlurLevel((prev) => {
+                      if (prev < 50) return prev + 1; // 블러 점진적 증가
+                      clearInterval(blurInterval);
+                      return prev;
+                    });
+                  }, 20); // 블러 증가 속도
+                }
+                return !prev;
+              });
+            }}
             className="absolute top-4 right-4 p-4 bg-blue-600 text-white rounded-full z-10"
           >
             {showImageOnly ? '글 보기' : '이미지 보기'}
