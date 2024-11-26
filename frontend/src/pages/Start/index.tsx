@@ -2,6 +2,7 @@ import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import UserList from '../../components/ui/Userlist';
 import useGoogleAuthMutation from '../../hooks/auth/useGoogleAuthMutation';
+import StartBackground from '../../components/ui/StartBackground';
 
 
 /*
@@ -36,16 +37,7 @@ export default function Start() {
   };
 
   return (
-    <div
-    className="full-page-bg"
-    style={{
-      backgroundImage: "url('/images/bg_withpink.jpg')",
-      backgroundSize: 'cover',
-      backgroundPosition: 'left 70%',
-      backgroundRepeat: "no-repeat",
-      zIndex: -1, 
-    }}
-  >
+    <div> <StartBackground />
       {/* 실시간 사용자 목록 박스 */}
       <div>
         <UserList users={users} />

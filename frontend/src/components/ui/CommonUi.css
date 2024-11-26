@@ -189,3 +189,9 @@ body {
   font-weight: bold;
   z-index: 1; /* 텍스트가 이미지 위로 오도록 설정 */
 }
+
+
+/*공백, 엔터 포함한 동화 글*/
+.preserve-spacing {
+  white-space: pre-wrap; /* 줄바꿈과 공백 모두 유지 */
+}

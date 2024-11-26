@@ -9,21 +9,22 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || "",
 });
 
+//발단: 제공, 전개:  위기 절정 ,결말: 마지막 함수
+
 //gpt 내용 생성
 export const generateStoryContinuation = async (userInput: string) => {
   try {
     if (!openai || !openai.chat || !openai.chat.completions) {
       throw new Error("openai 객체가 제대로 초기화되지 않았습니다.");
     }
-    console.log("GPT API 요청 중...");
+    console.log("초반 내용 생성 요청");
     const response = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         {
           role: "system",
           content:
-            "You are a storyteller.(no other explanations. only the story). Give me 2 paragraphs that has each 2 sentences. don't make a conclusion.(in korean)",
-        },
+            "여기까지는 소설 구성 요소 중 발단 혹은 전개 초입부 까지의 내용입니다.이야기의 (소설 구성 요소 중)전개부터 (소설 구성 요소 중 하나인)위기 초반부까지의 이야기가 자연스럽게 이어가도록 창작하여 작성해 주세요. 굳이 위기라는 것을 단어로 언급하여 문장을 구성하지 말아주세요. 내용만 위기에 처한 내용이면 됩니다.  캐릭터 이름과 설정은 제공한 텍스트와 동일하게 유지하고, 등장인물들의 대사는 간단하고 명확하게 표현해 주세요. 이야기의 흐름이 자연스럽고 스무스하게 이어지도록 신경 써 주세요. 문장과 사건의 전개가 동화책 스타일에 맞고, 내용과 단어 수준은 초등학교 3학년 수준에 맞춰 주세요. 제공한 텍스트의 상황 설정을 이어가 주세요.~했습니다 체를 사용해주세요" },
         { role: "user", content: `The story so far: ${userInput}` },
       ],
     });
@@ -36,21 +37,48 @@ export const generateStoryContinuation = async (userInput: string) => {
   }
 };
 
-//결말 내용 생성
-export const generateStoryContinuation_end = async (userInput: string) => {
+//gpt 내용 생성
+export const generateStoryContinuation_second = async (userInput: string) => {
   try {
     if (!openai || !openai.chat || !openai.chat.completions) {
       throw new Error("openai 객체가 제대로 초기화되지 않았습니다.");
     }
-    console.log("GPT API 요청 중...");
+    console.log("중간 내용 생성 요청");
     const response = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         {
           role: "system",
           content:
-            "You are a storyteller.(no other explanations. only the story). Give me 2 paragraphs that has each 2 sentences.  make a conclusion.This will be the end of the story. (Use korean)",
-        },
+            "여기까지는 소설 구성 요소 중 위기 중반부 혹은 위기 후반부 까지의 내용입니다.이야기의 (소설 구성 요소 중)절정 부분이 자연스럽게 진행되도록 창작하여 작성해 주세요. 캐릭터 이름과 설정은 제공한 텍스트와 동일하게 유지하고, 등장인물들의 대사는 간단하고 명확하게 표현해 주세요. 이야기의 흐름이 자연스럽고 스무스하게 이어지도록 신경 써 주세요. 문장과 사건의 전개가 동화책 스타일에 맞고, 내용과 단어 수준은 초등학교 3학년 수준에 맞춰 주세요. 제공한 텍스트의 상황 설정을 이어가 주세요.~했습니다 체를 사용해주세요" },
+        { role: "user", content: `The story so far: ${userInput}` },
+      ],
+    });
+
+    const continuation = response?.choices?.[0]?.message?.content;
+    return { continuation }; // 이야기 연속성만 반환
+  } catch (error) {
+    console.error("Error generating story continuation:", error);
+    return { error };
+  }
+};
+
+
+
+//결말 내용 생성
+export const generateStoryContinuation_end = async (userInput: string) => {
+  try {
+    if (!openai || !openai.chat || !openai.chat.completions) {
+      throw new Error("openai 객체가 제대로 초기화되지 않았습니다.");
+    }
+    console.log("결말 내용 생성 요청 ");
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content:
+            "여기까지는 소설 구성 요소 중 절정 혹은 결말 초반부 까지의 내용입니다.이야기 자연스럽게 결말지어 동화가 행복하게 끝이 나도록 작성해 주세요. 모든 사건 진행이 끝이 나고, 이는 모두 행복한 결말이어야 합니다.  캐릭터 이름과 설정은 제공한 텍스트와 동일하게 유지하고, 등장인물들의 대사는 간단하고 명확하게 표현해 주세요. 이야기의 흐름이 자연스럽고 스무스하게 이어지도록 신경 써 주세요. 문장과 사건의 전개가 동화책 스타일에 맞고, 내용과 단어 수준은 초등학교 3학년 수준에 맞춰 주세요. 제공한 텍스트의 상황 설정을 이어가 주세요.~했습니다 체를 사용해주세요"},
         { role: "user", content: `The story so far: ${userInput}` },
       ],
     });
@@ -72,7 +100,7 @@ export const generateStoryKeywords = async (userInput: string) => {
         { role: "system", content: "You are a storyteller." },
         {
           role: "user",
-          content: `Generate 3 related keywords for the following story(Give me exactly 3 related keywords with no explanation): ${userInput}`,
+          content: `Generate two keywords based on the text I provide, excluding the first sentence. And generate one keyword that's not in this text, but has possibility to continue the story with. (Give me exactly 3 related keywords with no explanation )(in korean) : ${userInput}`,
         },
       ],
     });
