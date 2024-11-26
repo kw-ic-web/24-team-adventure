@@ -1,59 +1,70 @@
-/* GamePlay.css */
-.microphone-container {
+/* 버튼 컨테이너 정렬 */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* 공통 버튼 스타일 */
+.next-button {
   position: relative;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.microphone-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  background-color: #007bff;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  z-index: 2;
+  overflow: hidden;
+  padding: 12px 30px; /* 크기 조정 */
+  font-size: 20px; /* 글자 크기 축소 */
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 25px; /* 둥근 모양 */
   cursor: pointer;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #ffc2a1, #ff9d76);
+  transition: all 0.3s ease;
 }
 
-.wave {
+/* 살구색 버튼 */
+.next-button:hover {
+  background: linear-gradient(135deg, #ffad8c, #ff7f50);
+  transform: translateY(-2px);
+}
+
+/* 클릭 효과 */
+.next-button:active {
+  transform: translateY(1px);
+}
+
+/* 반짝이는 효과 추가 */
+.next-button::before {
+  content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 80px;
-  height: 80px;
-  background: rgba(0, 123, 255, 0.3);
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.4) 20%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.6s ease;
   border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0.5);
-  animation: waveEffect 2s infinite ease-out;
 }
 
-.wave:nth-child(2) {
-  animation-delay: 0.5s;
+.next-button:hover::before {
+  transform: translate(-50%, -50%) scale(1.5); /* 반짝이는 효과 */
 }
 
-.wave:nth-child(3) {
-  animation-delay: 1s;
+/* 강조 색상 버튼 */
+.accent-button {
+  background: linear-gradient(135deg, #7ed6df, #22a6b3); /* 민트-블루 */
 }
 
-@keyframes waveEffect {
-  0% {
-    transform: translate(-50%, -50%) scale(0.5);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(2);
-    opacity: 0;
-  }
+.accent-button:hover {
+  background: linear-gradient(135deg, #63c4cf, #1e8f9d); /* 더 진한 민트-블루 */
+}
+
+.accent-button:active {
+  transform: translateY(1px);
 }

@@ -370,25 +370,11 @@ export default function GamePlay(): JSX.Element {
               {/* 흰 박스 영역 */}
               <div className="w-3/5 bg-white p-6 rounded-lg shadow-md flex items-center gap-4 relative z-0">
                 {/* 음성 인식 버튼 */}
-                <div className="microphone-container flex-none relative">
-                  {/* 음파 애니메이션 */}
-                  <div className="wave"></div>
-                  <div className="wave"></div>
-                  <div className="wave"></div>
-
-                  {/* 음성 인식 아이콘 */}
-                  <div
-                    className="microphone-icon"
-                    onClick={() => {
-                      console.log('음성 인식 시작');
-                      <SpeechRecognition
-                        language="ko-KR"
-                        onResult={handleSpeechResult}
-                      />;
-                    }}
-                  >
-                    🎤
-                  </div>
+                <div className="flex-none">
+                  <SpeechRecognition
+                    language="ko-KR"
+                    onResult={handleSpeechResult}
+                  />
                 </div>
                 {/* 프롬프터 텍스트 박스 */}
                 <textarea
@@ -450,23 +436,17 @@ export default function GamePlay(): JSX.Element {
                 return !prev;
               });
             }}
-            className="absolute top-4 right-4 p-4 bg-blue-600 text-white rounded-full z-10"
+            className="next-button accent-button absolute top-4 right-4 z-button-container10"
           >
             {showImageOnly ? '글 보기' : '이미지 보기'}
           </button>
 
           {/* 이전/다음 버튼 */}
           <div className="absolute bottom-4 left-0 right-0 flex justify-between px-4">
-            <button
-              onClick={prevPage}
-              className="p-2 bg-gray-600 text-white font-bold rounded-full"
-            >
+            <button onClick={prevPage} className="next-button">
               이전
             </button>
-            <button
-              onClick={nextPage}
-              className="p-2 bg-blue-600 text-white font-bold rounded-full"
-            >
+            <button onClick={nextPage} className="next-button">
               다음
             </button>
           </div>
