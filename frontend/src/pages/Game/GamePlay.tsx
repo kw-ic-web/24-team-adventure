@@ -344,8 +344,17 @@ export default function GamePlay(): JSX.Element {
           {currentPage >= 4 && (
             <div className="absolute inset-x-0 bottom-5 flex flex-col items-center gap-4">
               {/* 키워드 블록 */}
-              {keywords.length > 0 && (
-                <div className="w-3/5 flex flex-wrap gap-2 justify-center -top-10 z-10 absolute">
+              <div className="w-3/5 flex items-center justify-center -top-16 z-10 absolute gap-4">
+                {/* 힌트 버튼 */}
+                <button
+                  onClick={keyword_generated_bygpt}
+                  className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
+                >
+                  힌트
+                </button>
+
+                {/* 키워드 목록 */}
+                <div className="flex flex-wrap gap-2">
                   {keywords.map((keyword, index) => (
                     <span
                       key={index}
@@ -355,7 +364,7 @@ export default function GamePlay(): JSX.Element {
                     </span>
                   ))}
                 </div>
-              )}
+              </div>
 
               {/* 흰 박스 영역 */}
               <div className="w-3/5 bg-white p-6 rounded-lg shadow-md flex items-center gap-4 relative z-0">
