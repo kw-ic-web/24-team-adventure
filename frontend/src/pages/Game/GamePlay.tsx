@@ -7,6 +7,7 @@ import back from './동화배경5.png';
 import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
+import './GamePlay.css';
 
 interface StoryPage {
   story_id: number;
@@ -369,13 +370,26 @@ export default function GamePlay(): JSX.Element {
               {/* 흰 박스 영역 */}
               <div className="w-3/5 bg-white p-6 rounded-lg shadow-md flex items-center gap-4 relative z-0">
                 {/* 음성 인식 버튼 */}
-                <div className="flex-none">
-                  <SpeechRecognition
-                    language="ko-KR"
-                    onResult={handleSpeechResult}
-                  />
-                </div>
+                <div className="microphone-container flex-none relative">
+                  {/* 음파 애니메이션 */}
+                  <div className="wave"></div>
+                  <div className="wave"></div>
+                  <div className="wave"></div>
 
+                  {/* 음성 인식 아이콘 */}
+                  <div
+                    className="microphone-icon"
+                    onClick={() => {
+                      console.log('음성 인식 시작');
+                      <SpeechRecognition
+                        language="ko-KR"
+                        onResult={handleSpeechResult}
+                      />;
+                    }}
+                  >
+                    🎤
+                  </div>
+                </div>
                 {/* 프롬프터 텍스트 박스 */}
                 <textarea
                   value={promptTexts[currentPage - 1]}
