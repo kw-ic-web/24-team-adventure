@@ -100,11 +100,10 @@ export default function Mypage() {
       </SmallBox>
       <div>
         {/* Right Side: 사용자 정보 섹션 */}
-        <p className="absolute top-[8%] left-[81%]  p-1 w-[143px] h-[24px]  flex items-center gap-1 text-xs font-light">
-          {userData?.email}
-        </p>
+        
         <div>
           <Profile />
+
         </div>
         {/* Userlist Box */}
         <div>

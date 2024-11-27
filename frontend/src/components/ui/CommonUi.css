@@ -91,6 +91,8 @@ body {
   border-radius: 19px;
   display: flex;
   align-items: center;
+  text-align: center;
+  flex-wrap: wrap; /* 줄바꿈 활성화 */
   gap: 12px;
 }
 
@@ -105,6 +107,13 @@ body {
   font-size: 14px;
   font-weight: 600;
 }
+
+.profile-box .profile-email {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+
 
 /*/////////////////////////big///////////////////////////*/
 /* Post List Box */
