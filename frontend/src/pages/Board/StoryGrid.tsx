@@ -95,11 +95,8 @@ const StoryGrid: React.FC = () => {
       <Background />
       <HeaderLogo />
       <SmallBox>
-        {/* 스토리 제목 */}
-        <h1 className="story-grid-title">Story Board</h1>
-
         {/* 스토리 목록 */}
-        <div className="story-grid">
+        <div className="story-grid-scroll">
           {stories.length > 0 ? (
             stories.map((story) => (
               <div
@@ -107,13 +104,11 @@ const StoryGrid: React.FC = () => {
                 onClick={() => handleStorySelect(story.story_id)} // 클릭 시 스토리 선택
                 className="story-card" // 스타일 클래스
               >
-                {/* 스토리 이미지 */}
                 <img
                   src={story.cover_pic} // 스토리 커버 이미지 경로
                   alt={story.story_title}
                   className="story-image"
                 />
-                {/* 스토리 제목 */}
                 <p className="story-title">{story.story_title}</p>
               </div>
             ))
@@ -122,40 +117,32 @@ const StoryGrid: React.FC = () => {
           )}
         </div>
 
-        {/* 게시물 목록 제목 */}
-        <h2 className="posts-title">Latest Posts</h2>
+        {/* 전체 게시물 보기 버튼과 게시물 리스트 컨테이너 */}
+        <div className="posts-container">
+          {selectedStoryId && (
+            <div className="show-all-button-container">
+              <button onClick={handleShowAllPosts} className="show-all-button">
+                전체 게시물 보기
+              </button>
+            </div>
+          )}
 
-        {/* 전체 게시물 보기 버튼 */}
-        {selectedStoryId && (
-          <div className="show-all-button-container">
-            <button onClick={handleShowAllPosts} className="show-all-button">
-              전체 게시물 보기
-            </button>
+          {/* 게시물 목록 */}
+          <div className="posts-list-scroll">
+            {filteredPosts.map((post) => (
+              <Link
+                key={post.geul_id} // 게시물 ID를 key로 사용
+                to={`/board/${post.story_id}/post/${post.geul_id}`} // 게시물 상세 페이지로 이동
+                className="post-link"
+              >
+                <h3 className="post-title">{post.geul_title}</h3>
+                <p className="post-author">작성자: {post.user.name}</p>
+                <p className="post-time">
+                  업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
+                </p>
+              </Link>
+            ))}
           </div>
-        )}
-
-        {/* 게시물 목록 */}
-        <div className="posts-list">
-          {filteredPosts.map((post) => (
-            <Link
-              key={post.geul_id} // 게시물 ID를 key로 사용
-              to={`/board/${post.story_id}/post/${post.geul_id}`} // 게시물 상세 페이지로 이동
-              className="post-link"
-            >
-              {/* 게시물 제목 */}
-              <h3 className="post-title">{post.geul_title}</h3>
-              {/* 게시물 내용 */}
-              <p className="post-content">
-                {post.geul_content.substring(0, 100)}...
-              </p>
-              {/* 작성자 이름 */}
-              <p className="post-author">작성자: {post.user.name}</p>
-              {/* 게시물 업로드 시간 */}
-              <p className="post-time">
-                업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
-              </p>
-            </Link>
-          ))}
         </div>
       </SmallBox>
 
