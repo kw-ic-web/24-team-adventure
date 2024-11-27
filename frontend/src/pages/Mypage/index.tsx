@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import PostCard from '../../components/myPage/PostCard';
 import { useUserGeulData } from '../../hooks/mypage/useUserGeulData';
 import { useUserData } from '../../hooks/auth/useUserData';
@@ -9,7 +9,6 @@ import Profile from '../../components/ui/Profile';
 import UserList from '../../components/ui/Userlist';
 import HomeBtn from '../../components/ui/HomeBtn';
 import HeaderLogo from '../../components/ui/HeaderLogo';
-
 
 interface User {
   id: number;
@@ -77,19 +76,30 @@ export default function Mypage() {
     <div>
       {' '}
       <Background />
-      <div><HeaderLogo/></div>
+      <div>
+        <HeaderLogo />
+      </div>
       {/* 스크롤 가능한 흰색 직사각형 박스 */}
       <SmallBox>
         {/* Left Side: 게시물 리스트 */}
         <div className="grid grid-cols-2 gap-4">
           {userGeul && userGeul.length > 0 ? (
             userGeul.map((geul: any) => (
-              <PostCard
-                key={geul.user_id}
-                imageUrl={geul.final_pic || 'https://via.placeholder.com/150'}
-                title={geul.geul_title || '제목 없음'}
-                description={geul.geul_content || '내용 없음'}
-              />
+              <div key={geul.user_id} className="post-card-container">
+                {/* 이미지 클릭 시 이동하는 링크 */}
+                <Link
+                  to={`/board/${geul.story_id}/post/${geul.geul_id}`} // 게시물 상세 페이지로 이동
+                  className="post-link"
+                >
+                  <PostCard
+                    imageUrl={
+                      geul.final_pic || 'https://via.placeholder.com/150'
+                    }
+                    title={geul.geul_title || '제목 없음'}
+                    description={geul.geul_content || '내용 없음'}
+                  />
+                </Link>
+              </div>
             ))
           ) : (
             <p className="text-gray-500 col-span-2 text-center mt-4">
@@ -109,7 +119,9 @@ export default function Mypage() {
         <div>
           <UserList users={users} />
         </div>
-        <div><HomeBtn/></div>
+        <div>
+          <HomeBtn />
+        </div>
       </div>
     </div>
   );
