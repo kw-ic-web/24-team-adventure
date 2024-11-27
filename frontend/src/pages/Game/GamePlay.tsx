@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
-import back from './동화배경5.png';
+import back from './동화배경7.jpg';
 import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
@@ -313,7 +313,7 @@ export default function GamePlay(): JSX.Element {
           {/* 텍스트 영역 */}
           {!showImageOnly && (
             <div
-              className="absolute inset-x-0 bottom-0 flex justify-center mb-10"
+              className="absolute inset-0 flex items-center justify-center"
               style={{
                 opacity: textBoxOpacity,
                 transition: 'opacity 0.5s',
@@ -329,7 +329,10 @@ export default function GamePlay(): JSX.Element {
                 <div className="absolute inset-0 flex items-center justify-center p-8">
                   <p
                     className="text-black text-2xl font-bold text-center break-words leading-relaxed"
-                    style={{ whiteSpace: 'pre-line' }} // 줄바꿈 처리
+                    style={{
+                      whiteSpace: 'pre-line', // 줄바꿈 처리
+                      textAlign: 'left', // 변경: 왼쪽 정렬
+                    }}
                   >
                     {pageTexts[currentPage - 1]}
                   </p>
