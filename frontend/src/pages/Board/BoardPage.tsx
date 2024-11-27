@@ -2,8 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Loader from '../../components/Loader';
-import HomeButton from '../../components/HomeButton';
+import Background from '../../components/ui/Background';
+import SmallBox from '../../components/ui/SmallBox';
+import Profile from '../../components/ui/Profile';
+import UserList from '../../components/ui/Userlist';
+import HomeBtn from '../../components/ui/HomeBtn';
 import './BoardPage.css';
+
+//db연결 전 **임시** 사용자 정보
+interface User {
+  id: number;
+  name: string;
+  online: boolean;
+}
+const users: User[] = [
+  { id: 1, name: 'user1', online: true },
+  { id: 2, name: 'user2', online: false },
+  // 추가 사용자 데이터...
+];
 
 // 게시물 데이터 타입 정의
 interface Post {
@@ -55,7 +71,16 @@ const BoardPage: React.FC = () => {
     );
 
   return (
-    <div className="board-page">
+    <div>
+      <Background />
+      <Link to="/MyPage">
+        <Profile />
+      </Link>
+      <div>
+        <UserList users={users} />
+      </div>
+      <SmallBox>
+
       <h1 className="board-title">게시물 목록</h1>
       <div className="post-grid">
         {posts.map((post) => (
@@ -71,7 +96,8 @@ const BoardPage: React.FC = () => {
           </Link>
         ))}
       </div>
-      <HomeButton />
+      </SmallBox>
+      <HomeBtn />
     </div>
   );
 };

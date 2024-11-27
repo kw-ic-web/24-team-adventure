@@ -1,7 +1,7 @@
 /* 전체 BoardPage 컨테이너 스타일 */
 .board-page {
   padding: 2rem;
-  background-color: #f7fafc;
+  background-color: #3299dd;
   min-height: 100vh;
   position: relative;
 }

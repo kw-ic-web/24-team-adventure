@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   generateStoryContinuation,
+  generateStoryContinuation_second,
   generateStoryContinuation_end,
   generateStoryKeywords,
   generateStoryImage,
@@ -47,12 +48,12 @@ export default function Testgpt() {
   //1. 이야기 시작 전 userInput,generated 초기 저장되어있는 내용으로 업데이트하기
 
   const init_generated_userInput = () => {
-    const newText = '백설공주가 살았는데 여왕과 사이가 좋았습니다.';
+    const newText = '백설공주가 살았는데 여왕과 사이가 좋았습니다. 난쟁이들은 2명이서 오두막에 살고 있었습니다.';
     setUserInput(newText); // userInput 업데이트
     setgenerated(newText); // generated 업데이트
   };
 
-  //2. 음성인식 전 generated로 키워드 3개 생성
+  //2. 음성인식 전 generated로 키워드 3개 생성 (이전 한페이지 내용)
 
   const keyword_generated_bygpt = async () => {
     try {
@@ -68,8 +69,8 @@ export default function Testgpt() {
     }
   };
 
-  //3. 음성인식한 내용 speechInput으로 넣기 -> generated에는 대입(초기화), userInput에는 추가
-
+  //3. 1음성인식한 내용 speechInput으로 넣기 -> generated에는 대입(초기화), userInput에는 추가
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setspeechInput(e.target.value);
   };
@@ -80,7 +81,7 @@ export default function Testgpt() {
   };
 
   //4. 누적스토리userInput으로 다음 내용 생성, 해당 내용 generated,userInput에 추가(덧붙이기)
-
+// (0페이지+1음성인식)userInput -> 내용생성
   const story_generated_bygpt = async () => {
     if (!userInput.trim()) {
       console.warn('사용자가 입력을 하지 않았습니다.');
@@ -102,7 +103,7 @@ export default function Testgpt() {
   };
 
   //5. (인식+생성)현재스토리generated로 다음 이미지 생성
-
+// 1음성인식+1현재생성내용->이미지생성
   const image_generated_bygpt = async () => {
     try {
       console.log('이미지 생성 요청 중...');
@@ -118,11 +119,29 @@ export default function Testgpt() {
     }
   };
 
-  //6. 이미지와 글 2페이지에 걸쳐 보여줌
+  //6. 이미지와 글 보여줌
 
-  //7. 2번부터 반복
+  //7. (전인식+생성= 1페이지):generated로 키워드
+  //8. 2음성인식 후 generated:현재음성(초기화), userInput:0,1페이지,2음성
+  //9. (0,1페이지+2음성인식)userInput -> 내용생성
+  const second_story_generated_bygpt = async () => {
+    try {
+      console.log('중간 생성 요청 중...');
 
-  //8. (결말에선4번대신) 결말 내용 생성, 해당 내용 generated,userInput에 추가(덧붙이기)
+      const storyData = await generateStoryContinuation_second(userInput);
+
+      const continuation = storyData.continuation; // 생성된 내용
+      setContinuation(continuation);
+      setUserInput((prev) => prev + continuation); // userInput 업데이트
+      setgenerated((prev) => prev + continuation); // generated 업데이트
+
+      console.log('중간 생성 완료');
+    } catch (error) {
+      console.error('중간 생성 중 에러 발생:', error);
+    }
+  };
+
+  //8.결말 내용 생성, 해당 내용 generated,userInput에 추가(덧붙이기)
 
   const end_story_generated_bygpt = async () => {
     try {
@@ -214,7 +233,23 @@ export default function Testgpt() {
         </button>
         {/* 생성된 스토리 표시 */}
         {continuation && (
-          <div className="mt-4 p-4 border rounded bg-gray-100">
+          <div className=" preserve-spacing mt-4 p-4 border rounded bg-gray-100" >
+            <p>
+              <strong>Story Continuation:</strong>
+            </p>
+            <p>{continuation}</p>
+          </div>
+        )}
+        {/* 이야기 생성 */}
+        <button
+          onClick={second_story_generated_bygpt}
+          className="bg-pink-500 text-white px-4 py-2 rounded"
+        >
+          Generate Second Story
+        </button>
+        {/* 생성된 스토리 표시 */}
+        {continuation && (
+          <div className="preserve-spacing mt-4 p-4 border rounded bg-gray-100">
             <p>
               <strong>Story Continuation:</strong>
             </p>
@@ -231,7 +266,7 @@ export default function Testgpt() {
         </button>
         {/* 생성된 스토리 표시 */}
         {continuation && (
-          <div className="mt-4 p-4 border rounded bg-gray-100">
+          <div className="preserve-spacing mt-4 p-4 border rounded bg-gray-100">
             <p>
               <strong>The End:</strong>
             </p>
