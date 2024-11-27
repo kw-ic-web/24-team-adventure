@@ -43,9 +43,10 @@ router.post(
       // 4. Supabase에서 사용자 정보 조회 (user_id 비교)
       let user = await fetchUserFromSupabase(googleUserId);
       console.log("Supabase에서 조회된 사용자 정보:", user);
-
+      let isNewUser = false;
       // 5. 유저가 없으면 새로운 유저로 등록
       if (!user) {
+        isNewUser = true;
         console.log("Supabase에서 사용자 정보 없음");
         user = await createUserInSupabase(
           googleUserId,
@@ -66,6 +67,7 @@ router.post(
       res.json({
         user: { id: user.user_id },
         token: jwtToken,
+        isNewUser,
       });
     } catch (error) {
       console.error("Google Authentication Error:", error);
