@@ -1,6 +1,7 @@
 @font-face {
   font-family: 'S-CoreDream-3Light';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff')
+    format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -14,7 +15,6 @@ body {
   font-family: 'EF_jejudoldam', sans-serif;
   font-weight: 400; /* 지정된 굵기 적용 */
 }
-
 
 /* Full-page Background Style */
 /*1158*696*/
@@ -31,11 +31,11 @@ body {
   bottom: 10%;
   left: 13%;
   width: 1000px;
-  height: 570px;
+  height: 620px;
   background-color: white; /* 배경색 */
   border-radius: 50px; /* 둥근 모서리 */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
-  padding: 40px; 
+  padding: 40px;
 }
 
 .big-main-box {
@@ -48,8 +48,6 @@ body {
   background-color: white; /* 배경색 */
   border-radius: 50px; /* 둥근 모서리 */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
-   
-
 }
 .big-main-box > div {
   transform: scale(0.8); /* 콘텐츠 축소 */
@@ -91,6 +89,8 @@ body {
   border-radius: 19px;
   display: flex;
   align-items: center;
+  text-align: center;
+  flex-wrap: wrap; /* 줄바꿈 활성화 */
   gap: 12px;
 }
 
@@ -105,6 +105,13 @@ body {
   font-size: 14px;
   font-weight: 600;
 }
+
+.profile-box .profile-email {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+
 
 /*/////////////////////////big///////////////////////////*/
 /* Post List Box */
@@ -168,17 +175,14 @@ body {
   right: 164px;
   width: 100px;
   height: 40px;
-  
-  
-  
+
   text-align: center;
   padding: 0; /* 이미지에 불필요한 여백 제거 */
-  
+
   display: inline-flex; /* 버튼 안에 이미지와 텍스트를 넣기 위한 flexbox */
   justify-content: center; /* 텍스트 수평 중앙 정렬 */
   align-items: center; /* 텍스트 수직 중앙 정렬 */
   cursor: pointer; /* 마우스 커서 스타일 */
-  
 }
 
 /* 텍스트 스타일 */
@@ -189,7 +193,6 @@ body {
   font-weight: bold;
   z-index: 1; /* 텍스트가 이미지 위로 오도록 설정 */
 }
-
 
 /*공백, 엔터 포함한 동화 글*/
 .preserve-spacing {

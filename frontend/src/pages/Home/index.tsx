@@ -1,22 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import UserList from '../../components/ui/Userlist';
 import Background from '../../components/ui/Background';
 import Profile from '../../components/ui/Profile';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 
-import GameSelect from '../Game/GameSelect';
-import LanguageToggle from '../../components/game/LanguageToggle.tsx';
-import { toggleLanguage, Language } from '../../utils/game/languageUtils.ts';
-import '../../components/ui/CommonUi.css';
 
-/*
-To do:
-동화선택 화면과 연결, 호버 기능
-다른 사용자 목록 박스 : 사용자 db 연결, 본인 외 나머지
-*/
+import '../../components/ui/CommonUi.css';
 
 interface User {
   id: number;
@@ -43,56 +34,9 @@ const posts: Post[] = [
   { id: 2, category: 'tail2', title: '두 번째 게시글입니다.' },
   // 추가 게시글 데이터...
 ];
-// 스토리 데이터 타입 정의
-interface Story {
-  id: number; // 스토리 ID
-  name: { ko: string; en: string }; // 스토리 제목 (한국어, 영어)
-  imageUrl: string; // 스토리 이미지 경로
-}
 
 export default function Home() {
   const navigate = useNavigate();
-  const [isHovered, setIsHovered] = useState(false); // hover 상태 관리
-  const [language, setLanguage] = useState<Language>('ko'); // 언어 상태 관리
-  const [stories, setStories] = useState<Story[]>([]); // 서버에서 가져온 스토리 데이터를 저장하는 상태
-
-  // 언어 토글 핸들러
-  const handleToggleLanguage = () => {
-    setLanguage(toggleLanguage(language)); // 언어 상태 변경
-  };
-
-  // 스토리 데이터를 서버에서 가져오는 함수
-  useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/stories'); // API 호출
-        const fetchedStories = response.data.map((story: any) => ({
-          id: story.story_id,
-          name: { ko: story.story_title, en: story.story_title_en },
-          imageUrl: `http://localhost:3000/${story.cover_pic}`, // 이미지 경로 설정
-        }));
-        setStories(fetchedStories); // 가져온 데이터를 상태에 저장
-      } catch (error) {
-        console.error('Error fetching stories:', error);
-      }
-    };
-
-    fetchStories(); // 데이터 가져오기 실행
-  }, []); // 컴포넌트 마운트 시 한 번 실행
-
-  // MouseEnter (hover) 시 크기 변화
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  // MouseLeave 시 크기 원래대로 복귀
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-  };
-  // 클릭 시 페이지 이동
-  const handleClick = () => {
-    navigate('/gameselect');
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('token'); // 토큰 삭제
@@ -112,6 +56,7 @@ export default function Home() {
           alt="Game Start"
           onClick={() => navigate('/games')}
           style={{ width: '200px', height: 'auto', cursor: 'pointer' }}
+          className=" transform transition-transform hover:scale-110"
         />
       </div>
       {/* Profile Box */}
