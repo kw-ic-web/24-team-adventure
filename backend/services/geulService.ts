@@ -6,7 +6,7 @@ export async function fetchGeulByUserId(user_id: string) {
   console.log("Supabase에서 geul 데이터 조회 중:", user_id); // 전달된 user_id 로그
   const { data, error } = await supabase
     .from("geul")
-    .select("geul_title, geul_content, final_pic")
+    .select("*")
     .eq("user_id", user_id);
 
   if (error) {
