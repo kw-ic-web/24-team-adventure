@@ -89,7 +89,6 @@ export default function Mypage() {
                 {/* 이미지 클릭 시 이동하는 링크 */}
                 <Link
                   to={`/board/${geul.story_id}/post/${geul.geul_id}`} // 게시물 상세 페이지로 이동
-                  className="post-link"
                 >
                   <PostCard
                     imageUrl={
@@ -110,10 +109,9 @@ export default function Mypage() {
       </SmallBox>
       <div>
         {/* Right Side: 사용자 정보 섹션 */}
-        
+
         <div>
           <Profile />
-
         </div>
         {/* Userlist Box */}
         <div>
