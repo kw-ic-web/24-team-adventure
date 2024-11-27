@@ -251,13 +251,10 @@ export default function GamePlay(): JSX.Element {
             backgroundImage: `url(${coverImage || '/images/default-cover.jpg'})`,
           }}
         >
-          <h1 className="text-4xl font-bold mb-4">
+          <h1 className="story-title">
             {pages[0]?.story_title || '동화 제목'}
           </h1>
-          <button
-            onClick={openModal}
-            className="p-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full"
-          >
+          <button onClick={openModal} className="start-button">
             시작하기
           </button>
         </div>
