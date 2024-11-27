@@ -159,7 +159,9 @@ const StoryGrid: React.FC = () => {
         </div>
       </SmallBox>
 
-      <Profile />
+      <Link to="/MyPage">
+        <Profile />
+      </Link>
       <UserList users={users} />
       <HomeBtn />
     </div>

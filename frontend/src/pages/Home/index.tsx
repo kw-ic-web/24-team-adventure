@@ -55,7 +55,7 @@ export default function Home() {
           src="/images/GameStart3.png"
           alt="Game Start"
           onClick={() => navigate('/games')}
-          style={{ width: '200px', height: 'auto', cursor: 'pointer' }}
+          style={{ width: '500px', height: 'auto', cursor: 'pointer' }}
           className=" transform transition-transform hover:scale-110"
         />
       </div>
