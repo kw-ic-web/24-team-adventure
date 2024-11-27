@@ -1,16 +1,12 @@
 import express, { Request, Response } from "express";
 import supabase from "../config/supabaseClient";
 import authenticateJWT from "../../backend/middleware/authenticateJWT"; // JWT 인증 미들웨어
+import { markInactiveUsersOffline } from "../services/userStatusService"; //시간계산함
 
 const router = express.Router();
 
-/**
- * 1. 사용자 상태 업데이트
- * POST /api/user/status
- * Body: { online: boolean }
- */
 router.post("/status", authenticateJWT, async (req: Request, res: Response) => {
-  const user_id = req.user!.user_id; // JWT에서 추출한 user_id
+  const user_id = req.user!.user_id;
   const { online } = req.body;
 
   try {
@@ -31,10 +27,6 @@ router.post("/status", authenticateJWT, async (req: Request, res: Response) => {
   }
 });
 
-/**
- * 2. 사용자 상태 조회
- * GET /api/user/status/:user_id
- */
 router.get("/status/:user_id", async (req: Request, res: Response) => {
   const { user_id } = req.params;
   console.log("Received user_id:", user_id); // user_id 로그 추가
@@ -55,10 +47,6 @@ router.get("/status/:user_id", async (req: Request, res: Response) => {
   }
 });
 
-/**
- * 3. 전체 사용자 상태 조회
- * GET /api/user/status
- */
 router.get("/status", async (req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
@@ -74,4 +62,13 @@ router.get("/status", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/cleanup", async (req: Request, res: Response) => {
+  try {
+    await markInactiveUsersOffline();
+    res.json({ message: "Inactive users processed successfully." });
+  } catch (err) {
+    console.error("Error cleaning up inactive users:", err);
+    res.status(500).json({ message: "Failed to clean up inactive users." });
+  }
+});
 export default router;

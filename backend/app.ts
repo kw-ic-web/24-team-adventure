@@ -10,6 +10,7 @@ import authRoutes from "./routes/authRoutes";
 import mypageRoutes from "./routes/mypageRoutes";
 import protectedRoutes from "./routes/protectedRoutes";
 import userStatusRoutes from "./routes/userStatusRoutes";
+import "./services/userStatusCron";
 dotenv.config();
 
 const app = express();
