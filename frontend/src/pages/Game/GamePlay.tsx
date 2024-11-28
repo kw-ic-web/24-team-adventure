@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
-import back from './동화배경7.jpg';
+import back from './동화배경3.jpg';
 import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
@@ -192,7 +192,7 @@ export default function GamePlay(): JSX.Element {
     setTimeout(() => {
       const blurInterval = setInterval(() => {
         setBlurLevel((prev) => {
-          if (prev < 50) return prev + 1;
+          if (prev < 5) return prev + 1;
           clearInterval(blurInterval);
           return prev;
         });
@@ -200,7 +200,7 @@ export default function GamePlay(): JSX.Element {
 
       const textFadeInterval = setInterval(() => {
         setTextBoxOpacity((prev) => {
-          if (prev < 1) return prev + 0.05;
+          if (prev < 1) return prev + 0.5;
           clearInterval(textFadeInterval);
           return prev;
         });
@@ -319,17 +319,28 @@ export default function GamePlay(): JSX.Element {
                 transition: 'opacity 0.5s',
               }}
             >
-              <div className="relative w-4/5 max-w-3xl mx-auto rounded-xl mt-10 overflow-hidden">
+              <div
+                className="relative w-11/12 max-w-5xl mx-auto rounded-xl mt-10 overflow-hidden animate-slide-up"
+                style={{
+                  height: '85%', // 높이를 화면의 85%로 설정
+                  borderRadius: '10px 10px 10px 10px', // 상단 둥글고 하단 각지게 설정
+                  background: 'rgba(255, 248, 225, 0.85)', // 투명한 배경
+                  backdropFilter: 'blur(10px)', // 배경 블러 효과
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)', // 강한 그림자 효과
+                }}
+              >
                 <img
                   src={back}
                   alt="글자 배경"
-                  className="w-full h-auto object-cover rounded-xl"
-                  style={{ opacity: 0.9 }}
+                  className="w-full h-full object-cover rounded-xl"
+                  style={{ opacity: 0.7 }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center p-8">
                   <p
                     className="text-black text-2xl font-bold text-center break-words leading-relaxed"
                     style={{
+                      lineHeight: '1.8', // 줄 간격을 넉넉하게 설정
+                      letterSpacing: '0.05em', // 글자 간 간격 추가
                       whiteSpace: 'pre-line', // 줄바꿈 처리
                       textAlign: 'left', // 변경: 왼쪽 정렬
                     }}
@@ -343,73 +354,74 @@ export default function GamePlay(): JSX.Element {
 
           {/* 음성 인식 및 GPT */}
           {currentPage >= 4 && (
-            <div className="absolute inset-x-0 bottom-5 flex flex-col items-center gap-4">
-              {/* 키워드 블록 */}
-              <div className="w-3/5 flex items-center justify-center -top-16 z-10 absolute gap-4">
-                {/* 힌트 버튼 */}
-                <button
-                  onClick={keyword_generated_bygpt}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
-                >
-                  힌트
-                </button>
-
-                {/* 키워드 목록 */}
-                <div className="flex flex-wrap gap-2">
-                  {keywords.map((keyword, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-blue-100 text-blue-700 font-medium rounded-lg border border-blue-300 shadow-sm"
-                    >
-                      {keyword}
-                    </span>
-                  ))}
+            <div className="absolute inset-x-0 bottom-5 flex flex-col items-center">
+              <div className="w-4/5 bg-white p-4 rounded-lg shadow-lg flex flex-col gap-4">
+                {/* 키워드 섹션 */}
+                <div className="flex items-center justify-between gap-4">
+                  {keywords.length === 0 ? (
+                    <p className="text-gray-700 font-semibold">
+                      다음 키워드를 활용해서 이야기를 만들어도 좋아요!
+                    </p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2 max-w-2xl">
+                      {keywords.map((keyword, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-blue-100 text-blue-700 font-medium rounded-lg border border-blue-300 shadow-sm"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <button
+                    onClick={keyword_generated_bygpt}
+                    className="px-4 py-2 min-w-[80px] bg-green-500 text-white font-medium rounded-lg shadow-md hover:bg-green-600 transition"
+                  >
+                    힌트!
+                  </button>
                 </div>
-              </div>
 
-              {/* 흰 박스 영역 */}
-              <div className="w-3/5 bg-white p-6 rounded-lg shadow-md flex items-center gap-4 relative z-0">
-                {/* 음성 인식 버튼 */}
-                <div className="flex-none">
+                {/* 음성 인식 및 프롬프터 */}
+                <div className="flex items-center gap-4">
                   <SpeechRecognition
                     language="ko-KR"
                     onResult={handleSpeechResult}
+                    className="px-4 py-2 bg-gray-300 text-black font-medium rounded-lg shadow-md hover:bg-gray-400 transition"
                   />
+                  <textarea
+                    value={promptTexts[currentPage - 1]}
+                    onChange={(e) => {
+                      const updatedPrompt = e.target.value;
+
+                      setPromptTexts((prev) => {
+                        const updatedPrompts = [...prev];
+                        updatedPrompts[currentPage - 1] = updatedPrompt;
+                        return updatedPrompts;
+                      });
+
+                      setPageTexts((prev) => {
+                        const updatedTexts = [...prev];
+                        updatedTexts[currentPage - 1] = updatedPrompt;
+                        return updatedTexts;
+                      });
+                    }}
+                    className="flex-grow p-4 text-black rounded-xl border-2 border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-300 bg-gray-100 shadow-md placeholder-gray-500 placeholder-opacity-75"
+                    placeholder="여기에 이야기를 입력하거나 음성 입력 버튼을 사용해보세요."
+                  />
+                  <button
+                    onClick={fetchGptResult}
+                    disabled={gptButtonDisabled}
+                    className={`px-4 py-2 min-w-[80px] rounded-lg font-medium shadow-md text-center ${
+                      gptButtonDisabled
+                        ? 'bg-gray-500 text-white cursor-not-allowed'
+                        : 'bg-blue-600 text-white hover:bg-blue-700 transition'
+                    }`}
+                  >
+                    <span className="block">이야기</span>
+                    <span className="block">만들기</span>
+                  </button>
                 </div>
-                {/* 프롬프터 텍스트 박스 */}
-                <textarea
-                  value={promptTexts[currentPage - 1]}
-                  onChange={(e) => {
-                    const updatedPrompt = e.target.value;
-
-                    setPromptTexts((prev) => {
-                      const updatedPrompts = [...prev];
-                      updatedPrompts[currentPage - 1] = updatedPrompt;
-                      return updatedPrompts;
-                    });
-
-                    setPageTexts((prev) => {
-                      const updatedTexts = [...prev];
-                      updatedTexts[currentPage - 1] = updatedPrompt;
-                      return updatedTexts;
-                    });
-                  }}
-                  className="flex-grow p-4 border-2 border-gray-300 rounded-lg text-black"
-                  placeholder="버튼을 눌러 이야기를 말해보세요."
-                />
-
-                {/* GPT로 보내기 버튼 */}
-                <button
-                  onClick={fetchGptResult}
-                  disabled={gptButtonDisabled}
-                  className={`flex-none p-4 rounded-full ${
-                    gptButtonDisabled
-                      ? 'bg-gray-500 text-white'
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}
-                >
-                  {gptButtonDisabled ? 'GPT 처리 중...' : 'GPT로 보내기'}
-                </button>
               </div>
             </div>
           )}
@@ -427,7 +439,7 @@ export default function GamePlay(): JSX.Element {
                   setTextBoxOpacity(1); // 텍스트 박스를 즉시 표시
                   const blurInterval = setInterval(() => {
                     setBlurLevel((prev) => {
-                      if (prev < 50) return prev + 1; // 블러 점진적 증가
+                      if (prev < 2) return prev + 1; // 블러 점진적 증가
                       clearInterval(blurInterval);
                       return prev;
                     });
