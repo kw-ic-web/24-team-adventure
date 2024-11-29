@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import micIcon from './mic.svg';
-// 전역 타입 선언
+
 declare global {
   interface Window {
     SpeechRecognition: any;
@@ -18,25 +18,37 @@ export default function SpeechRecognition({
   onResult,
 }: SpeechRecognitionProps): JSX.Element {
   const [recognizing, setRecognizing] = useState<boolean>(false);
-  const recognition = new (window.SpeechRecognition ||
-    window.webkitSpeechRecognition)();
+  const recognitionRef = useRef<any>(null);
 
-  // 음성 인식 초기화
   useEffect(() => {
+    recognitionRef.current = new (window.SpeechRecognition ||
+      window.webkitSpeechRecognition)();
+    const recognition = recognitionRef.current;
+
     recognition.lang = language;
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => setRecognizing(true);
-    recognition.onend = () => setRecognizing(false);
+    recognition.onend = () => {
+      setRecognizing(false);
+    };
     recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       onResult(transcript);
     };
+
+    return () => {
+      if (recognition) {
+        recognition.stop();
+      }
+    };
   }, [language, onResult]);
 
-  // 음성 인식 시작/정지
   const toggleRecognition = () => {
+    const recognition = recognitionRef.current;
+    if (!recognition) return;
+
     if (recognizing) {
       recognition.stop();
     } else {
@@ -47,23 +59,16 @@ export default function SpeechRecognition({
   return (
     <button
       onClick={toggleRecognition}
-      className={`p-4 rounded-full shadow-lg font-bold flex items-center justify-center ${
+      aria-label={
+        recognizing ? 'Stop voice recognition' : 'Start voice recognition'
+      }
+      className={`p-4 rounded-full shadow-lg font-bold flex items-center justify-center transition-transform duration-300 ${
         recognizing
-          ? 'bg-red-600 animate-pulse'
+          ? 'bg-red-600 animate-pulse scale-110'
           : 'bg-gray-300 hover:bg-gray-400'
       }`}
     >
-      <img
-        src={micIcon}
-        alt="Microphone Icon"
-        className="w-6 h-6"
-        style={{
-          width: '40px', // 너비 48px
-          height: '35px', // 높이 48px
-          transition: 'transform 0.3s ease',
-          transform: recognizing ? 'scale(1.2)' : 'scale(1)',
-        }}
-      />
+      <img src={micIcon} alt="Microphone Icon" className="w-10 h-10" />
     </button>
   );
 }

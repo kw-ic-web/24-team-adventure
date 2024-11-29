@@ -354,40 +354,44 @@ export default function GamePlay(): JSX.Element {
 
           {/* 음성 인식 및 GPT */}
           {currentPage >= 4 && (
-            <div className="absolute inset-x-0 bottom-5 flex flex-col items-center">
-              <div className="w-4/5 bg-white p-4 rounded-lg shadow-lg flex flex-col gap-4">
-                {/* 키워드 섹션 */}
-                <div className="flex items-center justify-between gap-4">
-                  {keywords.length === 0 ? (
-                    <p className="text-gray-700 font-semibold">
-                      다음 키워드를 활용해서 이야기를 만들어도 좋아요!
-                    </p>
-                  ) : (
-                    <div className="flex flex-wrap gap-2 max-w-2xl">
-                      {keywords.map((keyword, index) => (
-                        <span
-                          key={index}
-                          className="px-3 py-1 bg-blue-100 text-blue-700 font-medium rounded-lg border border-blue-300 shadow-sm"
-                        >
-                          {keyword}
-                        </span>
-                      ))}
+            <div className="fixed inset-x-0 bottom-0 px-3 pb-3">
+              <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden">
+                {/* 키워드 부분 */}
+                <div className="px-3 py-3 border-b border-gray-100">
+                  <div className="flex items-center justify-between space-x-2">
+                    <div className="flex-grow">
+                      {keywords.length === 0 ? (
+                        <p className="text-gray-600 font-semibold text-base pl-[230px]">
+                          다음 키워드를 활용해서 이야기를 만들어도 좋아요!
+                        </p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {keywords.map((keyword, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-blue-50 text-blue-600 text-sm font-semibold rounded-full border border-blue-200"
+                            >
+                              {keyword}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <button
-                    onClick={keyword_generated_bygpt}
-                    className="px-4 py-2 min-w-[80px] bg-green-500 text-white font-medium rounded-lg shadow-md hover:bg-green-600 transition"
-                  >
-                    힌트!
-                  </button>
+                    <button
+                      onClick={keyword_generated_bygpt}
+                      className="px-3.5 py-1.5 translate-x-[-13px] bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white text-base font-bold rounded-lg shadow-lg hover:from-green-500 hover:via-green-600 hover:to-green-700 transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-offset-2"
+                    >
+                      ✨힌트
+                    </button>
+                  </div>
                 </div>
 
-                {/* 음성 인식 및 프롬프터 */}
-                <div className="flex items-center gap-4">
+                {/* 말하기 프롬프트부분*/}
+                <div className="px-6 py-4 flex items-center space-x-4">
                   <SpeechRecognition
                     language="ko-KR"
                     onResult={handleSpeechResult}
-                    className="px-4 py-2 bg-gray-300 text-black font-medium rounded-lg shadow-md hover:bg-gray-400 transition"
+                    className="text-gray-600 hover:text-gray-800 transition-colors"
                   />
                   <textarea
                     value={promptTexts[currentPage - 1]}
@@ -406,17 +410,17 @@ export default function GamePlay(): JSX.Element {
                         return updatedTexts;
                       });
                     }}
-                    className="flex-grow p-4 text-black rounded-xl border-2 border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-300 bg-gray-100 shadow-md placeholder-gray-500 placeholder-opacity-75"
+                    className="flex-grow p-3 text-gray-700 rounded-xl border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300/50 bg-gray-50 text-lg transition-all duration-300 ease-in-out"
                     placeholder="여기에 이야기를 입력하거나 음성 입력 버튼을 사용해보세요."
                   />
                   <button
                     onClick={fetchGptResult}
                     disabled={gptButtonDisabled}
-                    className={`px-4 py-2 min-w-[80px] rounded-lg font-medium shadow-md text-center ${
+                    className={`px-5 py-2 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white text-base font-bold rounded-lg shadow-lg ${
                       gptButtonDisabled
-                        ? 'bg-gray-500 text-white cursor-not-allowed'
-                        : 'bg-blue-600 text-white hover:bg-blue-700 transition'
-                    }`}
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl transform hover:scale-105'
+                    } transition-all duration-500 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2`}
                   >
                     <span className="block">이야기</span>
                     <span className="block">만들기</span>
