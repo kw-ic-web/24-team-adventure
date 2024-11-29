@@ -10,6 +10,7 @@
   justify-content: center;
   align-items: center;
   z-index: 10; /* 높은 z-index로 설정 */
+  transition: opacity 0.3s ease-in-out;
 }
 
 /* 모달 본체 스타일 */
@@ -22,6 +23,27 @@
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4); /* 더 강한 그림자 */
   text-align: center;
   color: #1a202c; /* 다크 텍스트 */
+  animation: fadeIn 0.3s ease-in-out forwards; /* 기본 애니메이션 */
+}
+
+.modal-overlay.show .modal-content {
+  animation: fadeIn 0.3s ease-in-out forwards; /* 모달 열릴 때 애니메이션 */
+}
+
+.modal-overlay.hide .modal-content {
+  animation: fadeOut 0.3s ease-in-out forwards; /* 모달 닫힐 때 애니메이션 */
+}
+
+/* 열림 애니메이션 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* 제목 스타일 */

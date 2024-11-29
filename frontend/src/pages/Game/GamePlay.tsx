@@ -301,7 +301,7 @@ export default function GamePlay(): JSX.Element {
                 <br />
                 창의력과 상상력을 발휘하여 이야기를 만들어 보세요.
                 <br />
-                화상 채팅을 통해 완성된 동화를 친구와 공유할수있습니다.
+                화상 채팅을 통해 완성된 동화를 친구와 공유할 수 있습니다.
                 <br />
                 <br />
                 <strong>게임을 시작하시겠습니까?</strong>
