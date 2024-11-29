@@ -3,15 +3,39 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #000000, #6c432b);
+  background: linear-gradient(135deg, #fff6e5, #ffe4c4);
 }
 
 .book {
-  width: 400px; /* 크기 증가 */
-  height: 550px; /* 크기 증가 */
+  width: 400px;
+  height: 550px;
   position: relative;
   cursor: pointer;
-  perspective: 2500px; /* 원근감 조정 */
+  perspective: 2500px;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
+}
+
+/* 책 두께 표현 개선 */
+.book::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 100%;
+  transform: translateX(-20px) rotateY(-20deg);
+  background: linear-gradient(
+    to right,
+    #fff0d9,
+    #ffe4c4 15%,
+    #ffd7a8 30%,
+    #ffcb8c 50%,
+    #ffd7a8 70%,
+    #ffe4c4 85%,
+    #fff0d9
+  );
+  border-radius: 3px 0 0 3px;
+  box-shadow:
+    inset -5px 0 8px rgba(0, 0, 0, 0.1),
+    inset 0 0 3px rgba(255, 255, 255, 0.5);
 }
 
 .book-content {
@@ -22,96 +46,121 @@
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.cover {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, #8b4513, #a0522d);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px 15px 15px 4px; /* 더 둥글게 */
-  box-shadow:
-    0 0 20px rgba(0, 0, 0, 0.2),
-    5px 5px 15px rgba(0, 0, 0, 0.3),
-    -10px 0 15px rgba(0, 0, 0, 0.2); /* 왼쪽 두께감 */
-  transform-origin: left;
-  z-index: 10;
-  transition: all 2s cubic-bezier(0.4, 0, 0.2, 1); /* 시간 증가 */
-}
-
-/* 책 테두리 효과 추가 */
-.book::before {
-  content: '';
-  position: absolute;
-  width: 40px;
-  height: 100%;
-  transform: translateX(-20px);
-  background: linear-gradient(
-    to right,
-    #6c432b,
-    #8b4513 10%,
-    #a0522d 90%,
-    #6c432b
-  );
-  border-radius: 4px 0 0 4px;
-  box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.3);
-}
-
+.cover,
 .page {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: #f8f0e3;
-  border-radius: 2px 15px 15px 2px;
-  box-shadow:
-    0 0 10px rgba(0, 0, 0, 0.1),
-    2px 0 5px rgba(0, 0, 0, 0.1),
-    inset -1px 0 3px rgba(0, 0, 0, 0.1); /* 페이지 두께감 */
   transform-origin: left;
-  transition: all 2s cubic-bezier(0.4, 0, 0.2, 1); /* 시간 증가 */
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0px 15px 15px 0px;
 }
 
+.cover {
+  background: linear-gradient(45deg, #ffe4c4, #ffd7a8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.1),
+    5px 5px 15px rgba(0, 0, 0, 0.05),
+    -8px 0 15px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+}
+
+.cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.page {
+  background: #fffaf0;
+  box-shadow:
+    0 0 10px rgba(0, 0, 0, 0.03),
+    2px 0 5px rgba(0, 0, 0, 0.03),
+    inset -1px 0 3px rgba(0, 0, 0, 0.03);
+}
+
+.page::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.01) 1px,
+    transparent 1px
+  );
+  background-size: 15px 100%;
+  opacity: 0.3;
+}
 .page::after {
   content: '';
   position: absolute;
   right: 0;
   bottom: 0;
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, transparent 50%, rgba(0, 0, 0, 0.05) 50%);
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(
+    135deg,
+    transparent 50%,
+    rgba(0, 0, 0, 0.02) 50%,
+    rgba(0, 0, 0, 0.05) 80%
+  );
   border-radius: 0 0 15px 0;
-  pointer-events: none;
+  transform-origin: bottom right;
+  transition: all 0.3s ease;
 }
 
-/* 페이지 순서 조정 */
 .page-1 {
   z-index: 9;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.02);
 }
 .page-2 {
   z-index: 8;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.02);
 }
 .page-3 {
   z-index: 7;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.02);
 }
 .page-4 {
   z-index: 6;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.02);
 }
 .page-5 {
   z-index: 5;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.02);
 }
 .page-6 {
   z-index: 4;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.02);
 }
 .page-7 {
   z-index: 3;
+  box-shadow: 0 0 14px rgba(0, 0, 0, 0.02);
 }
 .page-8 {
   z-index: 2;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.02);
 }
 .page-9 {
   z-index: 1;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.02);
 }
 
 .open .book-content {
@@ -120,51 +169,49 @@
 
 .open .cover {
   transform: rotateY(-180deg);
-  opacity: 0.5;
 }
 
-/* 각 페이지별 회전 각도와 딜레이 조정 */
 .open .page-1 {
-  transform: rotateY(-170deg);
+  transform: rotateY(-180deg);
   transition-delay: 0.2s;
 }
 
 .open .page-2 {
-  transform: rotateY(-165deg);
+  transform: rotateY(-180deg);
   transition-delay: 0.4s;
 }
 
 .open .page-3 {
-  transform: rotateY(-160deg);
+  transform: rotateY(-180deg);
   transition-delay: 0.6s;
 }
 
 .open .page-4 {
-  transform: rotateY(-155deg);
+  transform: rotateY(-180deg);
   transition-delay: 0.8s;
 }
 
 .open .page-5 {
-  transform: rotateY(-150deg);
+  transform: rotateY(-180deg);
   transition-delay: 1s;
 }
 
 .open .page-6 {
-  transform: rotateY(-145deg);
+  transform: rotateY(-180deg);
   transition-delay: 1.2s;
 }
 
 .open .page-7 {
-  transform: rotateY(-140deg);
+  transform: rotateY(-180deg);
   transition-delay: 1.4s;
 }
 
 .open .page-8 {
-  transform: rotateY(-135deg);
+  transform: rotateY(-180deg);
   transition-delay: 1.6s;
 }
 
 .open .page-9 {
-  transform: rotateY(-130deg);
+  transform: rotateY(-180deg);
   transition-delay: 1.8s;
 }
