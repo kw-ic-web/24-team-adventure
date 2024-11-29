@@ -16,43 +16,43 @@
 .modal-content {
   background-color: #ffffff; /* 밝은 배경 */
   border-radius: 15px;
-  padding: 30px 40px;
+  padding: 40px 50px; /* 더 넓은 패딩 */
   width: 90%;
-  max-width: 600px; /* 더 큰 최대 너비 */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* 더 강한 그림자 */
+  max-width: 700px; /* 더 큰 최대 너비 */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4); /* 더 강한 그림자 */
   text-align: center;
-  color: #2d3748; /* 다크 텍스트 */
+  color: #1a202c; /* 다크 텍스트 */
 }
 
 /* 제목 스타일 */
 .modal-content h2 {
-  font-size: 2rem; /* 더 큰 글씨 크기 */
+  font-size: 2.5rem; /* 더 큰 글씨 크기 */
   font-weight: bold;
-  margin-bottom: 1.5rem;
-  color: #1a202c; /* 진한 다크 그레이 */
+  margin-bottom: 2rem;
+  color: #0f172a; /* 진한 블루블랙 */
 }
 
 /* 메시지 스타일 */
 .modal-content p {
-  font-size: 1.2rem; /* 더 큰 본문 크기 */
-  line-height: 1.8;
-  margin-bottom: 2rem;
-  color: #4a5568; /* 중간 다크 그레이 */
+  font-size: 1.4rem; /* 더 큰 본문 크기 */
+  line-height: 2;
+  margin-bottom: 2.5rem;
+  color: #1e293b; /* 다크 블루 그레이 */
 }
 
 /* 버튼 컨테이너 */
 .modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px; /* 버튼 간격 */
+  gap: 20px; /* 버튼 간격 */
 }
 
 /* 공통 버튼 스타일 */
 .modal-content button {
-  padding: 12px 25px;
+  padding: 14px 30px;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 10px;
+  font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
   transition:
@@ -62,22 +62,22 @@
 
 /* 확인 버튼 스타일 */
 .modal-content button.confirm {
-  background-color: #2b6cb0; /* 진한 파란색 */
+  background-color: #f75b5b; /* 코랄 레드 */
   color: #ffffff;
 }
 
 .modal-content button.confirm:hover {
-  background-color: #2c5282; /* 어두운 파란색 */
-  transform: scale(1.05); /* 살짝 확대 */
+  background-color: #e53e3e; /* 더 진한 레드 */
+  transform: scale(1.1); /* 더 큰 확대 효과 */
 }
 
 /* 취소 버튼 스타일 */
 .modal-content button.cancel {
-  background-color: #e2e8f0; /* 밝은 회색 */
+  background-color: #ffcfcf; /* 연한 코랄 */
   color: #1a202c; /* 다크 텍스트 */
 }
 
 .modal-content button.cancel:hover {
-  background-color: #cbd5e0; /* 더 어두운 회색 */
-  transform: scale(1.05); /* 살짝 확대 */
+  background-color: #ffb4b4; /* 더 진한 코랄 */
+  transform: scale(1.1); /* 더 큰 확대 효과 */
 }
