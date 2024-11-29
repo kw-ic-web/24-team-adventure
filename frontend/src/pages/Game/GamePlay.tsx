@@ -32,7 +32,7 @@ export default function GamePlay(): JSX.Element {
   const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 텍스트 투명도
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기
   const [keywords, setKeywords] = useState<string[]>([]); // 키워드 상태 추가
-  const [isPromptVisible, setIsPromptVisible] = useState(true); // 프롬프트 보이기 상태 추가
+  const [isPromptVisible, setIsPromptVisible] = useState(false); // 프롬프트 보이기 상태 추가
 
   const [pageTexts, setPageTexts] = useState<string[]>([
     '',
@@ -171,7 +171,8 @@ export default function GamePlay(): JSX.Element {
 
   const changePage = (direction: 'next' | 'prev') => {
     setShowImageOnly(false);
-    setIsPromptVisible(true); // 페이지 이동 시 프롬프트를 보이게 설정
+    // 새 페이지로 전환하기 전에 프롬프트를 숨김
+    setIsPromptVisible(false);
 
     setCurrentPage((prev) => {
       if (direction === 'next' && prev < 6) {
@@ -216,7 +217,7 @@ export default function GamePlay(): JSX.Element {
       }, 30);
       setTimeout(() => {
         setIsPromptVisible(true);
-      }, 500);
+      }, 150);
     }, 1500);
   };
   useEffect(() => {
