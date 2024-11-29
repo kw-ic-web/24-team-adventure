@@ -32,6 +32,7 @@ export default function GamePlay(): JSX.Element {
   const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 텍스트 투명도
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기
   const [keywords, setKeywords] = useState<string[]>([]); // 키워드 상태 추가
+  const [isPromptVisible, setIsPromptVisible] = useState(true); // 프롬프트 보이기 상태 추가
 
   const [pageTexts, setPageTexts] = useState<string[]>([
     '',
@@ -49,6 +50,12 @@ export default function GamePlay(): JSX.Element {
     '',
     '',
   ]); // 각 페이지의 프롬프터 상태
+
+  // 페이지 변경 시 프롬프트 상태 리셋
+  useEffect(() => {
+    setIsPromptVisible(true); // 페이지가 바뀔 때마다 프롬프트를 다시 보이게 설정
+  }, [currentPage]); // currentPage가 변경될 때마다 실행
+
   const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태
   const keyword_generated_bygpt = async () => {
@@ -164,6 +171,7 @@ export default function GamePlay(): JSX.Element {
 
   const changePage = (direction: 'next' | 'prev') => {
     setShowImageOnly(false);
+    setIsPromptVisible(true); // 페이지 이동 시 프롬프트를 보이게 설정
 
     setCurrentPage((prev) => {
       if (direction === 'next' && prev < 6) {
@@ -381,9 +389,15 @@ export default function GamePlay(): JSX.Element {
             </div>
           )}
 
-          {/* 음성 인식 및 GPT */}
+          {/* 전체 프롬프터 부분 */}
           {currentPage >= 4 && (
-            <div className="fixed inset-x-0 bottom-0 px-3 pb-3">
+            <div
+              className={`fixed inset-x-0 bottom-0 px-3 pb-3 transition-transform duration-500 ease-in-out ${
+                isPromptVisible
+                  ? 'transform translate-y-0'
+                  : 'transform translate-y-full'
+              }`}
+            >
               <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden">
                 {/* 키워드 부분 */}
                 <div className="px-3 py-3 border-b border-gray-100">
@@ -408,7 +422,7 @@ export default function GamePlay(): JSX.Element {
                     </div>
                     <button
                       onClick={keyword_generated_bygpt}
-                      className="px-3.5 py-1.5 translate-x-[-13px] bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white text-base font-bold rounded-lg shadow-lg hover:from-green-500 hover:via-green-600 hover:to-green-700 transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-offset-2"
+                      className="px-3.5 py-1.5 translate-x-[-18px] bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white text-base font-bold rounded-lg shadow-lg hover:from-green-500 hover:via-green-600 hover:to-green-700 transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-offset-2"
                     >
                       ✨힌트
                     </button>
@@ -422,34 +436,44 @@ export default function GamePlay(): JSX.Element {
                     onResult={handleSpeechResult}
                     className="text-gray-600 hover:text-gray-800 transition-colors"
                   />
-                  <textarea
-                    value={promptTexts[currentPage - 1]}
-                    onChange={(e) => {
-                      const updatedPrompt = e.target.value;
+                  <div className="relative w-full">
+                    <textarea
+                      value={promptTexts[currentPage - 1]}
+                      onChange={(e) => {
+                        const updatedPrompt = e.target.value;
 
-                      setPromptTexts((prev) => {
-                        const updatedPrompts = [...prev];
-                        updatedPrompts[currentPage - 1] = updatedPrompt;
-                        return updatedPrompts;
-                      });
+                        setPromptTexts((prev) => {
+                          const updatedPrompts = [...prev];
+                          updatedPrompts[currentPage - 1] = updatedPrompt;
+                          return updatedPrompts;
+                        });
 
-                      setPageTexts((prev) => {
-                        const updatedTexts = [...prev];
-                        updatedTexts[currentPage - 1] = updatedPrompt;
-                        return updatedTexts;
-                      });
-                    }}
-                    className="flex-grow p-3 text-gray-700 rounded-xl border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300/50 bg-gray-50 text-lg transition-all duration-300 ease-in-out"
-                    placeholder="여기에 이야기를 입력하거나 음성 입력 버튼을 사용해보세요."
-                  />
+                        setPageTexts((prev) => {
+                          const updatedTexts = [...prev];
+                          updatedTexts[currentPage - 1] = updatedPrompt;
+                          return updatedTexts;
+                        });
+                      }}
+                      className="w-full h-20 flex-grow p-3 text-gray-700 rounded-xl border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300/50 bg-gray-50 text-lg transition-all duration-300 ease-in-out"
+                      placeholder="여기에 이야기를 입력하거나 음성 입력 버튼을 사용해보세요."
+                      style={{ userSelect: 'text' }}
+                    />
+                  </div>
                   <button
-                    onClick={fetchGptResult}
+                    onClick={() => {
+                      // GPT 결과 가져오는 기존 기능 호출
+                      fetchGptResult();
+
+                      // 프롬프트 보이기/숨기기 상태 변경
+                      setIsPromptVisible(!isPromptVisible);
+                    }}
                     disabled={gptButtonDisabled}
-                    className={`px-5 py-2 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white text-base font-bold rounded-lg shadow-lg ${
+                    className={`px-6 py-2 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white text-base font-bold rounded-lg shadow-lg ${
                       gptButtonDisabled
                         ? 'opacity-50 cursor-not-allowed'
                         : 'hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl transform hover:scale-105'
                     } transition-all duration-500 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2`}
+                    style={{ whiteSpace: 'nowrap' }}
                   >
                     <span className="block">이야기</span>
                     <span className="block">만들기</span>
