@@ -84,7 +84,6 @@ export default function GamePlay(): JSX.Element {
 
   // 최종동화합치기 및 gameEnd로 넘기는 부분
   const handleCompleteClick = () => {
-    // 6페이지에서만 동작하도록 조건 추가
     if (currentPage === 6) {
       const fullStory = {
         title: pages[0]?.story_title || '동화 제목', // 제목이 없으면 기본 제목 사용
@@ -292,13 +291,25 @@ export default function GamePlay(): JSX.Element {
       )}
 
       {showModal && (
-        <StartModal
-          isOpen={showModal}
-          title="안내"
-          message="게임을 시작하시겠습니까?"
-          onConfirm={confirmStart}
-          onClose={closeModal}
-        />
+        <div className="modal-container">
+          <StartModal
+            isOpen={showModal}
+            title="게임 시작 안내"
+            message={
+              <>
+                음성 인식을 통해 여러분만의 동화를 만들어가는 게임입니다.
+                <br />
+                창의력과 상상력을 발휘하여 이야기를 만들어 보세요.
+                <br />
+                화상 채팅을 통해 완성된 동화를 친구와 공유할수있습니다.
+                <br />
+                게임을 시작하시겠습니까?
+              </>
+            }
+            onConfirm={confirmStart}
+            onClose={closeModal}
+          />
+        </div>
       )}
 
       {isLoading && (
