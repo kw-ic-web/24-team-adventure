@@ -164,3 +164,58 @@
 .accent-button:active {
   transform: translateY(1px);
 }
+
+/* 4,5,6글표현부분 */
+.story-screen-456 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 화면 중앙 정렬 */
+  position: absolute;
+  background: url('./동화배경1.jpg') no-repeat center center/cover; /* 배경 이미지 추가 */
+  padding: 40px;
+  max-width: 800px;
+  width: 90%; /* 반응형 지원 */
+  height: 70vh;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  clip-path: polygon(
+    0% 3%,
+    10% 0%,
+    25% 2%,
+    40% 0%,
+    60% 2%,
+    80% 0%,
+    90% 3%,
+    100% 0%,
+    100% 95%,
+    90% 94%,
+    75% 96%,
+    60% 95%,
+    40% 97%,
+    25% 95%,
+    10% 96%,
+    0% 94%,
+    0% 3%
+  );
+}
+
+.story-screen-456 h2 {
+  font-size: 1.8rem;
+  color: #fff; /* 텍스트 색상을 밝게 조정 */
+  margin-bottom: 20px;
+  text-shadow: 0.8px 0.8px 2px rgba(0, 0, 0, 0.5); /* 텍스트 그림자 */
+}
+
+.story-screen-456 p {
+  font-size: 1.2rem;
+  color: #fff;
+  line-height: 1.6;
+  font-weight: 300;
+  margin-bottom: 10px;
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.4); /* 텍스트 그림자 */
+}

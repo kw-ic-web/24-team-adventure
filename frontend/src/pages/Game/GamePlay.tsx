@@ -319,36 +319,65 @@ export default function GamePlay(): JSX.Element {
                 transition: 'opacity 0.5s',
               }}
             >
-              <div
-                className="relative w-11/12 max-w-5xl mx-auto rounded-xl mt-10 overflow-hidden animate-slide-up"
-                style={{
-                  height: '85%', // 높이를 화면의 85%로 설정
-                  borderRadius: '10px 10px 10px 10px', // 상단 둥글고 하단 각지게 설정
-                  background: 'rgba(255, 248, 225, 0.85)', // 투명한 배경
-                  backdropFilter: 'blur(10px)', // 배경 블러 효과
-                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)', // 강한 그림자 효과
-                }}
-              >
-                <img
-                  src={back}
-                  alt="글자 배경"
-                  className="w-full h-full object-cover rounded-xl"
-                  style={{ opacity: 0.7 }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <p
-                    className="text-black text-2xl font-bold text-center break-words leading-relaxed"
-                    style={{
-                      lineHeight: '1.8', // 줄 간격을 넉넉하게 설정
-                      letterSpacing: '0.05em', // 글자 간 간격 추가
-                      whiteSpace: 'pre-line', // 줄바꿈 처리
-                      textAlign: 'left', // 변경: 왼쪽 정렬
-                    }}
-                  >
-                    {pageTexts[currentPage - 1]}
-                  </p>
+              {/* 4, 5, 6 페이지 전용 */}
+              {currentPage >= 4 && currentPage <= 6 ? (
+                <div
+                  className="relative w-11/12 max-w-5xl mx-auto rounded-xl mt-10 overflow-hidden animate-slide-up story-screen-456"
+                  style={{
+                    height: '85%',
+                    borderRadius: '15px',
+                    background: 'rgba(240, 240, 255, 0.85)',
+                    backdropFilter: 'blur(15px)',
+                    boxShadow: '0 12px 24px rgba(0, 0, 0, 0.3)',
+                  }}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center p-8">
+                    <p
+                      className="text-black text-3xl font-bold text-center break-words leading-relaxed"
+                      style={{
+                        lineHeight: '2.0',
+                        letterSpacing: '0.1em',
+                        whiteSpace: 'pre-line',
+                        textAlign: 'left',
+                      }}
+                    >
+                      {pageTexts[currentPage - 1]}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* 기본 스타일 (4, 5, 6이 아닌 페이지) */
+                <div
+                  className="relative w-11/12 max-w-5xl mx-auto rounded-xl mt-10 overflow-hidden animate-slide-up"
+                  style={{
+                    height: '85%',
+                    borderRadius: '10px 10px 10px 10px',
+                    background: 'rgba(255, 248, 225, 0.85)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                  }}
+                >
+                  <img
+                    src={back}
+                    alt="글자 배경"
+                    className="w-full h-full object-cover rounded-xl"
+                    style={{ opacity: 0.7 }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center p-8">
+                    <p
+                      className="text-black text-2xl font-bold text-center break-words leading-relaxed"
+                      style={{
+                        lineHeight: '1.8',
+                        letterSpacing: '0.05em',
+                        whiteSpace: 'pre-line',
+                        textAlign: 'left',
+                      }}
+                    >
+                      {pageTexts[currentPage - 1]}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
