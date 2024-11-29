@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox.tsx';
+import BigBox from '../../components/ui/BigBox.tsx';
 import UserList from '../../components/ui/Userlist';
 import Profile from '../../components/ui/Profile';
 
@@ -133,17 +134,9 @@ const PostDetail: React.FC = () => {
     <div>
       {' '}
       <Background />
-      {/* Profile Box */}
-      <Link to="/MyPage">
-        <Profile />
-      </Link>
-      {/* Userlist Box */}
-      <div>
-        <UserList users={users} />
-      </div>
-      <SmallBox>
+      <BigBox className="big-box">
         {post ? (
-          <div className="post-detail" style={{ marginTop: '-30px' }}>
+          <div className="post-detail">
             {/* 게시물 제목 */}
             <h2 className="post-title">{post.geul_title}</h2>
 
@@ -152,11 +145,6 @@ const PostDetail: React.FC = () => {
             <p className="post-time">
               업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
             </p>
-
-            {/* 게시물 이미지 */}
-          {post.final_pic && (
-            <img src={post.final_pic} alt="Final" className="final-image" />
-          )}
 
             {/* 게시물 본문 */}
             <p className="intro-text">{post.intro1}</p>
@@ -170,9 +158,7 @@ const PostDetail: React.FC = () => {
             {comments.map((comment) => (
               <div key={comment.comment_id} className="comment">
                 <div className="comment-header">
-                  {/* 댓글 작성자 이름 표시 */}
                   <p className="comment-author">작성자: {comment.user.name}</p>
-
                   {comment.user_id === loggedInUserId && (
                     <div className="comment-menu-container">
                       <div
@@ -202,7 +188,6 @@ const PostDetail: React.FC = () => {
                     </div>
                   )}
                 </div>
-                {/* 댓글 내용 및 작성 시간 */}
                 <p className="comment-content">{comment.comm_content}</p>
                 <p className="comment-time">
                   {new Date(comment.created_at).toLocaleString()}
@@ -210,7 +195,7 @@ const PostDetail: React.FC = () => {
               </div>
             ))}
 
-            {/* 댓글 입력 섹션 */}
+            {/* 댓글 입력 */}
             <div className="new-comment">
               <input
                 type="text"
@@ -227,7 +212,7 @@ const PostDetail: React.FC = () => {
         ) : (
           <p>Loading post...</p>
         )}
-      </SmallBox>
+      </BigBox>
       <button
         onClick={() => navigate('/board')}
         className="absolute bottom-[30px] right-[210px] w-[90px] h-[200px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
