@@ -328,6 +328,7 @@ export default function GamePlay(): JSX.Element {
                     borderRadius: '15px',
                     backdropFilter: 'blur(15px)',
                     boxShadow: '0 12px 24px rgba(0, 0, 0, 0.3)',
+                    overflowY: 'auto',
                   }}
                 >
                   <div className="absolute inset-0 flex items-center justify-center p-8">
