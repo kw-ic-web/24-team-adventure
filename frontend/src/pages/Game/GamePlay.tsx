@@ -326,7 +326,6 @@ export default function GamePlay(): JSX.Element {
                   style={{
                     height: '85%',
                     borderRadius: '15px',
-                    background: 'rgba(240, 240, 255, 0.85)',
                     backdropFilter: 'blur(15px)',
                     boxShadow: '0 12px 24px rgba(0, 0, 0, 0.3)',
                   }}

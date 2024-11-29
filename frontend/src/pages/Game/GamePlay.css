@@ -172,7 +172,7 @@
   align-items: center;
   justify-content: center; /* 화면 중앙 정렬 */
   position: absolute;
-  background: url('./동화배경1.jpg') no-repeat center center/cover; /* 배경 이미지 추가 */
+  background: url('../Game/동화배경1.png') no-repeat center center/cover; /* 배경 이미지 추가 */
   padding: 40px;
   max-width: 800px;
   width: 90%; /* 반응형 지원 */
