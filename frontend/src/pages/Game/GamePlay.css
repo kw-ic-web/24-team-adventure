@@ -204,18 +204,29 @@
   );
 }
 
-.story-screen-456 h2 {
-  font-size: 1.8rem;
-  color: #fff; /* 텍스트 색상을 밝게 조정 */
-  margin-bottom: 20px;
-  text-shadow: 0.8px 0.8px 2px rgba(0, 0, 0, 0.5); /* 텍스트 그림자 */
-}
-
 .story-screen-456 p {
   font-size: 1.2rem;
-  color: #fff;
+  color: #000000;
   line-height: 1.6;
   font-weight: 300;
   margin-bottom: 10px;
   text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.4); /* 텍스트 그림자 */
+}
+
+.story-screen-456 {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #6c432b transparent; /* 스크롤 색상 */
+}
+
+.story-screen-456::-webkit-scrollbar {
+  width: 8px; /* 스크롤 바 두께 */
+}
+
+.story-screen-456::-webkit-scrollbar-thumb {
+  background-color: rgba(150, 150, 150, 0.5); /* 스크롤 바 색상 */
+  border-radius: 4px; /* 둥근 모서리 */
+}
+
+.story-screen-456::-webkit-scrollbar-track {
+  background: transparent; /* 스크롤 바 트랙 배경 */
 }
