@@ -196,6 +196,7 @@ export default function GamePlay(): JSX.Element {
   const applyEffects = () => {
     setBlurLevel(0);
     setTextBoxOpacity(0);
+    setIsPromptVisible(false);
 
     setTimeout(() => {
       const blurInterval = setInterval(() => {
@@ -213,9 +214,11 @@ export default function GamePlay(): JSX.Element {
           return prev;
         });
       }, 30);
+      setTimeout(() => {
+        setIsPromptVisible(true);
+      }, 500);
     }, 1500);
   };
-
   useEffect(() => {
     if (gameStarted) {
       applyEffects();
