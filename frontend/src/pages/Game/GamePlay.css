@@ -112,29 +112,27 @@
   position: relative;
   overflow: hidden;
   padding: 12px 30px;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 24px;
+  font-weight: 900;
   color: #ffffff;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   border: none;
   border-radius: 25px;
   cursor: pointer;
-  background: linear-gradient(135deg, #ffc2a1, #ff9d76);
+  background: linear-gradient(135deg, #fd8876, #ff7b53);
   transition: all 0.3s ease;
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); /* 더 두꺼운 그림자 */
 }
 
-/* 살구색 버튼 */
 .next-button:hover {
-  background: linear-gradient(135deg, #ffad8c, #ff7f50);
+  background: linear-gradient(135deg, #fe705a, #ff7349);
   transform: translateY(-2px);
 }
 
-/* 클릭 효과 */
 .next-button:active {
   transform: translateY(1px);
 }
 
-/* 반짝이는 효과 추가 */
 .next-button::before {
   content: '';
   position: absolute;
@@ -156,7 +154,6 @@
   transform: translate(-50%, -50%) scale(1.5);
 }
 
-/* 강조 색상 버튼 */
 .accent-button {
   background: linear-gradient(135deg, #7ed6df, #22a6b3);
 }
@@ -169,7 +166,6 @@
   transform: translateY(1px);
 }
 
-/* 4,5,6 글 표현 부분 */
 .story-screen-456 {
   display: flex;
   flex-direction: column;

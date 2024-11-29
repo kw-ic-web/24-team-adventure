@@ -303,7 +303,8 @@ export default function GamePlay(): JSX.Element {
                 <br />
                 화상 채팅을 통해 완성된 동화를 친구와 공유할수있습니다.
                 <br />
-                게임을 시작하시겠습니까?
+                <br />
+                <strong>게임을 시작하시겠습니까?</strong>
               </>
             }
             onConfirm={confirmStart}
@@ -343,7 +344,7 @@ export default function GamePlay(): JSX.Element {
                   ? pages[0]?.intro_pic1
                   : currentPage === 2
                     ? pages[0]?.intro_pic2
-                    : currentPage === 3 || currentPage === 4 // 3, 4페이지 모두 intro_pic3 표시
+                    : currentPage === 3 || currentPage === 4
                       ? pages[0]?.intro_pic3
                       : pages[0]?.cover_pic
               }
@@ -392,8 +393,8 @@ export default function GamePlay(): JSX.Element {
                 <div
                   className="relative w-11/12 max-w-5xl mx-auto rounded-xl mt-10 overflow-hidden animate-slide-up"
                   style={{
-                    height: '85%',
-                    borderRadius: '10px 10px 10px 10px',
+                    height: '80%',
+                    borderRadius: '20px 20px 20px 20px',
                     background: 'rgba(255, 248, 225, 0.85)',
                     backdropFilter: 'blur(10px)',
                     boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
@@ -413,6 +414,8 @@ export default function GamePlay(): JSX.Element {
                         letterSpacing: '0.05em',
                         whiteSpace: 'pre-line',
                         textAlign: 'left',
+                        paddingLeft: '15px',
+                        paddingRight: '15px',
                       }}
                     >
                       {pageTexts[currentPage - 1]}
@@ -548,7 +551,7 @@ export default function GamePlay(): JSX.Element {
             }}
             className="next-button accent-button absolute top-4 right-4 z-button-container10"
           >
-            {showImageOnly ? '글 보기' : '이미지 보기'}
+            {showImageOnly ? '글 보기' : '그림 보기'}
           </button>
 
           {/* 이전/다음 버튼 */}
