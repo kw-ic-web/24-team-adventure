@@ -12,7 +12,8 @@
   font-weight: bold;
   margin-bottom: 1.5rem;
   text-align: center;
-  color: #ffffff !important;
+
+  color: #f8f9fa !important;
   text-shadow:
     0 0 5px rgba(0, 0, 0, 0.9),
     0 0 10px rgba(0, 0, 0, 0.8),
@@ -21,6 +22,7 @@
   transform: translateY(-20px);
   animation: fadeInSlide 1.2s ease-out forwards;
   line-height: 1.2;
+  letter-spacing: 1px;
 }
 
 @keyframes fadeInSlide {
@@ -36,14 +38,14 @@
 
 /* 시작하기 버튼 */
 .start-button {
-  margin-top: 50px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #fbd38d, #f87171);
+  margin-top: 70px;
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #e60c2c, #e62e00);
   color: white;
   font-weight: bold;
-  font-size: 25px;
+  font-size: 30px;
   border: none;
-  border-radius: 50px;
+  border-radius: 60px;
   opacity: 0;
   transform: scale(0.9);
   animation: fadeIn 0.8s ease-out forwards;
@@ -51,21 +53,23 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  box-shadow:
+    0 2px 8px rgba(255, 24, 68, 0.4),
+    0 4px 12px rgba(255, 57, 16, 0.3);
+  transition: all 0.3s ease;
 }
 
 .start-button:hover {
-  transform: scale(1.2);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #ffbdbd, #f67a8b);
+  box-shadow:
+    0 4px 10px rgba(255, 24, 68, 0.5),
+    0 7px 15px rgba(255, 57, 16, 0.4);
+  transform: scale(1.25);
+  background: linear-gradient(135deg, #ff1844, #ff3910);
 }
 
 .start-button:active {
   transform: scale(0.9);
-  background: linear-gradient(135deg, #fe92bd, #ff9447);
+  background: linear-gradient(135deg, #ff0f3c, #ff2400);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
