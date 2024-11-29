@@ -135,87 +135,94 @@ const PostDetail: React.FC = () => {
       {' '}
       <Background />
       <BigBox className="big-box">
-        {post ? (
-          <div className="post-detail">
-            {/* 게시물 제목 */}
-            <h2 className="post-title">{post.geul_title}</h2>
+        <div className="scrollable-box">
+          {post ? (
+            <div className="post-detail">
+              {/* 게시물 제목 */}
+              <h2 className="post-title">{post.geul_title}</h2>
 
-            {/* 작성자 이름과 업로드 시간 */}
-            <p className="post-meta">작성자: {post.user.name}</p>
-            <p className="post-time">
-              업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
-            </p>
-
-            {/* 게시물 본문 */}
-            <p className="intro-text">{post.intro1}</p>
-            <p className="intro-text">{post.intro2}</p>
-            <p className="intro-text">{post.intro3}</p>
-            <p className="post-content">{post.geul_content}</p>
-
-            <hr className="divider" />
-
-            {/* 댓글 목록 */}
-            {comments.map((comment) => (
-              <div key={comment.comment_id} className="comment">
-                <div className="comment-header">
-                  <p className="comment-author">작성자: {comment.user.name}</p>
-                  {comment.user_id === loggedInUserId && (
-                    <div className="comment-menu-container">
-                      <div
-                        className="comment-menu"
-                        onClick={() =>
-                          setShowDeleteMenu(
-                            showDeleteMenu === comment.comment_id
-                              ? null
-                              : comment.comment_id,
-                          )
-                        }
-                      >
-                        ⋮
-                      </div>
-                      {showDeleteMenu === comment.comment_id && (
-                        <div className="delete-menu">
-                          <button
-                            className="delete-button"
-                            onClick={() =>
-                              handleDeleteComment(comment.comment_id)
-                            }
-                          >
-                            삭제
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <p className="comment-content">{comment.comm_content}</p>
-                <p className="comment-time">
-                  {new Date(comment.created_at).toLocaleString()}
-                </p>
+              {/* 작성자 이름과 업로드 시간 */}
+              <div className="post-meta-row">
+                <span className="post-author">작성자: {post.user.name}</span>
+                <span className="post-time">
+                  업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
+                </span>
               </div>
-            ))}
 
-            {/* 댓글 입력 */}
-            <div className="new-comment">
-              <input
-                type="text"
-                className="new-comment-input"
-                placeholder="댓글을 입력하세요"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-              />
-              <button onClick={handleCommentSubmit} className="submit-button">
-                등록
-              </button>
+              {/* 게시물 본문 */}
+              <p className="intro-text">{post.intro1}</p>
+              <p className="intro-text">{post.intro2}</p>
+              <p className="intro-text">{post.intro3}</p>
+              <p className="post-content">{post.geul_content}</p>
+
+              <hr className="divider" />
+
+              {/* 댓글 목록 */}
+              {comments.map((comment) => (
+                <div key={comment.comment_id} className="comment">
+                  <div className="comment-meta-row">
+                    <span className="comment-author">
+                      작성자: {comment.user.name}
+                    </span>
+                    <span className="comment-time">
+                      {new Date(comment.created_at).toLocaleString()}
+                    </span>
+
+                    {comment.user_id === loggedInUserId && (
+                      <div className="comment-menu-container">
+                        <div
+                          className="comment-menu"
+                          onClick={() =>
+                            setShowDeleteMenu(
+                              showDeleteMenu === comment.comment_id
+                                ? null
+                                : comment.comment_id,
+                            )
+                          }
+                        >
+                          ⋮
+                        </div>
+                        {showDeleteMenu === comment.comment_id && (
+                          <div className="delete-menu">
+                            <button
+                              className="delete-button"
+                              onClick={() =>
+                                handleDeleteComment(comment.comment_id)
+                              }
+                            >
+                              삭제
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <p className="comment-content">{comment.comm_content}</p>
+                </div>
+              ))}
+
+              {/* 댓글 입력 */}
+              <div className="new-comment">
+                <input
+                  type="text"
+                  className="new-comment-input"
+                  placeholder="댓글을 입력하세요"
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <button onClick={handleCommentSubmit} className="submit-button">
+                  등록
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <p>Loading post...</p>
-        )}
+          ) : (
+            <p>Loading post...</p>
+          )}
+        </div>
       </BigBox>
       <button
         onClick={() => navigate('/board')}
-        className="absolute bottom-[30px] right-[210px] w-[90px] h-[200px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
+        className="absolute bottom-[30px] right-[130px] w-[90px] h-[1250px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
         title="나가기"
         aria-label="나가기"
       >
