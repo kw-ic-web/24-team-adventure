@@ -463,6 +463,12 @@ export default function GamePlay(): JSX.Element {
                   </div>
                   <button
                     onClick={() => {
+                      if (!promptTexts[currentPage]) {
+                        // 해당 페이지의 프롬프트가 비어있으면 입력을 요구하는 로직
+                        alert('프롬프트를 입력해주세요!');
+                        return; // 실행 중단
+                      }
+
                       // GPT 결과 가져오는 기존 기능 호출
                       fetchGptResult();
 
