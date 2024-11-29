@@ -344,9 +344,15 @@ export default function GamePlay(): JSX.Element {
                   ? pages[0]?.intro_pic1
                   : currentPage === 2
                     ? pages[0]?.intro_pic2
-                    : currentPage === 3 || currentPage === 4
+                    : currentPage === 3
                       ? pages[0]?.intro_pic3
-                      : pages[0]?.cover_pic
+                      : currentPage === 4
+                        ? pages[0]?.intro_pic1
+                        : currentPage === 5
+                          ? pages[0]?.intro_pic2
+                          : currentPage === 6
+                            ? pages[0]?.intro_pic3
+                            : pages[0]?.cover_pic
               }
               alt="Page Image"
               className="w-full h-full object-cover"
@@ -459,7 +465,7 @@ export default function GamePlay(): JSX.Element {
                     </div>
                     <button
                       onClick={keyword_generated_bygpt}
-                      className="px-3.5 py-1.5 translate-x-[-18px] bg-gradient-to-r from-green-400 via-green-500 to-green-600 text-white text-base font-bold rounded-lg shadow-lg hover:from-green-500 hover:via-green-600 hover:to-green-700 transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300 focus:ring-offset-2"
+                      className="px-3.5 py-1.5 translate-x-[-18px] bg-gradient-to-r from-green-300 via-green-400 to-green-500 text-white text-base font-bold rounded-lg shadow-lg hover:from-green-400 hover:via-green-500 hover:to-green-600 transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-200 focus:ring-offset-2"
                     >
                       ✨힌트
                     </button>
