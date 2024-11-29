@@ -36,7 +36,7 @@ function GameEnd() {
               <h1>최종 스토리</h1>
               <p>작성자</p>
             </div>
-            {[...Array(3)].map((_, i) => (
+            {[...Array(8)].map((_, i) => (
               <div key={i} className={`page page-${i + 1}`} />
             ))}
           </div>
