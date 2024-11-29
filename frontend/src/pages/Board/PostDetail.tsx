@@ -134,11 +134,9 @@ const PostDetail: React.FC = () => {
       {' '}
       <Background />
       {/* Profile Box */}
-      <Link to="/MyPage">
+      <div className="boxes-align">
         <Profile />
-      </Link>
       {/* Userlist Box */}
-      <div>
         <UserList users={users} />
       </div>
       <SmallBox>

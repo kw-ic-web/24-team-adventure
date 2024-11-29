@@ -2,6 +2,7 @@ import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import useGoogleAuthMutation from '../../hooks/auth/useGoogleAuthMutation';
 import StartBackground from '../../components/ui/StartBackground';
+import startlogo from './startlogo.jpg';
 
 /*
 To do:

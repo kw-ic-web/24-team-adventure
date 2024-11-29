@@ -3,13 +3,11 @@ import axios from 'axios';
 import './GameSelect.css';
 
 import { useNavigate } from 'react-router-dom';
-import LanguageToggle from '../../components/game/LanguageToggle.tsx';
 import GameSelectCard from '../../components/game/GameSelectCard.tsx';
 
 import { toggleLanguage, Language } from '../../utils/game/languageUtils.ts';
 import Background from '../../components/ui/Background';
 import BigBox from '../../components/ui/BigBox.tsx';
-import HomeBtnforBigbox from '../../components/ui/HomeBtnforBigbox';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 
 
@@ -27,9 +25,6 @@ const GameSelect = () => {
   const navigate = useNavigate(); // 페이지 이동을 위한 navigate hook
 
 
-  const handleToggleLanguage = () => {
-    setLanguage(toggleLanguage(language));
-  };
 
   const handleClick = (id: number) => {
     navigate(`/gameplay/${id}`); // 스토리 ID를 기반으로 페이지 이동
@@ -87,7 +82,6 @@ const GameSelect = () => {
       </div>
     </div>
     </BigBox>
-    <div><HomeBtnforBigbox/></div>
     </div>
   );
 };

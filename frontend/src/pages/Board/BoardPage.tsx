@@ -6,7 +6,8 @@ import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
 import Profile from '../../components/ui/Profile';
 import UserList from '../../components/ui/Userlist';
-import HomeBtn from '../../components/ui/HomeBtn';
+
+import HeaderLogo from '../../components/ui/HeaderLogo';
 import './BoardPage.css';
 
 //db연결 전 **임시** 사용자 정보
@@ -73,11 +74,8 @@ const BoardPage: React.FC = () => {
   return (
     <div>
       <Background />
-      <Link to="/MyPage">
-        <Profile />
-      </Link>
       <div>
-        <UserList users={users} />
+        <HeaderLogo />
       </div>
       <SmallBox>
 
@@ -97,7 +95,10 @@ const BoardPage: React.FC = () => {
         ))}
       </div>
       </SmallBox>
-      <HomeBtn />
+      <div className="boxes-align">
+      <Profile/>
+        <UserList users={users} />
+      </div>
     </div>
   );
 };
