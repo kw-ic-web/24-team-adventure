@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 
 // Socket.IO 인스턴스 생성
-const socket = io();
+const socket = io('http://localhost:3000');
 
 export default function Room() {
   // States
@@ -69,7 +69,7 @@ export default function Room() {
   const getMedia = async (deviceId?: string) => {
     const constraints = deviceId
       ? { audio: true, video: { deviceId: { exact: deviceId } } }
-      : { audio: true, video: { facingMode: 'user' } };
+      : { audio: true, video: { facingMode: 'user' } }; //스마트폰일 때 전면카메라 우선 동작
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -107,31 +107,37 @@ export default function Room() {
       ],
     });
 
-    peerConnection.addEventListener('icecandidate', (data) => {
-      if (data.candidate) {
-        socket.emit('ice', data.candidate, roomName);
+    // ICE 후보 처리
+    peerConnection.addEventListener('icecandidate', (event) => {
+      if (event.candidate) {
+        console.log('ICE Candidate:', event.candidate);
+        socket.emit('ice', event.candidate, roomName); // ICE 후보를 서버에 전송
       }
     });
 
+    // 상대방의 트랙을 받을 때 처리
     peerConnection.addEventListener('track', (event: RTCTrackEvent) => {
-      const [stream] = event.streams; // track 이벤트의 streams 배열에서 스트림 추출
+      const [stream] = event.streams;
+      console.log('Received stream from peer:', stream);
       if (peerFaceRef.current && stream) {
-        peerFaceRef.current.srcObject = stream; // 비디오 요소에 스트림 연결
+        peerFaceRef.current.srcObject = stream; // 상대방 비디오 스트림을 화면에 표시
       }
     });
 
+    // 내 스트림을 상대에게 전달
     if (currentStream) {
-      currentStream
-        .getTracks()
-        .forEach((track) => peerConnection.addTrack(track, currentStream));
+      currentStream.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, currentStream); // 내 스트림을 상대에게 전송
+      });
     }
 
-    setMyPeerConnection(peerConnection);
+    setMyPeerConnection(peerConnection); // peerConnection 상태 업데이트
   };
 
   // Socket event listeners
   useEffect(() => {
     socket.on('welcome', async () => {
+      console.log("Received 'welcome' message, creating offer...");
       if (myPeerConnection) {
         const offer = await myPeerConnection.createOffer();
         myPeerConnection.setLocalDescription(offer);
@@ -140,6 +146,7 @@ export default function Room() {
     });
 
     socket.on('offer', async (offer) => {
+      console.log("Received 'offer' from peer:", offer);
       if (myPeerConnection) {
         myPeerConnection.setRemoteDescription(offer);
         const answer = await myPeerConnection.createAnswer();
@@ -149,12 +156,14 @@ export default function Room() {
     });
 
     socket.on('answer', (answer) => {
+      console.log("Received 'answer' from peer:", answer);
       if (myPeerConnection) {
         myPeerConnection.setRemoteDescription(answer);
       }
     });
 
     socket.on('ice', (ice) => {
+      console.log('Received ICE candidate:', ice);
       if (myPeerConnection) {
         myPeerConnection.addIceCandidate(ice);
       }
