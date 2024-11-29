@@ -66,7 +66,7 @@ export default function GamePlay(): JSX.Element {
         return;
       }
 
-      // StoryService에서 제공하는 generateStoryKeywords 호출
+      // generateStoryKeywords 호출
       const response = await generateStoryKeywords(promptText);
       if (response && response.keywords) {
         setKeywords(response.keywords); // 키워드 상태 업데이트
@@ -215,9 +215,7 @@ export default function GamePlay(): JSX.Element {
       }, 30);
     }, 1500);
   };
-  useEffect(() => {
-    console.log('Cover Pic URL:', pages[0]?.cover_pic);
-  }, [pages]);
+
   useEffect(() => {
     if (gameStarted) {
       applyEffects();
@@ -234,15 +232,15 @@ export default function GamePlay(): JSX.Element {
       try {
         if (pages.length > 0 && pages[0]?.cover_pic) {
           const imageUrl = encodeURI(pages[0].cover_pic);
-          console.log('Generated Image URL:', imageUrl); // 디버깅 로그
+          console.log('Generated Image URL:', imageUrl);
           setCoverImage(imageUrl);
         } else {
           console.warn('No cover_pic found. Using default image.');
-          setCoverImage('/images/default-cover.jpg'); // 기본 이미지 설정
+          setCoverImage('/images/default-cover.jpg');
         }
       } catch (error) {
         console.error('Error generating cover image URL:', error);
-        setCoverImage('/images/default-cover.jpg'); // 오류 시 기본 이미지 설정
+        setCoverImage('/images/default-cover.jpg');
       }
     };
 
@@ -491,6 +489,7 @@ export default function GamePlay(): JSX.Element {
                   // 이미지 보기 상태
                   setBlurLevel(0); // 블러 해제
                   setTextBoxOpacity(0); // 텍스트 박스 숨김
+                  setIsPromptVisible(false); // 프롬프트 숨기기
                 } else {
                   // 글 보기 상태
                   setTextBoxOpacity(1); // 텍스트 박스를 즉시 표시
@@ -501,6 +500,7 @@ export default function GamePlay(): JSX.Element {
                       return prev;
                     });
                   }, 20); // 블러 증가 속도
+                  setIsPromptVisible(true); // 프롬프트 표시
                 }
                 return !prev;
               });
