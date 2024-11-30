@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import StartModal from '../../components/game/StartModal';
 import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
-import back from './동화배경5.png';
+import back from './동화배경3.jpg';
 import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
@@ -22,6 +23,7 @@ interface StoryPage {
 }
 
 export default function GamePlay(): JSX.Element {
+  const navigate = useNavigate();
   const { story_id } = useParams<{ story_id: string }>(); // URL에서 story_id 추출
   const [pages, setPages] = useState<StoryPage[]>([]); // 스토리 페이지 데이터 상태
   const [coverImage, setCoverImage] = useState<string>(''); // 이미지 URL 상태
@@ -32,6 +34,7 @@ export default function GamePlay(): JSX.Element {
   const [textBoxOpacity, setTextBoxOpacity] = useState<number>(0); // 텍스트 투명도
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기
   const [keywords, setKeywords] = useState<string[]>([]); // 키워드 상태 추가
+  const [isPromptVisible, setIsPromptVisible] = useState(false); // 프롬프트 보이기 상태 추가
 
   const [pageTexts, setPageTexts] = useState<string[]>([
     '',
@@ -49,6 +52,12 @@ export default function GamePlay(): JSX.Element {
     '',
     '',
   ]); // 각 페이지의 프롬프터 상태
+
+  // 페이지 변경 시 프롬프트 상태 리셋
+  useEffect(() => {
+    setIsPromptVisible(true); // 페이지가 바뀔 때마다 프롬프트를 다시 보이게 설정
+  }, [currentPage]); // currentPage가 변경될 때마다 실행
+
   const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태
   const keyword_generated_bygpt = async () => {
@@ -59,7 +68,7 @@ export default function GamePlay(): JSX.Element {
         return;
       }
 
-      // StoryService에서 제공하는 generateStoryKeywords 호출
+      // generateStoryKeywords 호출
       const response = await generateStoryKeywords(promptText);
       if (response && response.keywords) {
         setKeywords(response.keywords); // 키워드 상태 업데이트
@@ -72,6 +81,24 @@ export default function GamePlay(): JSX.Element {
       setKeywords([]);
     }
   };
+
+  // 최종동화합치기 및 gameEnd로 넘기는 부분
+  const handleCompleteClick = () => {
+    if (currentPage === 6) {
+      const fullStory = {
+        title: pages[0]?.story_title || '동화 제목', // 제목이 없으면 기본 제목 사용
+        content: pageTexts.join('\n\n'), // pageTexts 배열을 줄바꿈으로 구분하여 하나의 문자열로 합침
+      };
+
+      // 로컬 스토리지에 저장
+      localStorage.setItem('storyTitle', fullStory.title);
+      localStorage.setItem('storyContent', fullStory.content);
+
+      // gameEnd 페이지로 이동
+      navigate('/gameEnd');
+    }
+  };
+
   // 이야기 데이터를 가져오는 함수
   useEffect(() => {
     const fetchStoryData = async () => {
@@ -164,6 +191,8 @@ export default function GamePlay(): JSX.Element {
 
   const changePage = (direction: 'next' | 'prev') => {
     setShowImageOnly(false);
+    // 새 페이지로 전환하기 전에 프롬프트를 숨김
+    setIsPromptVisible(false);
 
     setCurrentPage((prev) => {
       if (direction === 'next' && prev < 6) {
@@ -188,11 +217,12 @@ export default function GamePlay(): JSX.Element {
   const applyEffects = () => {
     setBlurLevel(0);
     setTextBoxOpacity(0);
+    setIsPromptVisible(false);
 
     setTimeout(() => {
       const blurInterval = setInterval(() => {
         setBlurLevel((prev) => {
-          if (prev < 50) return prev + 1;
+          if (prev < 5) return prev + 1;
           clearInterval(blurInterval);
           return prev;
         });
@@ -200,16 +230,16 @@ export default function GamePlay(): JSX.Element {
 
       const textFadeInterval = setInterval(() => {
         setTextBoxOpacity((prev) => {
-          if (prev < 1) return prev + 0.05;
+          if (prev < 1) return prev + 0.5;
           clearInterval(textFadeInterval);
           return prev;
         });
       }, 30);
+      setTimeout(() => {
+        setIsPromptVisible(true);
+      }, 150);
     }, 1500);
   };
-  useEffect(() => {
-    console.log('Cover Pic URL:', pages[0]?.cover_pic);
-  }, [pages]);
   useEffect(() => {
     if (gameStarted) {
       applyEffects();
@@ -226,15 +256,15 @@ export default function GamePlay(): JSX.Element {
       try {
         if (pages.length > 0 && pages[0]?.cover_pic) {
           const imageUrl = encodeURI(pages[0].cover_pic);
-          console.log('Generated Image URL:', imageUrl); // 디버깅 로그
+          console.log('Generated Image URL:', imageUrl);
           setCoverImage(imageUrl);
         } else {
           console.warn('No cover_pic found. Using default image.');
-          setCoverImage('/images/default-cover.jpg'); // 기본 이미지 설정
+          setCoverImage('/images/default-cover.jpg');
         }
       } catch (error) {
         console.error('Error generating cover image URL:', error);
-        setCoverImage('/images/default-cover.jpg'); // 오류 시 기본 이미지 설정
+        setCoverImage('/images/default-cover.jpg');
       }
     };
 
@@ -261,13 +291,26 @@ export default function GamePlay(): JSX.Element {
       )}
 
       {showModal && (
-        <StartModal
-          isOpen={showModal}
-          title="안내"
-          message="게임을 시작하시겠습니까?"
-          onConfirm={confirmStart}
-          onClose={closeModal}
-        />
+        <div className="modal-container">
+          <StartModal
+            isOpen={showModal}
+            title="게임 시작 안내"
+            message={
+              <>
+                음성 인식을 통해 여러분만의 동화를 만들어가는 게임입니다.
+                <br />
+                창의력과 상상력을 발휘하여 이야기를 만들어 보세요.
+                <br />
+                화상 채팅을 통해 완성된 동화를 친구와 공유할 수 있습니다.
+                <br />
+                <br />
+                <strong>게임을 시작하시겠습니까?</strong>
+              </>
+            }
+            onConfirm={confirmStart}
+            onClose={closeModal}
+          />
+        </div>
       )}
 
       {isLoading && (
@@ -301,9 +344,15 @@ export default function GamePlay(): JSX.Element {
                   ? pages[0]?.intro_pic1
                   : currentPage === 2
                     ? pages[0]?.intro_pic2
-                    : currentPage === 3 || currentPage === 4 // 3, 4페이지 모두 intro_pic3 표시
+                    : currentPage === 3
                       ? pages[0]?.intro_pic3
-                      : pages[0]?.cover_pic
+                      : currentPage === 4
+                        ? pages[0]?.intro_pic1
+                        : currentPage === 5
+                          ? pages[0]?.intro_pic2
+                          : currentPage === 6
+                            ? pages[0]?.intro_pic3
+                            : pages[0]?.cover_pic
               }
               alt="Page Image"
               className="w-full h-full object-cover"
@@ -313,100 +362,171 @@ export default function GamePlay(): JSX.Element {
           {/* 텍스트 영역 */}
           {!showImageOnly && (
             <div
-              className="absolute inset-x-0 bottom-0 flex justify-center mb-10"
+              className="absolute inset-0 flex items-center justify-center"
               style={{
                 opacity: textBoxOpacity,
                 transition: 'opacity 0.5s',
               }}
             >
-              <div className="relative w-4/5 max-w-3xl mx-auto rounded-xl mt-10 overflow-hidden">
-                <img
-                  src={back}
-                  alt="글자 배경"
-                  className="w-full h-auto object-cover rounded-xl"
-                  style={{ opacity: 0.9 }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center p-8">
-                  <p
-                    className="text-black text-2xl font-bold text-center break-words leading-relaxed"
-                    style={{ whiteSpace: 'pre-line' }} // 줄바꿈 처리
-                  >
-                    {pageTexts[currentPage - 1]}
-                  </p>
+              {/* 4, 5, 6 페이지 전용 */}
+              {currentPage >= 4 && currentPage <= 6 ? (
+                <div
+                  className="relative w-11/12 max-w-5xl mx-auto rounded-xl mt-10 overflow-hidden animate-slide-up story-screen-456"
+                  style={{
+                    height: '85%',
+                    borderRadius: '15px',
+                    backdropFilter: 'blur(15px)',
+                    boxShadow: '0 12px 24px rgba(0, 0, 0, 0.3)',
+                    overflowY: 'auto',
+                  }}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center p-8">
+                    <p
+                      className="text-black text-3xl font-bold text-center break-words leading-relaxed"
+                      style={{
+                        lineHeight: '2.0',
+                        letterSpacing: '0.1em',
+                        whiteSpace: 'pre-line',
+                        textAlign: 'left',
+                      }}
+                    >
+                      {pageTexts[currentPage - 1]}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* 기본 스타일 (4, 5, 6이 아닌 페이지) */
+                <div
+                  className="relative w-11/12 max-w-5xl mx-auto rounded-xl mt-10 overflow-hidden animate-slide-up"
+                  style={{
+                    height: '80%',
+                    borderRadius: '20px 20px 20px 20px',
+                    background: 'rgba(255, 248, 225, 0.85)',
+                    backdropFilter: 'blur(10px)',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                  }}
+                >
+                  <img
+                    src={back}
+                    alt="글자 배경"
+                    className="w-full h-full object-cover rounded-xl"
+                    style={{ opacity: 0.7 }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center p-8">
+                    <p
+                      className="text-black text-2xl font-bold text-center break-words leading-relaxed"
+                      style={{
+                        lineHeight: '1.8',
+                        letterSpacing: '0.05em',
+                        whiteSpace: 'pre-line',
+                        textAlign: 'left',
+                        paddingLeft: '15px',
+                        paddingRight: '15px',
+                      }}
+                    >
+                      {pageTexts[currentPage - 1]}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {/* 음성 인식 및 GPT */}
+          {/* 전체 프롬프터 부분 */}
           {currentPage >= 4 && (
-            <div className="absolute inset-x-0 bottom-5 flex flex-col items-center gap-4">
-              {/* 키워드 블록 */}
-              <div className="w-3/5 flex items-center justify-center -top-16 z-10 absolute gap-4">
-                {/* 힌트 버튼 */}
-                <button
-                  onClick={keyword_generated_bygpt}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600"
-                >
-                  힌트
-                </button>
-
-                {/* 키워드 목록 */}
-                <div className="flex flex-wrap gap-2">
-                  {keywords.map((keyword, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-blue-100 text-blue-700 font-medium rounded-lg border border-blue-300 shadow-sm"
+            <div
+              className={`fixed inset-x-0 bottom-0 px-3 pb-3 transition-transform duration-500 ease-in-out ${
+                isPromptVisible
+                  ? 'transform translate-y-0'
+                  : 'transform translate-y-full'
+              }`}
+            >
+              <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden">
+                {/* 키워드 부분 */}
+                <div className="px-3 py-3 border-b border-gray-100">
+                  <div className="flex items-center justify-between space-x-2">
+                    <div className="flex-grow">
+                      {keywords.length === 0 ? (
+                        <p className="text-gray-600 font-bold text-base pl-[230px]">
+                          다음 키워드를 활용해서 이야기를 만들어도 좋아요!
+                        </p>
+                      ) : (
+                        <div className="flex flex-wrap gap-2">
+                          {keywords.map((keyword, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-blue-50 text-blue-600 text-sm font-semibold rounded-full border border-blue-200"
+                            >
+                              {keyword}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={keyword_generated_bygpt}
+                      className="px-3.5 py-1.5 translate-x-[-18px] bg-gradient-to-r from-green-300 via-green-400 to-green-500 text-white text-base font-bold rounded-lg shadow-lg hover:from-green-400 hover:via-green-500 hover:to-green-600 transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-200 focus:ring-offset-2"
                     >
-                      {keyword}
-                    </span>
-                  ))}
+                      ✨힌트
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* 흰 박스 영역 */}
-              <div className="w-3/5 bg-white p-6 rounded-lg shadow-md flex items-center gap-4 relative z-0">
-                {/* 음성 인식 버튼 */}
-                <div className="flex-none">
+                {/* 말하기 프롬프트부분*/}
+                <div className="px-6 py-4 flex items-center space-x-4">
                   <SpeechRecognition
                     language="ko-KR"
                     onResult={handleSpeechResult}
+                    className="text-gray-600 hover:text-gray-800 transition-colors"
                   />
+                  <div className="relative w-full">
+                    <textarea
+                      value={promptTexts[currentPage - 1]}
+                      onChange={(e) => {
+                        const updatedPrompt = e.target.value;
+
+                        setPromptTexts((prev) => {
+                          const updatedPrompts = [...prev];
+                          updatedPrompts[currentPage - 1] = updatedPrompt;
+                          return updatedPrompts;
+                        });
+
+                        setPageTexts((prev) => {
+                          const updatedTexts = [...prev];
+                          updatedTexts[currentPage - 1] = updatedPrompt;
+                          return updatedTexts;
+                        });
+                      }}
+                      className="w-full h-20 flex-grow p-3 text-gray-700 rounded-xl border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300/50 bg-gray-50 text-lg transition-all duration-300 ease-in-out"
+                      placeholder="여기에 이야기를 입력하거나 음성 입력 버튼을 사용해보세요."
+                      style={{ userSelect: 'text' }}
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (!promptTexts[currentPage - 1]) {
+                        alert('프롬프트를 입력해주세요!');
+                        return;
+                      }
+
+                      // GPT 결과 가져오는 기존 기능 호출
+                      fetchGptResult();
+
+                      // 프롬프트 보이기/숨기기 상태 변경
+                      setIsPromptVisible(!isPromptVisible);
+                    }}
+                    disabled={gptButtonDisabled}
+                    className={`px-6 py-2 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 text-white text-base font-bold rounded-lg shadow-lg ${
+                      gptButtonDisabled
+                        ? 'opacity-50 cursor-not-allowed'
+                        : 'hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl transform hover:scale-105'
+                    } transition-all duration-500 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-offset-2`}
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
+                    <span className="block">이야기</span>
+                    <span className="block">만들기</span>
+                  </button>
                 </div>
-                {/* 프롬프터 텍스트 박스 */}
-                <textarea
-                  value={promptTexts[currentPage - 1]}
-                  onChange={(e) => {
-                    const updatedPrompt = e.target.value;
-
-                    setPromptTexts((prev) => {
-                      const updatedPrompts = [...prev];
-                      updatedPrompts[currentPage - 1] = updatedPrompt;
-                      return updatedPrompts;
-                    });
-
-                    setPageTexts((prev) => {
-                      const updatedTexts = [...prev];
-                      updatedTexts[currentPage - 1] = updatedPrompt;
-                      return updatedTexts;
-                    });
-                  }}
-                  className="flex-grow p-4 border-2 border-gray-300 rounded-lg text-black"
-                  placeholder="버튼을 눌러 이야기를 말해보세요."
-                />
-
-                {/* GPT로 보내기 버튼 */}
-                <button
-                  onClick={fetchGptResult}
-                  disabled={gptButtonDisabled}
-                  className={`flex-none p-4 rounded-full ${
-                    gptButtonDisabled
-                      ? 'bg-gray-500 text-white'
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}
-                >
-                  {gptButtonDisabled ? 'GPT 처리 중...' : 'GPT로 보내기'}
-                </button>
               </div>
             </div>
           )}
@@ -419,23 +539,25 @@ export default function GamePlay(): JSX.Element {
                   // 이미지 보기 상태
                   setBlurLevel(0); // 블러 해제
                   setTextBoxOpacity(0); // 텍스트 박스 숨김
+                  setIsPromptVisible(false); // 프롬프트 숨기기
                 } else {
                   // 글 보기 상태
                   setTextBoxOpacity(1); // 텍스트 박스를 즉시 표시
                   const blurInterval = setInterval(() => {
                     setBlurLevel((prev) => {
-                      if (prev < 50) return prev + 1; // 블러 점진적 증가
+                      if (prev < 2) return prev + 1; // 블러 점진적 증가
                       clearInterval(blurInterval);
                       return prev;
                     });
                   }, 20); // 블러 증가 속도
+                  setIsPromptVisible(true); // 프롬프트 표시
                 }
                 return !prev;
               });
             }}
             className="next-button accent-button absolute top-4 right-4 z-button-container10"
           >
-            {showImageOnly ? '글 보기' : '이미지 보기'}
+            {showImageOnly ? '글 보기' : '그림 보기'}
           </button>
 
           {/* 이전/다음 버튼 */}
@@ -443,8 +565,11 @@ export default function GamePlay(): JSX.Element {
             <button onClick={prevPage} className="next-button">
               이전
             </button>
-            <button onClick={nextPage} className="next-button">
-              다음
+            <button
+              onClick={currentPage === 6 ? handleCompleteClick : nextPage}
+              className="next-button"
+            >
+              {currentPage === 6 ? '완성' : '다음'}
             </button>
           </div>
         </div>
