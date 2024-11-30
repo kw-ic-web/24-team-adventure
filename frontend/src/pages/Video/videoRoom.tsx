@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
+import { useUserData } from '../../hooks/auth/useUserData';
 
 // Socket.IO 인스턴스 생성
 const socket = io('http://localhost:3000');
 
 export default function Room() {
+  // 사용자 데이터를 불러오는 hook
+  const { data: userData, isLoading: userLoading } = useUserData();
+  console.log('User data loading:', userLoading);
+  console.log('User data:', userData);
+
   // States
   const [roomName, setRoomName] = useState<string>(''); // 방 이름
   const [isRoomJoined, setIsRoomJoined] = useState<boolean>(false); // 방 참여 여부
@@ -165,7 +171,7 @@ export default function Room() {
     socket.on('ice', (ice) => {
       console.log('Received ICE candidate:', ice);
       if (myPeerConnection) {
-        myPeerConnection.addIceCandidate(ice);
+        myPeerConnection.addIceCandidate(new RTCIceCandidate(ice));
       }
     });
 
