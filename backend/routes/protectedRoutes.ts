@@ -16,10 +16,10 @@ router.get(
   authenticateJWT,
   (req: AuthenticatedRequest, res: Response) => {
     if (req.user) {
-      console.log("Returning user data:", req.user); // 응답 전에 사용자 정보 로그
+      // console.log("Returning user data:", req.user); // 응답 전에 사용자 정보 로그
       res.json({ message: "Protected data", user: req.user });
     } else {
-      console.log("User not found in request");
+      // console.log("User not found in request");
       res.status(403).json({ message: "Access denied" });
     }
   }
