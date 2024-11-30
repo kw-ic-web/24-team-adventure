@@ -17,7 +17,7 @@
   text-shadow:
     0 0 5px rgba(0, 0, 0, 0.9),
     0 0 10px rgba(0, 0, 0, 0.8),
-    0 0 20px rgba(0, 0, 0, 0.8); /* 글뒤에 그림자 색상 */
+    0 0 20px rgba(0, 0, 0, 0.8);
   opacity: 0;
   transform: translateY(-20px);
   animation: fadeInSlide 1.2s ease-out forwards;
