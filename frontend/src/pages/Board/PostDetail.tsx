@@ -134,6 +134,12 @@ const PostDetail: React.FC = () => {
     <div>
       {' '}
       <Background />
+
+        <div className="boxes-align">
+        <Profile />
+      {/* Userlist Box */}
+        <UserList users={users} />
+      </div>
       <BigBox className="big-box">
         <div className="scrollable-box">
           {post ? (
@@ -148,6 +154,7 @@ const PostDetail: React.FC = () => {
                   업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
                 </span>
               </div>
+
 
               {/* 게시물 본문 */}
               <p className="intro-text">{post.intro1}</p>
