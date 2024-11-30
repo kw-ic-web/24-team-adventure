@@ -33,7 +33,8 @@ export const socketHandler = (server: HttpServer): void => {
   const users: Record<string, User> = {};
 
   io.on("connection", (socket: Socket) => {
-    console.log("connection!", socket.id);
+    const socket_id = socket.id;
+    console.log("connection!", socket_id);
 
     socket.on("join_room", (roomName: string, username: string) => {
       const room = rooms.find((r) => r.title === roomName);
