@@ -6,7 +6,6 @@ import Background from '../../components/ui/Background';
 import Profile from '../../components/ui/Profile';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 
-
 import '../../components/ui/CommonUi.css';
 
 interface User {
@@ -55,44 +54,50 @@ export default function Home() {
           src="/images/GameStart3.png"
           alt="Game Start"
           onClick={() => navigate('/games')}
-          style={{ width: '200px', height: 'auto', cursor: 'pointer' }}
+          style={{ width: '500px', height: 'auto', cursor: 'pointer' }}
           className=" transform transition-transform hover:scale-110"
         />
       </div>
-      {/* Profile Box */}
-      <Link to="/MyPage">
-        <Profile />
-      </Link>
-      {/* Userlist Box */}
-      <div>
+
+      <div className="boxes-align">
+        {/* Profile Box */}
+        <Profile>
+          <button onClick={handleLogout} >
+            <img
+              src="/images/xBtn.png"
+              alt="Log out"
+              style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
+              className="  ml-7 transform transition-transform hover:scale-110"
+            />
+          </button>
+        </Profile>
+
+        {/* Userlist Box */}
         <UserList users={users} />
+
+        {/* Board Button */}
+        <Link to="/Board" className="board-link-button">
+          게시판 이동하기
+        </Link>
+
+        {/* Board Box */}
+        <div className="post-list-box">
+          {posts.slice(0, 5).map((post) => (
+            <div key={post.id} className="post-list-item">
+              <span className="text-sm font-semibold">{post.category}</span>
+              <Link
+                to={`/Board/${post.id}`}
+                className="ml-2 truncate"
+                title={post.title}
+              >
+                {post.title.length > 15
+                  ? `${post.title.slice(0, 15)}...`
+                  : post.title}
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
-      {/* Board Button */}
-      <Link to="/Board" className="board-link-button">
-        &nbsp;게시판 이동하기
-      </Link>
-      {/* Board Box */}
-      <div className="post-list-box">
-        {posts.slice(0, 5).map((post) => (
-          <div key={post.id} className="post-list-item">
-            <span className="text-sm font-semibold">{post.category}</span>
-            <Link
-              to={`/Board/${post.id}`}
-              className="ml-2 truncate"
-              title={post.title}
-            >
-              {post.title.length > 15
-                ? `${post.title.slice(0, 15)}...`
-                : post.title}
-            </Link>
-          </div>
-        ))}
-      </div>
-      {/* 로그아웃 버튼 */}
-      <button className="logout-button" onClick={handleLogout}>
-        <img src="/images/logoutBtn.png" alt="로그아웃 버튼" />
-        <span className="logout-text">&nbsp;로그아웃</span>
-        </button>
     </div>
   );
 }

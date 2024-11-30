@@ -145,10 +145,10 @@ const StoryGrid: React.FC = () => {
           </div>
         </div>
       </SmallBox>
-
-      <Profile />
-      <UserList users={users} />
-      <HomeBtn />
+      <div className="boxes-align">
+          <Profile />
+        <UserList users={users} />
+      </div>
     </div>
   );
 };
