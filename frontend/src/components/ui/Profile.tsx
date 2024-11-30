@@ -45,8 +45,7 @@ export default function Profile({ children }) {
       </Link>
       {children}
       </div>
-      <h3 className="profile-email text-sm ">{userData?.email}</h3>
-      
+
     </div>
   );
 }

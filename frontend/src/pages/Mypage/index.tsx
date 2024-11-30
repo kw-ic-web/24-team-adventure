@@ -108,7 +108,9 @@ export default function Mypage() {
 
       {/* Right Side: 사용자 정보 섹션 */}
       <div className="boxes-align">
-        <Profile />
+        <Profile >
+       
+          </Profile>
         {/* Userlist Box */}
         <UserList users={users} />
       </div>

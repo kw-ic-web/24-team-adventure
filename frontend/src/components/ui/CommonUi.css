@@ -32,22 +32,19 @@ body {
   left: 10%;
   width: 65%;
   height: 80%;
-  background-color: white; /* 배경색 */
-  border-radius: 50px; /* 둥근 모서리 */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
+  
   padding: 40px;
 }
 
 .big-main-box {
   position: absolute; /* 배치 */
   top: 50%;
-  left: 50%;
+  left: 45%;
   transform: translate(-50%, -48%);
-  width:80%;
+  width:70%;
   height: 80%;
-  background-color: white; /* 배경색 */
-  border-radius: 50px; /* 둥근 모서리 */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
+  
+  
 }
 .big-main-box > div {
   transform: scale(0.8); /* 콘텐츠 축소 */
@@ -78,7 +75,7 @@ body {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 19px;
   text-align: center;
-  font-size: 85%;
+  font-size: 100%;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -98,7 +95,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 90%;
+  font-size: 120%;
   text-align: center;
   flex-wrap: wrap; /* 줄바꿈 활성화 */
   gap: 5px;
@@ -110,7 +107,7 @@ body {
 }
 
 .profile-box .profile-name {
-  margin-left: 15px;
+  margin-left: 8px;
   font-weight: 600;
 }
 
@@ -138,7 +135,7 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 90%;
+  font-size: 100%;
 }
 
 /* User List Box */
@@ -150,7 +147,7 @@ body {
   height: 250px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
-  font-size: 90%;
+  font-size: 120%;
 }
 
 .user-list-item {
