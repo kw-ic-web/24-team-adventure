@@ -14,12 +14,6 @@ interface User {
   name: string;
   online: boolean;
 }
-// 예시 사용자 데이터
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
 
 export default function Mypage() {
   const navigate = useNavigate();
@@ -110,7 +104,12 @@ export default function Mypage() {
       <div className="boxes-align">
         <Profile />
         {/* Userlist Box */}
-        <UserList users={users} />
+
+  
+        <div>
+          <HomeBtn />
+        </div>
+
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
 import './GamePlay.css';
+import { useUserData } from '../../hooks/auth/useUserData';
 
 interface StoryPage {
   story_id: number;
@@ -35,6 +36,7 @@ export default function GamePlay(): JSX.Element {
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기
   const [keywords, setKeywords] = useState<string[]>([]); // 키워드 상태 추가
   const [isPromptVisible, setIsPromptVisible] = useState(false); // 프롬프트 보이기 상태 추가
+  const { data: userData } = useUserData();
 
   const [pageTexts, setPageTexts] = useState<string[]>([
     '',
@@ -81,18 +83,19 @@ export default function GamePlay(): JSX.Element {
       setKeywords([]);
     }
   };
-
   // 최종동화합치기 및 gameEnd로 넘기는 부분
   const handleCompleteClick = () => {
     if (currentPage === 6) {
       const fullStory = {
         title: pages[0]?.story_title || '동화 제목', // 제목이 없으면 기본 제목 사용
         content: pageTexts.join('\n\n'), // pageTexts 배열을 줄바꿈으로 구분하여 하나의 문자열로 합침
+        userName: userData?.name || '익명 사용자', // 유저 이름 가져오기, 없으면 기본값 설정
       };
 
       // 로컬 스토리지에 저장
       localStorage.setItem('storyTitle', fullStory.title);
       localStorage.setItem('storyContent', fullStory.content);
+      localStorage.setItem('userName', fullStory.userName); // 유저 이름 저장
 
       // gameEnd 페이지로 이동
       navigate('/gameEnd');

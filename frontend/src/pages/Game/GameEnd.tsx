@@ -6,6 +6,7 @@ function GameEnd() {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [author, setAuthor] = useState('');
   const [bookState, setBookState] = useState({
     isOpen: false,
     isFullyOpen: false,
@@ -14,10 +15,12 @@ function GameEnd() {
   useEffect(() => {
     const savedTitle = localStorage.getItem('storyTitle');
     const savedContent = localStorage.getItem('storyContent');
+    const savedAuthor = localStorage.getItem('userName');
 
     if (savedTitle && savedContent) {
       setTitle(savedTitle);
       setContent(savedContent);
+      setAuthor(savedAuthor); // 작성자 이름 설정
     } else {
       navigate('/'); // 데이터가 없으면 홈으로 리다이렉트
     }
@@ -55,7 +58,7 @@ function GameEnd() {
           <div className="book-content">
             <div className="cover">
               <h1>{title || '최종 스토리'}</h1>
-              <p>작성자</p>
+              <p>작성자: {author || '알 수 없음'}</p> {/* 작성자 이름 표시 */}
             </div>
             {[...Array(8)].map((_, i) => (
               <div key={i} className={`page page-${i + 1}`} />

@@ -22,7 +22,7 @@ const authenticateJWT = async (
   next: NextFunction
 ): Promise<any> => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
-  console.log("JWT 토큰:", token); // 토큰 로그 추가
+  // console.log("JWT 토큰:", token); // 토큰 로그 추가
   if (!token) {
     return res.status(403).json({ message: "Access denied" });
   }
@@ -30,10 +30,10 @@ const authenticateJWT = async (
   try {
     // JWT 토큰을 검증하여 decoded 값 얻기
     const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
-    console.log("Decoded JWT:", decoded); // 디코딩된 JWT 정보 로그 추가
+    // console.log("Decoded JWT:", decoded); // 디코딩된 JWT 정보 로그 추가
     // Supabase에서 user_id로 사용자 정보 조회
     const user = await fetchUserFromSupabase(decoded.user_id);
-    console.log("Fetched User from Supabase:", user);
+    // console.log("Fetched User from Supabase:", user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -42,7 +42,7 @@ const authenticateJWT = async (
     next();
   } catch (error) {
     // JWT 토큰 검증 실패 시
-    console.error("Authentication Error:", error);
+    // console.error("Authentication Error:", error);
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 };
