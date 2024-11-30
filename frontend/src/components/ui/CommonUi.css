@@ -18,7 +18,6 @@ body {
 
 /* Full-page Background Style */
 .full-page-bg {
-  
   position: absolute; /* 배경 고정 */
   top: 0;
   left: 0;
@@ -43,7 +42,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -48%);
-  width:80%;
+  width: 80%;
   height: 80%;
   background-color: white; /* 배경색 */
   border-radius: 50px; /* 둥근 모서리 */
@@ -56,7 +55,7 @@ body {
 
 .boxes-align {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   gap: 18px;
   position: absolute;
@@ -88,7 +87,6 @@ body {
 
 /* Profile Box */
 .profile-box {
-  
   background-color: white;
   padding: 5%;
   width: 70%;
@@ -119,26 +117,22 @@ body {
   font-weight: 400;
 }
 
-
-
 /*/////////////////////////big///////////////////////////*/
 /* Post List Box */
 .post-list-box {
- 
+  align-items: center;
   background-color: white;
   padding: 16px;
   width: 70%;
-  height: 250px;
+  height: 180px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
-  overflow: hidden;
+  font-size: 90%;
 }
 
 .post-list-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 90%;
+  font-size: 16px;
+  margin-bottom: 8px; /* 간격 조절 */
 }
 
 /* User List Box */
@@ -157,7 +151,6 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 6px;
-  
 }
 .user-item-flex {
   display: flex;
@@ -177,7 +170,6 @@ body {
   left: 50%;
   transform: translate(-30%, 20%);
 }
-
 
 /*공백, 엔터 포함한 동화 글*/
 .preserve-spacing {
