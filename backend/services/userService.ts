@@ -23,7 +23,7 @@ export async function createUserInSupabase(
 
 // Supabase에서 user_id로 사용자 정보 조회
 export async function fetchUserFromSupabase(user_id: string) {
-  console.log("Supabase에서 사용자 조회 중:", user_id); // 전달된 user_id 로그
+  // console.log("Supabase에서 사용자 조회 중:", user_id); // 전달된 user_id 로그
   const { data, error } = await supabase
     .from("user")
     .select("*")
@@ -42,6 +42,6 @@ export async function fetchUserFromSupabase(user_id: string) {
   }
 
   // 정상적으로 사용자 데이터를 찾은 경우
-  console.log("Supabase에서 조회된 사용자 데이터:", data);
+  // console.log("Supabase에서 조회된 사용자 데이터:", data);
   return data;
 }

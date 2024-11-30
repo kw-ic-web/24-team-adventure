@@ -8,9 +8,6 @@ const socket = io('http://localhost:3000');
 export default function Room() {
   // 사용자 데이터를 불러오는 hook
   const { data: userData, isLoading: userLoading } = useUserData();
-  console.log('User data loading:', userLoading);
-  console.log('User data:', userData);
-
   // States
   const [roomName, setRoomName] = useState<string>(''); // 방 이름
   const [isRoomJoined, setIsRoomJoined] = useState<boolean>(false); // 방 참여 여부
