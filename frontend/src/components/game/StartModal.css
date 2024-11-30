@@ -1,0 +1,105 @@
+/* 모달의 배경 스타일 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85); /* 더 어두운 반투명 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10; /* 높은 z-index로 설정 */
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* 모달 본체 스타일 */
+.modal-content {
+  background-color: #ffffff; /* 밝은 배경 */
+  border-radius: 15px;
+  padding: 40px 50px; /* 더 넓은 패딩 */
+  width: 90%;
+  max-width: 690px; /* 더 큰 최대 너비 */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4); /* 더 강한 그림자 */
+  text-align: center;
+  color: #1a202c; /* 다크 텍스트 */
+  animation: fadeIn 0.3s ease-in-out forwards; /* 기본 애니메이션 */
+}
+
+.modal-overlay.show .modal-content {
+  animation: fadeIn 0.3s ease-in-out forwards; /* 모달 열릴 때 애니메이션 */
+}
+
+.modal-overlay.hide .modal-content {
+  animation: fadeOut 0.3s ease-in-out forwards; /* 모달 닫힐 때 애니메이션 */
+}
+
+/* 열림 애니메이션 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 제목 스타일 */
+.modal-content h2 {
+  font-size: 2.5rem; /* 더 큰 글씨 크기 */
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: #0f172a; /* 진한 블루블랙 */
+}
+
+/* 메시지 스타일 */
+.modal-content p {
+  font-size: 1.4rem; /* 더 큰 본문 크기 */
+  line-height: 2;
+  margin-bottom: 2.5rem;
+  color: #1e293b; /* 다크 블루 그레이 */
+}
+
+/* 버튼 컨테이너 */
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* 버튼 간격 */
+}
+
+/* 공통 버튼 스타일 */
+.modal-content button {
+  padding: 14px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+/* 확인 버튼 스타일 */
+.modal-content button.confirm {
+  background-color: #f75b5b; /* 코랄 레드 */
+  color: #ffffff;
+}
+
+.modal-content button.confirm:hover {
+  background-color: #e53e3e; /* 더 진한 레드 */
+  transform: scale(1.1); /* 더 큰 확대 효과 */
+}
+
+/* 취소 버튼 스타일 */
+.modal-content button.cancel {
+  background-color: #ffcfcf; /* 연한 코랄 */
+  color: #1a202c; /* 다크 텍스트 */
+}
+
+.modal-content button.cancel:hover {
+  background-color: #ffb4b4; /* 더 진한 코랄 */
+  transform: scale(1.1); /* 더 큰 확대 효과 */
+}
