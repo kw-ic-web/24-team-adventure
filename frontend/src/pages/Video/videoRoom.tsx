@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
+import { useUserData } from '../../hooks/auth/useUserData';
 
 // Socket.IO 인스턴스 생성
 const socket = io('http://localhost:3000');
 
 export default function Room() {
+  // 사용자 데이터를 불러오는 hook
+  // const { data: userData, isLoading: userLoading } = useUserData();
   // States
   const [roomName, setRoomName] = useState<string>(''); // 방 이름
   const [isRoomJoined, setIsRoomJoined] = useState<boolean>(false); // 방 참여 여부
@@ -73,6 +76,8 @@ export default function Room() {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log('Local stream obtained:', stream);
+
       setCurrentStream(stream);
 
       if (myFaceRef.current) {
@@ -91,9 +96,12 @@ export default function Room() {
     }
   };
 
+  let peerConnection: any;
+
   // WebSocket and WebRTC
   const makeConnection = () => {
-    const peerConnection = new RTCPeerConnection({
+    console.log('Making WebRTC connection');
+    peerConnection = new RTCPeerConnection({
       iceServers: [
         {
           urls: [
@@ -106,9 +114,9 @@ export default function Room() {
         },
       ],
     });
-
+    console.log('Peer connection created:', peerConnection);
     // ICE 후보 처리
-    peerConnection.addEventListener('icecandidate', (event) => {
+    peerConnection.addEventListener('icecandidate', (event: any) => {
       if (event.candidate) {
         console.log('ICE Candidate:', event.candidate);
         socket.emit('ice', event.candidate, roomName); // ICE 후보를 서버에 전송
@@ -117,16 +125,18 @@ export default function Room() {
 
     // 상대방의 트랙을 받을 때 처리
     peerConnection.addEventListener('track', (event: RTCTrackEvent) => {
-      const [stream] = event.streams;
-      console.log('Received stream from peer:', stream);
-      if (peerFaceRef.current && stream) {
-        peerFaceRef.current.srcObject = stream; // 상대방 비디오 스트림을 화면에 표시
+      console.log('Received remote track:', event.track.kind);
+      console.log('Received remote track');
+      if (peerFaceRef.current && event.streams && event.streams[0]) {
+        console.log('Setting remote video stream');
+        peerFaceRef.current.srcObject = event.streams[0];
       }
     });
 
     // 내 스트림을 상대에게 전달
     if (currentStream) {
       currentStream.getTracks().forEach((track) => {
+        console.log('Adding track to peer connection:', track.kind);
         peerConnection.addTrack(track, currentStream); // 내 스트림을 상대에게 전송
       });
     }
@@ -139,33 +149,54 @@ export default function Room() {
     socket.on('welcome', async () => {
       console.log("Received 'welcome' message, creating offer...");
       if (myPeerConnection) {
-        const offer = await myPeerConnection.createOffer();
-        myPeerConnection.setLocalDescription(offer);
-        socket.emit('offer', offer, roomName);
+        try {
+          const offer = await myPeerConnection.createOffer();
+          await myPeerConnection.setLocalDescription(offer);
+          console.log('Local description set:', offer);
+          socket.emit('offer', offer, roomName);
+          console.log('Offer sent to room:', roomName);
+        } catch (e) {
+          console.error('Error in welcome handler:', e);
+        }
       }
     });
 
     socket.on('offer', async (offer) => {
       console.log("Received 'offer' from peer:", offer);
       if (myPeerConnection) {
-        myPeerConnection.setRemoteDescription(offer);
-        const answer = await myPeerConnection.createAnswer();
-        myPeerConnection.setLocalDescription(answer);
-        socket.emit('answer', answer, roomName);
+        try {
+          await myPeerConnection.setRemoteDescription(
+            new RTCSessionDescription(offer),
+          );
+          console.log('Remote description set');
+          const answer = await myPeerConnection.createAnswer();
+          await myPeerConnection.setLocalDescription(answer);
+          console.log('Local description set:', answer);
+          socket.emit('answer', answer, roomName);
+          console.log('Answer sent to room:', roomName);
+        } catch (e) {
+          console.error('Error in offer handler:', e);
+        }
       }
     });
 
-    socket.on('answer', (answer) => {
+    socket.on('answer', async (answer) => {
       console.log("Received 'answer' from peer:", answer);
       if (myPeerConnection) {
-        myPeerConnection.setRemoteDescription(answer);
+        try {
+          await myPeerConnection.setRemoteDescription(
+            new RTCSessionDescription(answer),
+          );
+        } catch (e) {
+          console.error('Error setting remote description:', e);
+        }
       }
     });
 
     socket.on('ice', (ice) => {
       console.log('Received ICE candidate:', ice);
       if (myPeerConnection) {
-        myPeerConnection.addIceCandidate(ice);
+        myPeerConnection.addIceCandidate(new RTCIceCandidate(ice));
       }
     });
 
