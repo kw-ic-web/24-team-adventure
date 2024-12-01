@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './GameEnd.css';
 
@@ -14,15 +14,49 @@ function GameEnd() {
     isFullyOpen: false,
   });
 
+  const effectRan = useRef(false); // useEffect 중복 실행 방지 플래그
+
+  const saveStoryToBackend = async (storyData) => {
+    console.log('전송할 데이터:', storyData);
+    try {
+      const { userId, storyId, title, content } = storyData;
+
+      if (!userId || !storyId || !title || !content) {
+        throw new Error('스토리 데이터를 완전히 제공하지 않았습니다.');
+      }
+
+      const response = await axios.post('http://localhost:3000/api/saveStory', {
+        user_id: userId,
+        story_id: Number(storyId),
+        geul_title: title,
+        geul_content: content,
+      });
+
+      if (response.status !== 201) {
+        const errorData = response.data;
+        throw new Error(errorData.error || '스토리 저장에 실패했습니다.');
+      }
+
+      console.log('스토리 저장 성공:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('스토리 저장 중 오류 발생:', error.message);
+      alert(`스토리 저장 실패: ${error.message}`);
+      throw error;
+    }
+  };
+
   useEffect(() => {
+    if (effectRan.current) return; // useEffect가 이미 실행되었으면 중단
+    effectRan.current = true; // 첫 실행 이후에는 실행되지 않도록 설정
+
     const savedTitle = localStorage.getItem('storyTitle');
     const savedContent = localStorage.getItem('storyContent');
     const savedAuthor = localStorage.getItem('userName');
 
     const userId = location.state?.userId;
-    const storyId = location.state?.story_id; // location.state에서 story_id 가져오기
+    const storyId = location.state?.story_id;
 
-    // 필수 데이터 검증
     if (!userId || !storyId) {
       alert('필수 데이터가 누락되었습니다. 홈으로 이동합니다.');
       navigate('/');
@@ -46,44 +80,6 @@ function GameEnd() {
       navigate('/');
     }
   }, [location.state, navigate]);
-
-  const saveStoryToBackend = async (storyData) => {
-    console.log('전송할 데이터:', storyData);
-    try {
-      // 데이터 검증: 필요한 필드가 없는 경우 에러 발생
-      const { userId, storyId, title, content } = storyData;
-
-      if (!userId || !storyId || !title || !content) {
-        throw new Error('스토리 데이터를 완전히 제공하지 않았습니다.');
-      }
-
-      // API 요청
-      // Axios를 사용하여 POST 요청
-      const response = await axios.post('http://localhost:3000/api/saveStory', {
-        user_id: userId,
-        story_id: Number(storyId),
-        geul_title: title,
-        geul_content: content,
-      });
-
-      // 응답 처리
-      if (response.status !== 201) {
-        // 응답 데이터에서 에러 메시지 가져오기
-        const errorData = response.data;
-        throw new Error(errorData.error || '스토리 저장에 실패했습니다.');
-      }
-
-      // 성공적인 응답 처리
-      const data = response.data;
-      console.log('스토리 저장 성공:', data);
-      return data; // 저장된 데이터 반환
-    } catch (error) {
-      // 에러 처리
-      console.error('스토리 저장 중 오류 발생:', error.message);
-      alert(`스토리 저장 실패: ${error.message}`);
-      throw error; // 에러를 호출자에게 전달
-    }
-  };
 
   const handleBookClick = () => {
     if (!bookState.isOpen) {

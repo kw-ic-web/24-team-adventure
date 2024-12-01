@@ -14,6 +14,7 @@ router.post(
   "/api/saveStory",
   async (req: Request, res: Response): Promise<void> => {
     try {
+      console.log("Story save request received:", req.body);
       const { user_id, story_id, geul_title, geul_content } = req.body;
 
       // 데이터 검증
