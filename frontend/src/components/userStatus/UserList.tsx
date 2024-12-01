@@ -10,19 +10,22 @@ interface User {
 
 // props 타입 정의
 interface UserListProps {
-  users: User[]; // `users` prop의 타입
+  users: User[];
 }
 
-// 컴포넌트 정의
 function UserList({ users }: UserListProps) {
-  // 데이터가 없을 경우 처리
   if (!users || users.length === 0) {
     return <p>No users available.</p>;
   }
 
+  // 온라인 상태인 사용자를 최상단으로 정렬
+  const sortedUsers = [...users].sort(
+    (a, b) => Number(b.online) - Number(a.online),
+  );
+
   return (
     <div className="user-list-box">
-      {users.map((user) => (
+      {sortedUsers.map((user) => (
         <div key={user.id} className="user-list-item">
           <div className="user-item-flex">
             <span role="img" aria-label="user-profile" className="text-xl">
