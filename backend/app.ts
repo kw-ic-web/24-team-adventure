@@ -9,6 +9,7 @@ import commentRoutes from "./routes/commentRoutes";
 import authRoutes from "./routes/authRoutes";
 import mypageRoutes from "./routes/mypageRoutes";
 import protectedRoutes from "./routes/protectedRoutes";
+import finalstorySave from "./routes/finalStorySave";
 dotenv.config();
 
 const app = express();
@@ -37,6 +38,7 @@ app.use(commentRoutes);
 app.use(authRoutes);
 app.use(mypageRoutes);
 app.use(protectedRoutes);
+app.use(finalstorySave);
 
 // 서버 시작
 const PORT = process.env.PORT || 3000;
