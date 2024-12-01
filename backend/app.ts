@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
+import { socketHandler } from "./services/socketService";
 import storyRoutes from "./routes/storyRoutes";
 import boardRoutes from "./routes/boardRoutes";
 import listRoutes from "./routes/listRoutes";
@@ -11,6 +12,8 @@ import mypageRoutes from "./routes/mypageRoutes";
 import protectedRoutes from "./routes/protectedRoutes";
 import userStatusRoutes from "./routes/userStatusRoutes";
 import "./services/userStatusCron";
+import videoRoutes from "./routes/videoRoutes";
+
 dotenv.config();
 
 const app = express();
@@ -40,9 +43,13 @@ app.use(authRoutes);
 app.use(mypageRoutes);
 app.use(protectedRoutes);
 app.use(userStatusRoutes);
+app.use(videoRoutes);
+
+const server = require("http").createServer(app);
+socketHandler(server);
 
 // 서버 시작
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
 });

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import './StoryGrid.css';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
+import BigBox from '../../components/ui/BigBox.tsx';
 import Profile from '../../components/ui/Profile';
 import UserList from '../../components/ui/Userlist';
 import HomeBtn from '../../components/ui/HomeBtn';
@@ -94,7 +95,7 @@ const StoryGrid: React.FC = () => {
     <div>
       <Background />
       <HeaderLogo />
-      <SmallBox>
+      <BigBox>
         {/* 스토리 목록 */}
         <div className="story-grid-scroll">
           {stories.length > 0 ? (
@@ -136,19 +137,17 @@ const StoryGrid: React.FC = () => {
                 className="post-link"
               >
                 <h3 className="post-title">{post.geul_title}</h3>
-                <p className="post-author">작성자: {post.user.name}</p>
-                <p className="post-time">
-                  업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
-                </p>
+                <div className="post-meta">
+                  <span className="post-author">작성자: {post.user.name}</span>
+                  <span className="post-time">
+                    업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
         </div>
-      </SmallBox>
-
-      <Profile />
-      <UserList users={users} />
-      <HomeBtn />
+      </BigBox>
     </div>
   );
 };

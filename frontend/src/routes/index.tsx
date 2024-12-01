@@ -8,6 +8,7 @@ import GamePlay2 from '../pages/Game/GamePlay3';
 import Testgpt from '../pages/Game/Testgpt';
 import GameEnd from '../pages/Game/GameEnd';
 import MyPage from '../pages/Mypage';
+import VideoRoom from '../pages/Video/videoRoom';
 import VideoChat from '../pages/Video';
 import VideoChatEndPage from '../pages/Video/videoChatEnd';
 import StoryGrid from '../pages/Board/StoryGrid';
@@ -26,6 +27,7 @@ export default function Router() {
         <Route path="/" element={<Start />} />
         <Route path="/home" element={<Home />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/videoroom" element={<VideoRoom />} />
         <Route path="/video-chat" element={<VideoChat />} />
         {/*video/end 변경 예정*/}
         <Route path="/video-end" element={<VideoChatEndPage />} />

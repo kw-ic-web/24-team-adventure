@@ -7,6 +7,7 @@ import {
 } from '../../utils/userStatusApi'; // API 함수 가져오기
 import useGoogleAuthMutation from '../../hooks/auth/useGoogleAuthMutation';
 import StartBackground from '../../components/ui/StartBackground';
+import startlogo from './startlogo.jpg';
 
 interface User {
   id: number;

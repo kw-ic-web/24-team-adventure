@@ -1,12 +1,22 @@
 // src/pages/VideoChatEndPage.tsx
 import React from 'react';
 import exitImg from '../../assets/images/exitBtn.png';
+import Background from '../../components/ui/Background';
+import SmallBox from '../../components/ui/SmallBox';
+import Profile from '../../components/ui/Profile';
+import UserList from '../../components/ui/Userlist';
+import HomeBtn from '../../components/ui/HomeBtn';
+import HeaderLogo from '../../components/ui/HeaderLogo';
+
 
 export default function VideoChatEndPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-600 to-emerald-700">
+    <div>
+    <Background />
+    <div><HeaderLogo/></div>
+    <SmallBox>
       {/* 화상채팅 페이지와 동일한 크기의 고정 크기 흰색 박스 */}
-      <div className="w-full max-w-5xl bg-white p-6 shadow-lg rounded-lg h-[80vh] flex flex-col items-center justify-center relative">
+      <div >
         {/* X 버튼 */}
         <button className="absolute top-2 right-2 p-1">
           <img src={exitImg} alt="닫기" className="w-8 h-8" />
@@ -23,6 +33,8 @@ export default function VideoChatEndPage() {
           게시판 바로가기
         </button>
       </div>
+      </SmallBox>
     </div>
+    
   );
 }
