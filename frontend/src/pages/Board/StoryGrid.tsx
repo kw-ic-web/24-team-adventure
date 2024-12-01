@@ -147,13 +147,7 @@ const StoryGrid: React.FC = () => {
             ))}
           </div>
         </div>
-
       </BigBox>
-      <div className="boxes-align">
-          <Profile />
-        <UserList users={users} />
-      </div>
-
     </div>
   );
 };
