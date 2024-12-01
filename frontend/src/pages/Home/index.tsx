@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import UserList from '../../components/userStatus/UserList';
 import Background from '../../components/ui/Background';
 import Profile from '../../components/ui/Profile';
 import HeaderLogo from '../../components/ui/HeaderLogo';
-import { fetchAllUserStatuses } from '../../utils/userStatusApi';
+import UserList from '../../components/userStatus/UserList';
+import UserStatusUpdater from '../../components/userStatus/UserStatusUpdater';
 
 import '../../components/ui/CommonUi.css';
 
@@ -38,23 +38,6 @@ export default function Home() {
     navigate('/');
   };
 
-  // 실시간 사용자 상태 가져오기
-  useEffect(() => {
-    const fetchStatuses = async () => {
-      try {
-        const data = await fetchAllUserStatuses();
-        setUsers(data); // 상태 업데이트
-      } catch (error) {
-        console.error('Failed to fetch user statuses:', error);
-      }
-    };
-
-    fetchStatuses();
-    const interval = setInterval(fetchStatuses, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="">
       <Background />
@@ -76,6 +59,8 @@ export default function Home() {
       </Link>
       {/* Userlist Box */}
       <div>
+        {/* 사용자 상태 업데이트 */}
+        <UserStatusUpdater onUpdate={setUsers} />
         <UserList users={users} />
       </div>
       {/* Board Button */}

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import UserList from '../../components/userStatus/UserList';
 import {
   fetchAllUserStatuses,
   updateUserStatus,
@@ -70,10 +69,6 @@ export default function Start() {
   return (
     <div>
       <StartBackground />
-      {/* 실시간 사용자 목록 박스 
-      <div>
-        <UserList users={users} />
-      </div>*}
       {/* 화면 중앙에 로고와 구글 로그인 버튼 추가 */}
       <div className="relative flex flex-col items-center justify-around pt-45 h-screen">
         {/* 프로그램 로고 */}
