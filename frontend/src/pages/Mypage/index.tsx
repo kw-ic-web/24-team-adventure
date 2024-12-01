@@ -2,28 +2,41 @@ import { useNavigate, Link } from 'react-router-dom';
 import PostCard from '../../components/myPage/PostCard';
 import { useUserGeulData } from '../../hooks/mypage/useUserGeulData';
 import { useUserData } from '../../hooks/auth/useUserData';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
 import Profile from '../../components/ui/Profile';
-import UserList from '../../components/ui/Userlist';
 import HomeBtn from '../../components/ui/HomeBtn';
 import HeaderLogo from '../../components/ui/HeaderLogo';
+import UserList from '../../components/userStatus/UserList';
+import { fetchAllUserStatuses } from '../../utils/userStatusApi';
 
 interface User {
   id: number;
   name: string;
   online: boolean;
 }
-// 예시 사용자 데이터
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
 
 export default function Mypage() {
+  const [users, setUsers] = useState<User[]>([]);
   const navigate = useNavigate();
+
+  // 실시간 사용자 상태 가져오기
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const data = await fetchAllUserStatuses();
+        setUsers(data); // 상태 업데이트
+      } catch (error) {
+        console.error('Failed to fetch user statuses:', error);
+      }
+    };
+
+    fetchStatuses();
+    const interval = setInterval(fetchStatuses, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // 사용자 데이터를 불러오는 hook
   const { data: userData, isLoading: userLoading } = useUserData();
