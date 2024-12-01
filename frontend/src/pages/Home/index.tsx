@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import UserList from '../../components/ui/Userlist';
+import UserList from '../../components/userStatus/UserList';
 import Background from '../../components/ui/Background';
 import Profile from '../../components/ui/Profile';
 import HeaderLogo from '../../components/ui/HeaderLogo';
-
+import { fetchAllUserStatuses } from '../../utils/userStatusApi';
 
 import '../../components/ui/CommonUi.css';
 
@@ -21,13 +21,6 @@ interface Post {
   title: string;
 }
 
-// 예시 사용자 데이터
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
-
 // 예시 게시글 데이터
 const posts: Post[] = [
   { id: 1, category: 'tail1', title: '첫 번째 게시글입니다.' },
@@ -36,6 +29,7 @@ const posts: Post[] = [
 ];
 
 export default function Home() {
+  const [users, setUsers] = useState<User[]>([]);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -43,6 +37,23 @@ export default function Home() {
     console.log('로그아웃 완료: JWT 토큰 삭제됨');
     navigate('/');
   };
+
+  // 실시간 사용자 상태 가져오기
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      try {
+        const data = await fetchAllUserStatuses();
+        setUsers(data); // 상태 업데이트
+      } catch (error) {
+        console.error('Failed to fetch user statuses:', error);
+      }
+    };
+
+    fetchStatuses();
+    const interval = setInterval(fetchStatuses, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="">
@@ -92,7 +103,7 @@ export default function Home() {
       <button className="logout-button" onClick={handleLogout}>
         <img src="/images/logoutBtn.png" alt="로그아웃 버튼" />
         <span className="logout-text">&nbsp;로그아웃</span>
-        </button>
+      </button>
     </div>
   );
 }
