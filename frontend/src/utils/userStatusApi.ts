@@ -62,3 +62,34 @@ export async function updateUserStatus(
     throw error;
   }
 }
+
+/**
+ * 사용자 로그아웃
+ * @param userId - 로그아웃할 사용자 ID
+ */
+export async function logoutUser(user_id: string, token: string): Promise<any> {
+  try {
+    console.log('Logging out user with ID:', user_id);
+    const response = await fetch(`${API_BASE_URL}/logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // JWT 토큰
+      },
+      body: JSON.stringify({ user_id }), // 전송할 데이터
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      console.error('Error logging out:', errorMessage);
+      throw new Error(`Failed to log out: ${errorMessage}`);
+    }
+
+    const data = await response.json();
+    console.log('User logged out successfully:', data);
+    return data; // 성공 메시지 반환
+  } catch (error) {
+    console.error('Error in logoutUser:', error);
+    throw error;
+  }
+}
