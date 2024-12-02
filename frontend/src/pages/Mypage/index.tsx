@@ -7,7 +7,6 @@ import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
 import Profile from '../../components/ui/Profile';
 import UserList from '../../components/ui/Userlist';
-import HomeBtn from '../../components/ui/HomeBtn';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 
 interface User {
@@ -15,12 +14,6 @@ interface User {
   name: string;
   online: boolean;
 }
-// 예시 사용자 데이터
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
 
 export default function Mypage() {
   const navigate = useNavigate();
@@ -74,7 +67,6 @@ export default function Mypage() {
   // 메인 페이지 UI
   return (
     <div>
-      {' '}
       <Background />
       <div>
         <HeaderLogo />
@@ -107,19 +99,17 @@ export default function Mypage() {
           )}
         </div>
       </SmallBox>
-      <div>
-        {/* Right Side: 사용자 정보 섹션 */}
 
-        <div>
-          <Profile />
-        </div>
+      {/* Right Side: 사용자 정보 섹션 */}
+      <div className="boxes-align">
+        <Profile />
         {/* Userlist Box */}
-        <div>
-          <UserList users={users} />
-        </div>
+
+  
         <div>
           <HomeBtn />
         </div>
+
       </div>
     </div>
   );

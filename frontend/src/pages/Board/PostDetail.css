@@ -14,13 +14,25 @@
   text-align: left;
 }
 
-/* 메타 정보 (작성자, 업로드 시간) 스타일 */
-.post-meta,
-.post-time {
+/* 작성자와 업로드 시간 같은 줄에 정렬 */
+.post-meta-row {
+  display: flex;
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: center; /* 수직 정렬 */
   font-size: 14px;
   color: gray;
-  text-align: left;
-  margin-bottom: 5px;
+  margin-bottom: 15px; /* 아래 여백 */
+}
+
+/* 작성자 스타일 */
+.post-author {
+  flex: 1; /* 좌측으로 정렬 */
+}
+
+/* 업로드 시간 스타일 */
+.post-time {
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  text-align: right; /* 우측 정렬 */
 }
 
 /* 게시물 이미지 스타일 */
@@ -58,16 +70,26 @@
   border-bottom: none;
 }
 
-/* 댓글 작성 시간 스타일 */
-.comment-time {
-  font-size: 12px;
+/* 댓글 메타 정보 (작성자와 업로드 시간) 스타일 */
+.comment-meta-row {
+  display: flex;
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: center; /* 수직 정렬 */
+  font-size: 12px; /* 작은 폰트 크기 */
   color: gray;
+  margin-bottom: 8px; /* 아래 여백 */
 }
 
-/* 댓글 작성자 ID 스타일 */
+/* 댓글 작성자 스타일 */
 .comment-author {
-  font-size: 12px;
-  font-weight: bold;
+  flex: 1; /* 좌측 정렬 */
+}
+
+/* 댓글 업로드 시간 스타일 */
+.comment-time {
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+  text-align: right; /* 우측 정렬 */
+  margin-right: 10px;
 }
 
 /* 댓글 헤더 (삭제 메뉴 포함) */
@@ -143,4 +165,23 @@
   cursor: pointer;
   border-radius: 5px;
   font-size: 14px;
+}
+
+.big-box {
+  width: 100%;
+  max-height: calc(100vh - 100px); /* 화면 높이를 기준으로 컨테이너 제한 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  padding: 20px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.scrollable-box {
+  max-height: calc(100vh - 150px); /* 화면 높이 기준으로 조정 */
+  overflow-y: auto; /* 스크롤 활성화 */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
