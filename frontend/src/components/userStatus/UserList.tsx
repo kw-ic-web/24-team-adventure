@@ -23,9 +23,12 @@ function UserList({ users }: UserListProps) {
     (a, b) => Number(b.online) - Number(a.online),
   );
 
+  // 상위 5개의 사용자만 선택
+  const limitedUsers = sortedUsers.slice(0, 5);
+
   return (
     <div className="user-list-box">
-      {sortedUsers.map((user) => (
+      {limitedUsers.map((user) => (
         <div key={user.id} className="user-list-item">
           <div className="user-item-flex">
             <span role="img" aria-label="user-profile" className="text-xl">
