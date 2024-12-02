@@ -32,6 +32,7 @@ const socketHandler = (server: HttpServer) => {
 
   io.on("connection", (socket: Socket) => {
     console.log("connection!", socket.id);
+    console.log("type", typeof socket.id);
 
     socket.on("join_room", (roomName: string, username: string) => {
       const room = rooms.find((r) => r.title === roomName);

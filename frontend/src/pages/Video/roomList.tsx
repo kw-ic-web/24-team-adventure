@@ -15,7 +15,6 @@ export default function RoomList() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [roomName, setRoomName] = useState('');
-  const [username, setUsername] = useState('');
   const [socket, setSocket] = useState<Socket | null>(null);
 
   const { data: userData, isLoading: userLoading } = useUserData();
@@ -25,7 +24,6 @@ export default function RoomList() {
     setSocket(newSocket);
 
     loadRooms();
-    checkAuth();
 
     newSocket.on('roomUpdated', (updatedRooms: Room[]) => {
       setRooms(updatedRooms);
@@ -42,27 +40,6 @@ export default function RoomList() {
       setRooms(res.data);
     } catch (err) {
       console.error('Failed to load rooms', err);
-    }
-  };
-
-  const checkAuth = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('로그인이 필요합니다.');
-      window.location.href = '/login';
-    } else {
-      try {
-        const res = await axios.get('/api/home', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUsername(res.data.username);
-      } catch (err) {
-        alert('로그인이 필요합니다.');
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-      }
     }
   };
 
@@ -96,10 +73,14 @@ export default function RoomList() {
     window.location.href = `/room?title=${encodeURIComponent(roomTitle)}`;
   };
 
+  if (userLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="container">
       <h2 className="mt-4">환영합니다!</h2>
-      <p>접속한 ID: {username}</p>
+      <p>접속한 ID: {userData?.name}</p>
       <div className="mb-3">2021203020 이해린</div>
       <div className="mb-3">
         <Button onClick={() => setShowModal(true)} className="me-2">
