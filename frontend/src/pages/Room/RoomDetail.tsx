@@ -1,13 +1,14 @@
-// frontend/src/pages/Room/RoomDetail.tsx
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import io, { Socket } from 'socket.io-client';
 import { showToast } from '../../components/Toast';
-import { Room } from '../../models/room.model';
 
 const RoomDetail: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const roomName =
+    new URLSearchParams(location.search).get('name') || '알 수 없음';
   const [socket, setSocket] = useState<Socket | null>(null);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<
@@ -15,7 +16,6 @@ const RoomDetail: React.FC = () => {
   >([]);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  const peerConnection = useRef<RTCPeerConnection | null>(null);
 
   useEffect(() => {
     if (!roomId) {
@@ -33,17 +33,15 @@ const RoomDetail: React.FC = () => {
 
     // 소켓 초기화
     const newSocket = io(import.meta.env.VITE_SOCKET_SERVER_URL as string, {
-      auth: {
-        token,
-      },
+      auth: { token },
     });
 
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
-      console.log('소켓 연결됨');
+      console.log('소켓 연결 성공');
       newSocket.emit(
-        'join_room',
+        'joinRoom',
         roomId,
         (response: { success: boolean; message?: string }) => {
           if (!response.success) {
@@ -58,19 +56,6 @@ const RoomDetail: React.FC = () => {
       console.log('현재 방의 사용자들:', users);
     });
 
-    newSocket.on('new_user', (userId: string) => {
-      showToast(`${userId}님이 방에 참여했습니다.`, 'info');
-      initiatePeerConnection(newSocket, true);
-    });
-
-    newSocket.on('user_left', (userId: string) => {
-      showToast(`${userId}님이 방을 떠났습니다.`, 'info');
-      if (peerConnection.current) {
-        peerConnection.current.close();
-        peerConnection.current = null;
-      }
-    });
-
     newSocket.on(
       'chat_message',
       (data: { user: string; message: string; time: string }) => {
@@ -78,130 +63,72 @@ const RoomDetail: React.FC = () => {
       },
     );
 
-    // WebRTC 이벤트 핸들링
-    newSocket.on('offer', async (offer: any, senderId: string) => {
-      if (!peerConnection.current) initiatePeerConnection(newSocket, false);
-      await peerConnection.current?.setRemoteDescription(
-        new RTCSessionDescription(offer),
-      );
-      const answer = await peerConnection.current?.createAnswer();
-      await peerConnection.current?.setLocalDescription(answer!);
-      newSocket.emit('answer', { roomId, answer }, senderId);
-    });
-
-    newSocket.on('answer', async (answer: any, senderId: string) => {
-      await peerConnection.current?.setRemoteDescription(
-        new RTCSessionDescription(answer),
-      );
-    });
-
-    newSocket.on('ice_candidate', async (candidate: any, senderId: string) => {
-      try {
-        await peerConnection.current?.addIceCandidate(
-          new RTCIceCandidate(candidate),
-        );
-      } catch (error) {
-        console.error('Error adding received ice candidate', error);
-      }
-    });
-
-    // 미디어 스트림 가져오기
+    // WebRTC 미디어 스트림 가져오기
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
-        if (peerConnection.current) {
-          stream
-            .getTracks()
-            .forEach((track) =>
-              peerConnection.current?.addTrack(track, stream),
-            );
-        }
       })
       .catch((err) => {
-        console.error('Error accessing media devices.', err);
+        console.error('Error accessing media devices:', err);
       });
 
     return () => {
       if (newSocket) {
-        newSocket.emit('leave_room', roomId, () => {
-          newSocket.disconnect();
-        });
-      }
-      if (peerConnection.current) {
-        peerConnection.current.close();
+        newSocket.emit(
+          'leaveRoom',
+          roomId,
+          (response: { success: boolean }) => {
+            if (response.success) {
+              console.log('방에서 성공적으로 나갔습니다.');
+            }
+          },
+        );
+        newSocket.disconnect();
       }
     };
   }, [roomId, navigate]);
 
-  const initiatePeerConnection = (socket: Socket, isInitiator: boolean) => {
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-    });
-
-    peerConnection.current = pc;
-
-    pc.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket.emit(
-          'ice_candidate',
-          { roomId, candidate: event.candidate },
-          getTargetUserId(),
-        );
-      }
-    };
-
-    pc.ontrack = (event) => {
-      if (remoteVideoRef.current) {
-        remoteVideoRef.current.srcObject = event.streams[0];
-      }
-    };
-
-    if (isInitiator) {
-      pc.onnegotiationneeded = async () => {
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        socket.emit(
-          'offer',
-          { roomId, offer: pc.localDescription },
-          getTargetUserId(),
-        );
-      };
+  const leaveRoom = () => {
+    if (socket) {
+      console.log('방 나가기 버튼 클릭');
+      socket.emit(
+        'leaveRoom',
+        roomId,
+        (response: { success: boolean; message?: string }) => {
+          if (response.success) {
+            console.log('방 나가기 성공');
+            navigate('/room'); // 방 목록 화면으로 이동
+            showToast('방을 떠났습니다.', 'info');
+          } else {
+            showToast(response.message || '방 나가기에 실패했습니다.', 'error');
+          }
+        },
+      );
+    } else {
+      console.error('소켓이 초기화되지 않았습니다.');
     }
-  };
-
-  const getTargetUserId = (): string | undefined => {
-    // 현재 방의 다른 사용자를 식별하는 로직을 추가합니다.
-    // 예를 들어, 첫 번째 사용자 ID를 반환하거나, 특정 로직에 따라 반환합니다.
-    // 현재 예제에서는 단순히 'targetUserId'를 반환하도록 하겠습니다.
-    // 실제 구현에서는 방의 사용자 목록을 관리하여 정확한 타겟을 지정해야 합니다.
-    return undefined;
   };
 
   const sendMessage = () => {
     if (socket && message.trim()) {
-      socket.emit('chat_message', { roomName: roomId, message });
-      setMessages((prev) => [
-        ...prev,
-        { user: '나', message, time: new Date().toLocaleTimeString() },
-      ]);
+      const chatMessage = {
+        user: '나',
+        message,
+        time: new Date().toLocaleTimeString(),
+      };
+      socket.emit('chat_message', { roomName, message });
+      setMessages((prev) => [...prev, chatMessage]);
       setMessage('');
     }
   };
 
-  if (!roomId) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>유효하지 않은 방입니다.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen p-8 bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">방 ID: {roomId}</h1>
+      <h2 className="text-lg font-semibold mb-4">방 이름: {roomName}</h2>
 
       {/* 비디오 스트림 영역 */}
       <div className="flex justify-center mb-6 space-x-4">
@@ -255,6 +182,14 @@ const RoomDetail: React.FC = () => {
           보내기
         </button>
       </div>
+
+      {/* 방 나가기 버튼 */}
+      <button
+        onClick={leaveRoom}
+        className="px-4 py-2 mt-4 bg-red-500 text-white rounded"
+      >
+        방 나가기
+      </button>
     </div>
   );
 };

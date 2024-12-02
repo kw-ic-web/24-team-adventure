@@ -1,28 +1,18 @@
 // frontend/src/pages/Room/RoomPage.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useRoomData } from '../../hooks/room/useRoomData';
-import { Link } from 'react-router-dom';
 import { showToast } from '../../components/Toast';
 import { Room } from '../../models/room.model';
 import io, { Socket } from 'socket.io-client';
 import { SOCKET_SERVER_URL } from '../../constants/socketUrl';
 import { useQueryClient } from '@tanstack/react-query';
 
-interface User {
-  userId: string;
-  username: string;
-}
-
 export default function RoomPage() {
-  const { rooms, isLoading, isError, handleCreateRoom } = useRoomData();
+  const { rooms, isLoading, isError } = useRoomData();
   const [newRoomName, setNewRoomName] = useState('');
-  const [currentRoom, setCurrentRoom] = useState<Room | null>(null);
-  const [users, setUsers] = useState<User[]>([]);
   const queryClient = useQueryClient();
   const [socket, setSocket] = useState<Socket | null>(null);
 
-  // 소켓 연결 및 이벤트 핸들링
   useEffect(() => {
     const newSocket = io(SOCKET_SERVER_URL, {
       auth: {
@@ -46,32 +36,6 @@ export default function RoomPage() {
       queryClient.setQueryData(['rooms'], rooms);
     });
 
-    newSocket.on('roomsUpdated', (updatedRooms: Room[]) => {
-      queryClient.setQueryData(['rooms'], updatedRooms);
-      showToast('방 목록이 업데이트되었습니다.', 'info');
-    });
-
-    newSocket.on('roomCreated', (newRoom: Room) => {
-      showToast(`방 "${newRoom.roomName}"이 생성되었습니다!`, 'success');
-    });
-
-    newSocket.on('joinedRoom', (room: Room) => {
-      setCurrentRoom(room);
-      showToast(`방 "${room.roomName}"에 참가했습니다.`, 'success');
-    });
-
-    newSocket.on('userListUpdate', (updatedUsers: User[]) => {
-      setUsers(updatedUsers);
-    });
-
-    newSocket.on('roomDeleted', (roomId: string) => {
-      if (currentRoom && currentRoom.roomId === roomId) {
-        setCurrentRoom(null);
-        setUsers([]);
-        showToast('방이 삭제되었습니다.', 'info');
-      }
-    });
-
     newSocket.on('error', (message: string) => {
       showToast(message, 'error');
     });
@@ -79,34 +43,29 @@ export default function RoomPage() {
     return () => {
       newSocket.disconnect();
     };
-  }, [SOCKET_SERVER_URL, queryClient, currentRoom]);
+  }, [queryClient]);
 
   const onCreateRoom = () => {
     if (!newRoomName.trim()) {
       showToast('방 이름을 입력해주세요.', 'warning');
       return;
     }
-    handleCreateRoom(newRoomName);
-    setNewRoomName('');
-  };
 
-  const onJoinRoom = (roomId: string) => {
     if (socket) {
-      socket.emit('joinRoom', roomId);
-    }
-  };
-
-  const onLeaveRoom = (roomId: string) => {
-    if (socket) {
-      socket.emit('leaveRoom', roomId);
-      setCurrentRoom(null);
-      setUsers([]);
-    }
-  };
-
-  const onDeleteRoom = (roomId: string) => {
-    if (socket) {
-      socket.emit('deleteRoom', roomId);
+      socket.emit(
+        'createRoom',
+        newRoomName,
+        (response: { success: boolean; roomId?: string; message?: string }) => {
+          if (response.success && response.roomId) {
+            showToast(`방 "${newRoomName}"이 생성되었습니다!`, 'success');
+            setNewRoomName('');
+            // 방 생성 성공 시 해당 방으로 이동 (방 이름 포함)
+            window.location.href = `/room/${response.roomId}?name=${encodeURIComponent(newRoomName)}`;
+          } else {
+            showToast(response.message || '방 생성에 실패했습니다.', 'error');
+          }
+        },
+      );
     }
   };
 
@@ -165,19 +124,13 @@ export default function RoomPage() {
                 </div>
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => onJoinRoom(room.roomId)}
+                    onClick={() =>
+                      (window.location.href = `/room/${room.roomId}?name=${encodeURIComponent(room.roomName)}`)
+                    }
                     className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
                   >
                     들어가기
                   </button>
-                  {room.createdBy === localStorage.getItem('userId') && (
-                    <button
-                      onClick={() => onDeleteRoom(room.roomId)}
-                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-                    >
-                      삭제
-                    </button>
-                  )}
                 </div>
               </li>
             ))}
@@ -188,29 +141,6 @@ export default function RoomPage() {
           </p>
         )}
       </div>
-
-      {/* 현재 참여 중인 방 섹션 */}
-      {currentRoom && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-4">
-            현재 참여 중인 방: {currentRoom.roomName}
-          </h2>
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold">참여자 목록:</h3>
-            <ul className="list-disc list-inside">
-              {users.map((user) => (
-                <li key={user.userId}>{user.username}</li>
-              ))}
-            </ul>
-          </div>
-          <button
-            onClick={() => onLeaveRoom(currentRoom.roomId)}
-            className="px-6 py-3 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
-          >
-            방 나가기
-          </button>
-        </div>
-      )}
     </div>
   );
 }

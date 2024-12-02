@@ -105,3 +105,16 @@ export async function removeUserFromRoom(
   }
   return undefined;
 }
+
+/**
+ * 특정 방에 있는 사용자 목록을 반환하는 함수
+ * @param {string} roomId - 사용자 목록을 조회할 방의 ID
+ * @returns {Promise<string[]>} 사용자 ID 배열
+ */
+export async function getUsersInRoom(roomId: string): Promise<string[]> {
+  const room = await getRoom(roomId);
+  if (!room) {
+    throw new Error("방이 존재하지 않습니다.");
+  }
+  return room.users; // 사용자 목록 반환
+}

@@ -88,20 +88,20 @@ const socketHandler = (server: HttpServer) => {
     });
 
     // 방 생성 처리
-    socket.on("createRoom", async (roomName: string) => {
+    socket.on("createRoom", async (roomName: string, callback) => {
       try {
         const newRoom = await addRoom(roomName, userId);
+        // 방 생성 후 생성자를 방에 추가
+        const updatedRoom = await addUserToRoom(newRoom.roomId, userId);
+        if (updatedRoom) {
+          socket.join(newRoom.roomId);
+          io.to(newRoom.roomId).emit("userListUpdate", updatedRoom.users);
+        }
         io.emit("roomsUpdated", await getRooms());
-        socket.join(newRoom.roomId);
-        io.to(newRoom.roomId).emit("userListUpdate", newRoom.users);
-        socket.emit("roomCreated", newRoom);
+        callback({ success: true, roomId: newRoom.roomId });
       } catch (error) {
         console.error("방 생성 오류:", error);
-        if (error instanceof Error) {
-          socket.emit("error", error.message);
-        } else {
-          socket.emit("error", "방 생성에 실패했습니다.");
-        }
+        callback({ success: false, message: "방 생성에 실패했습니다." });
       }
     });
 
@@ -126,21 +126,20 @@ const socketHandler = (server: HttpServer) => {
     });
 
     // 방 나가기 처리
-    socket.on("leaveRoom", async (roomId: string) => {
+    socket.on("leaveRoom", async (roomId: string, callback) => {
       try {
         const room = await removeUserFromRoom(roomId, userId);
         if (room) {
           socket.leave(room.roomId);
           io.to(room.roomId).emit("userListUpdate", room.users);
-          io.to(room.roomId).emit("roomsUpdated", await getRooms());
+          io.emit("roomsUpdated", await getRooms()); // 방 목록 업데이트
+          callback({ success: true });
+        } else {
+          callback({ success: false, message: "방 나가기에 실패했습니다." });
         }
       } catch (error) {
         console.error("방 나가기 오류:", error);
-        if (error instanceof Error) {
-          socket.emit("error", error.message);
-        } else {
-          socket.emit("error", "방 나가기에 실패했습니다.");
-        }
+        callback({ success: false, message: "방 나가기에 실패했습니다." });
       }
     });
 
