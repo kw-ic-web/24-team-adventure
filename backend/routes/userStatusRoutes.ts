@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import supabase from "../config/supabaseClient";
 import authenticateJWT from "../../backend/middleware/authenticateJWT"; // JWT 인증 미들웨어
-import { markInactiveUsersOffline } from "../services/userStatusService"; //(시간계산함
+import { markInactiveUsersOffline } from "../services/userStatusService"; //(시간계산함)
 
 const router = express.Router();
 
@@ -75,4 +75,35 @@ router.post("/api/cleanup", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to clean up inactive users." });
   }
 });
+
+router.post(
+  "/api/logout",
+  async (req: Request, res: Response): Promise<void> => {
+    const { user_id } = req.body;
+
+    if (!user_id) {
+      res.status(400).json({ message: "user_id is required" });
+      return;
+    }
+
+    try {
+      // Supabase에서 사용자 상태를 offline으로 변경
+      const { error } = await supabase
+        .from("user")
+        .update({
+          online: false, // 온라인 상태를 오프라인으로 설정
+          updated_at: new Date(), // 상태 변경 시간 기록
+        })
+        .eq("user_id", user_id);
+
+      if (error) throw error;
+
+      res.json({ message: "User logged out and status updated successfully." });
+    } catch (err) {
+      console.error("Error updating user status during logout:", err);
+      res.status(500).json({ message: "Failed to log out user." });
+    }
+  }
+);
+
 export default router;
