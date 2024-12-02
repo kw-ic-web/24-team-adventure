@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
 import { Modal, Button, Form, ListGroup } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -20,10 +19,10 @@ export default function RoomList() {
   const { data: userData, isLoading: userLoading } = useUserData();
 
   useEffect(() => {
-    const newSocket = io();
+    const newSocket = io('http://localhost:3000');
     setSocket(newSocket);
 
-    loadRooms();
+    newSocket.emit('getRooms');
 
     newSocket.on('roomUpdated', (updatedRooms: Room[]) => {
       setRooms(updatedRooms);
@@ -34,30 +33,12 @@ export default function RoomList() {
     };
   }, []);
 
-  const loadRooms = async () => {
-    try {
-      const res = await axios.get('/api/rooms');
-      setRooms(res.data);
-    } catch (err) {
-      console.error('Failed to load rooms', err);
-    }
-  };
-
-  const handleCreateRoom = async (e: React.FormEvent) => {
+  const handleCreateRoom = (e: React.FormEvent) => {
     e.preventDefault();
-    if (roomName) {
-      try {
-        await axios.post('/api/rooms', {
-          title: roomName,
-          maxParticipants: 3,
-        });
-        alert('방이 생성되었습니다.');
-        setShowModal(false);
-        setRoomName('');
-      } catch (err) {
-        console.error('Failed to create room', err);
-        alert('방 생성에 실패했습니다.');
-      }
+    if (roomName && socket) {
+      socket.emit('createRoom', { title: roomName, maxParticipants: 3 });
+      setShowModal(false);
+      setRoomName('');
     } else {
       alert('방 제목을 입력해주세요!');
     }

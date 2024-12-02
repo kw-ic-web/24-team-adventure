@@ -10,7 +10,6 @@ import commentRoutes from "./routes/commentRoutes";
 import authRoutes from "./routes/authRoutes";
 import mypageRoutes from "./routes/mypageRoutes";
 import protectedRoutes from "./routes/protectedRoutes";
-import videoRoutes from "./routes/videoRoutes";
 
 dotenv.config();
 
@@ -40,7 +39,6 @@ app.use(commentRoutes);
 app.use(authRoutes);
 app.use(mypageRoutes);
 app.use(protectedRoutes);
-app.use(videoRoutes);
 
 const server = require("http").createServer(app);
 socketHandler(server);

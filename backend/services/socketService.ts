@@ -21,7 +21,7 @@ export const rooms: Room[] = [
 let io: Server;
 
 const socketHandler = (server: HttpServer) => {
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: {
       origin: "*",
       methods: ["GET", "POST"],
@@ -33,6 +33,17 @@ const socketHandler = (server: HttpServer) => {
   io.on("connection", (socket: Socket) => {
     console.log("connection!", socket.id);
     console.log("type", typeof socket.id);
+
+    socket.on("getRooms", () => {
+      console.log("Sending rooms to client", rooms);
+      socket.emit("roomUpdated", rooms);
+    });
+
+    socket.on("createRoom", ({ title, maxParticipants }) => {
+      const newRoom: Room = { title, participants: 0, maxParticipants };
+      rooms.push(newRoom);
+      io.emit("roomUpdated", rooms);
+    });
 
     socket.on("join_room", (roomName: string, username: string) => {
       const room = rooms.find((r) => r.title === roomName);
@@ -79,8 +90,8 @@ const socketHandler = (server: HttpServer) => {
         const room = rooms.find((r) => r.title === roomName);
 
         if (room) {
-          room.participants = Math.max(0, room.participants - 1); // 참가자 수 감소
-          io.emit("roomUpdated", rooms); // 업데이트된 방 목록 브로드캐스트
+          room.participants = Math.max(0, room.participants - 1);
+          io.emit("roomUpdated", rooms);
           console.log(
             `User ${user.username} left ${roomName}. Participants: ${room.participants}`
           );
