@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
@@ -17,17 +17,11 @@ interface User {
 }
 
 interface Post {
-  id: number;
-  category: string;
-  title: string;
+  geul_id: number;
+  story_id: number;
+  geul_title: string;
 }
 
-// 예시 게시글 데이터
-const posts: Post[] = [
-  { id: 1, category: 'tail1', title: '첫 번째 게시글입니다.' },
-  { id: 2, category: 'tail2', title: '두 번째 게시글입니다.' },
-  // 추가 게시글 데이터...
-];
 const decodeJWT = (token: string): any => {
   try {
     const payload = token.split('.')[1]; // JWT의 두 번째 부분 (Payload)
@@ -43,6 +37,23 @@ export default function Home(user_id: string | number) {
   console.log(`로그아웃 요청 user_id: ${user_id}`);
   const [users, setUsers] = useState<User[]>([]);
   const navigate = useNavigate();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const maxVisiblePosts = 5; // 박스 안에 표시할 최대 게시물 수
+
+  useEffect(() => {
+    // 게시물 데이터를 가져오는 함수
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/posts'); // 게시물 API 호출
+        const data = await response.json();
+        setPosts(data); // 게시물 상태 업데이트
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   const handleLogout = async () => {
     const token = localStorage.getItem('token'); // JWT 토큰 가져오기
@@ -83,46 +94,55 @@ export default function Home(user_id: string | number) {
           src="/images/GameStart3.png"
           alt="Game Start"
           onClick={() => navigate('/games')}
-          style={{ width: '200px', height: 'auto', cursor: 'pointer' }}
-          className=" transform transition-transform hover:scale-110"
+          style={{ width: '500px', height: 'auto', cursor: 'pointer' }}
+          className="transform transition-transform hover:scale-110"
         />
       </div>
       {/* Profile Box */}
-      <Link to="/MyPage">
-        <Profile />
-      </Link>
+      <Link to="/MyPage"></Link>
       {/* Userlist Box */}
       <div>
         {/* 사용자 상태 업데이트 */}
         <UserStatusUpdater onUpdate={setUsers} />
-        <UserList users={users} />
-      </div>
-      {/* Board Button */}
-      <Link to="/Board" className="board-link-button">
-        &nbsp;게시판 이동하기
-      </Link>
-      {/* Board Box */}
-      <div className="post-list-box">
-        {posts.slice(0, 5).map((post) => (
-          <div key={post.id} className="post-list-item">
-            <span className="text-sm font-semibold">{post.category}</span>
-            <Link
-              to={`/Board/${post.id}`}
-              className="ml-2 truncate"
-              title={post.title}
-            >
-              {post.title.length > 15
-                ? `${post.title.slice(0, 15)}...`
-                : post.title}
-            </Link>
+        <div className="boxes-align">
+          {/* Profile Box */}
+          <Profile>
+            <button onClick={handleLogout}>
+              <img
+                src="/images/xBtn.png"
+                alt="Log out"
+                style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
+                className="ml-7 transform transition-transform hover:scale-110"
+              />
+            </button>
+          </Profile>
+
+          {/* Userlist Box */}
+          <UserList users={users} />
+
+          {/* Board Button */}
+          <Link to="/Board" className="board-link-button">
+            게시판 이동하기
+          </Link>
+
+          {/* Board Box */}
+          <div className="post-list-box">
+            {posts.slice(0, maxVisiblePosts).map((post) => (
+              <div key={post.geul_id} className="post-list-item">
+                <Link
+                  to={`/board/${post.story_id}/post/${post.geul_id}`}
+                  className="truncate"
+                  title={post.geul_title}
+                >
+                  {post.geul_title.length > 15
+                    ? `${post.geul_title.slice(0, 15)}...`
+                    : post.geul_title}
+                </Link>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-      {/* 로그아웃 버튼 */}
-      <button className="logout-button" onClick={handleLogout}>
-        <img src="/images/logoutBtn.png" alt="로그아웃 버튼" />
-        <span className="logout-text">&nbsp;로그아웃</span>
-      </button>
     </div>
   );
 }

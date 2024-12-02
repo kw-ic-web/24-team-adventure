@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './CommonUi.css';
 import { useUserData } from '../../hooks/auth/useUserData';
 import Background from '../../components/ui/Background';
 
-export default function Profile() {
+export default function Profile({ children }) {
   const { data: userData, isLoading: userLoading } = useUserData();
   // 로딩 상태 처리
   if (userLoading) {
@@ -31,13 +32,21 @@ export default function Profile() {
   }
   return (
     <div className="profile-box">
+      <div className="flex  items-center">
+      <Link to="/MyPage">
       <img
         src={userData?.icon || 'https://via.placeholder.com/100'}
         alt="프로필 사진"
-        className="profile-icon"
+        className="profile-icon transform transition-transform hover:scale-110"
       />
-      <h3 className="profile-name">{userData?.name}</h3>
+      </Link>
+      <Link to="/MyPage">
+      <h3 className="profile-name transform transition-transform hover:scale-110">{userData?.name}</h3>
+      </Link>
+      {children}
+      </div>
       <h3 className="profile-email text-sm ">{userData?.email}</h3>
+      
     </div>
   );
 }

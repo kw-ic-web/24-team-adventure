@@ -8,6 +8,7 @@ import GamePlay2 from '../pages/Game/GamePlay3';
 import Testgpt from '../pages/Game/Testgpt';
 import GameEnd from '../pages/Game/GameEnd';
 import MyPage from '../pages/Mypage';
+import VideoRoom from '../pages/Video/videoRoom';
 import VideoChat from '../pages/Video';
 import VideoChatEndPage from '../pages/Video/videoChatEnd';
 import StoryGrid from '../pages/Board/StoryGrid';
@@ -26,14 +27,14 @@ export default function Router() {
         <Route path="/" element={<Start />} />
         <Route path="/home" element={<Home />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/videoroom" element={<VideoRoom />} />
         <Route path="/video-chat" element={<VideoChat />} />
         {/*video/end 변경 예정*/}
         <Route path="/video-end" element={<VideoChatEndPage />} />
         <Route path="/games" element={<GameStart />} />
-        <Route path="/gameplay/:story_id" element={<GamePlay />} />
         {/* 게임 api가 만들어지면, 각 동화(게임)별로 URL이동 ex. /games/:gameId*/}
         <Route path="/gameplay" element={<GamePlay />} />
-        <Route path="/gameplay2" element={<GamePlay2 />} />
+        <Route path="/gameplay/:story_id" element={<GamePlay />} />
         {/*마찬가지로 /games/:gameId/result 변경 예정*/}
         <Route path="/testgpt" element={<Testgpt />} />
         <Route path="/gameend" element={<GameEnd />} />

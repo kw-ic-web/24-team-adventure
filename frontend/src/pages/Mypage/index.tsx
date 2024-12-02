@@ -70,7 +70,6 @@ export default function Mypage() {
   // 메인 페이지 UI
   return (
     <div>
-      {' '}
       <Background />
       <div>
         <HeaderLogo />
@@ -103,15 +102,12 @@ export default function Mypage() {
           )}
         </div>
       </SmallBox>
-      <div>
-        {/* Right Side: 사용자 정보 섹션 */}
 
-        <div>
-          <Profile />
-        </div>
+      {/* Right Side: 사용자 정보 섹션 */}
+      <div className="boxes-align">
+        <Profile />
         {/* Userlist Box */}
         <div>
-          {/* 사용자 상태 업데이트 */}
           <UserStatusUpdater onUpdate={setUsers} />
           <UserList users={users} />
         </div>

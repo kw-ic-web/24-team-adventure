@@ -1,0 +1,231 @@
+/* 버튼 컨테이너 정렬 */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+}
+/* 시작동화 제목 */
+.story-title {
+  font-size: 4.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: center;
+
+  color: #f8f9fa !important;
+  text-shadow:
+    0 0 5px rgba(0, 0, 0, 0.9),
+    0 0 10px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeInSlide 1.2s ease-out forwards;
+  line-height: 1.2;
+  letter-spacing: 1px;
+}
+
+@keyframes fadeInSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 시작하기 버튼 */
+.start-button {
+  margin-top: 70px;
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #e60c2c, #e62e00);
+  color: white;
+  font-weight: bold;
+  font-size: 30px;
+  border: none;
+  border-radius: 60px;
+  opacity: 0;
+  transform: scale(0.9);
+  animation: fadeIn 0.8s ease-out forwards;
+  animation-delay: 0.5s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 2px 8px rgba(255, 24, 68, 0.4),
+    0 4px 12px rgba(255, 57, 16, 0.3);
+  transition: all 0.3s ease;
+}
+
+.start-button:hover {
+  box-shadow:
+    0 4px 10px rgba(255, 24, 68, 0.5),
+    0 7px 15px rgba(255, 57, 16, 0.4);
+  transform: scale(1.25);
+  background: linear-gradient(135deg, #ff1844, #ff3910);
+}
+
+.start-button:active {
+  transform: scale(0.9);
+  background: linear-gradient(135deg, #ff0f3c, #ff2400);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.start-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1);
+  transition:
+    transform 0.6s ease,
+    opacity 0.6s ease;
+}
+
+.start-button:active::after {
+  width: 200px;
+  height: 200px;
+  opacity: 0.3;
+  transform: translate(-50%, -50%) scale(1.5);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 공통 버튼 스타일 */
+.next-button {
+  position: relative;
+  overflow: hidden;
+  padding: 12px 30px;
+  font-size: 24px;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #fd8876, #ff7b53);
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5); /* 더 두꺼운 그림자 */
+}
+
+.next-button:hover {
+  background: linear-gradient(135deg, #fe705a, #ff7349);
+  transform: translateY(-2px);
+}
+
+.next-button:active {
+  transform: translateY(1px);
+}
+
+.next-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.4) 20%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.6s ease;
+  border-radius: 50%;
+}
+
+.next-button:hover::before {
+  transform: translate(-50%, -50%) scale(1.5);
+}
+
+.accent-button {
+  background: linear-gradient(135deg, #7ed6df, #22a6b3);
+}
+
+.accent-button:hover {
+  background: linear-gradient(135deg, #63c4cf, #1e8f9d);
+}
+
+.accent-button:active {
+  transform: translateY(1px);
+}
+
+.story-screen-456 {
+  display: flex;
+  flex-direction: column;
+  text-align: left; /* 텍스트 전체 왼쪽 정렬 */
+  align-items: flex-start; /* 컨테이너 내용 왼쪽 정렬 */
+  justify-content: flex-start; /* 텍스트가 위에서부터 시작 */
+  position: absolute;
+  background: url('../Game/동화배경1.png') no-repeat center center/cover; /* 배경 이미지 추가 */
+  width: 100%;
+  height: 70vh;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+  clip-path: polygon(
+    0% 3%,
+    10% 0%,
+    25% 2%,
+    40% 0%,
+    60% 2%,
+    80% 0%,
+    90% 3%,
+    100% 0%,
+    100% 95%,
+    90% 94%,
+    75% 96%,
+    60% 95%,
+    40% 97%,
+    25% 95%,
+    10% 96%,
+    0% 94%,
+    0% 3%
+  );
+}
+
+.story-screen-456 p {
+  font-size: 1.5rem;
+  color: #000000;
+  padding: 20px; /* 내부 여백 */
+  line-height: 1.6; /* 텍스트 간격을 넉넉하게 설정 */
+  font-weight: 500;
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+  overflow-y: auto; /* 텍스트가 넘치면 스크롤 */
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.4); /* 텍스트 그림자 */
+  max-height: calc(100% - 40px); /* 부모 컨테이너를 넘지 않도록 제한 */
+}
+
+.story-screen-456 {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #6c432b transparent; /* 스크롤 색상 */
+}
+
+.story-screen-456::-webkit-scrollbar {
+  width: 8px;
+}
+
+.story-screen-456::-webkit-scrollbar-thumb {
+  background-color: rgba(150, 150, 150, 0.5);
+  border-radius: 4px;
+}
+
+.story-screen-456::-webkit-scrollbar-track {
+  background: transparent;
+}
