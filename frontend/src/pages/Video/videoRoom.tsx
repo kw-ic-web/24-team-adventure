@@ -9,7 +9,6 @@ interface PeerConnection {
 
 const WebRTCRoom: React.FC = () => {
   const { data: userData } = useUserData();
-
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
@@ -19,13 +18,13 @@ const WebRTCRoom: React.FC = () => {
   const [selectedCamera, setSelectedCamera] = useState('');
 
   const myVideoRef = useRef<HTMLVideoElement>(null);
-  const peerVideo1Ref = useRef<HTMLVideoElement>(null);
-  const peerVideo2Ref = useRef<HTMLVideoElement>(null);
+  const peerVideoRef = useRef<HTMLVideoElement>(null);
   const socketRef = useRef<Socket | null>(null);
-  const myPeerConnectionsRef = useRef<PeerConnection>({});
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
 
   useEffect(() => {
     socketRef.current = io('http://localhost:3000');
+    console.log('Socket connected:', socketRef.current.connected);
     const urlParams = new URLSearchParams(window.location.search);
     const roomNameParam = urlParams.get('title');
 
@@ -38,7 +37,8 @@ const WebRTCRoom: React.FC = () => {
     setRoomName(roomNameParam);
 
     const initializeRoom = async () => {
-      setUsername(userData?.name);
+      console.log('Initializing room:', roomNameParam);
+      setUsername(userData?.name || '');
       await startMedia();
     };
 
@@ -106,23 +106,25 @@ const WebRTCRoom: React.FC = () => {
   ) => {
     await getMedia(event.target.value);
     setSelectedCamera(event.target.value);
-    Object.values(myPeerConnectionsRef.current).forEach((pc) => {
+    if (peerConnectionRef.current) {
       const videoTrack = myStream?.getVideoTracks()[0];
       if (videoTrack) {
-        const videoSender = pc
+        const videoSender = peerConnectionRef.current
           .getSenders()
           .find((sender) => sender.track?.kind === 'video');
         if (videoSender) videoSender.replaceTrack(videoTrack);
       }
-    });
+    }
   };
 
   const startMedia = async () => {
     await getMedia();
     socketRef.current?.emit('join_room', roomName, username);
+    console.log('Joined room:', roomName, 'as', username);
   };
 
-  const createPeerConnection = (userId: string, peerUsername: string) => {
+  const createPeerConnection = () => {
+    console.log('Creating peer connection');
     const peerConnection = new RTCPeerConnection({
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -132,104 +134,66 @@ const WebRTCRoom: React.FC = () => {
 
     peerConnection.addEventListener('icecandidate', (event) => {
       if (event.candidate) {
-        socketRef.current?.emit('ice', event.candidate, roomName, userId);
+        console.log('ICE candidate generated:', event.candidate);
+        socketRef.current?.emit('ice', event.candidate, roomName);
       }
     });
 
     peerConnection.addEventListener('track', (event) => {
+      console.log('Track received:', event.track.kind);
       if (event.streams && event.streams[0]) {
-        updatePeerVideo(userId, peerUsername, event.streams[0]);
+        if (peerVideoRef.current) {
+          console.log('Setting peer video source');
+          peerVideoRef.current.srcObject = event.streams[0];
+        }
       }
     });
 
-    myStream
-      ?.getTracks()
-      .forEach((track) => peerConnection.addTrack(track, myStream));
-
+    myStream?.getTracks().forEach((track) => {
+      console.log('Adding local track to peer connection:', track.kind);
+      peerConnection.addTrack(track, myStream);
+    });
     return peerConnection;
   };
 
-  const updatePeerVideo = (
-    userId: string,
-    peerUsername: string,
-    stream: MediaStream,
-  ) => {
-    const peerVideoElements = [peerVideo1Ref.current, peerVideo2Ref.current];
-    const peerIdElements = [
-      document.getElementById('peerId1'),
-      document.getElementById('peerId2'),
-    ];
-
-    for (let i = 0; i < peerVideoElements.length; i++) {
-      if (
-        peerVideoElements[i] &&
-        (!peerVideoElements[i]?.srcObject ||
-          peerIdElements[i]?.textContent?.includes(userId))
-      ) {
-        peerVideoElements[i]!.srcObject = stream;
-        if (peerIdElements[i])
-          peerIdElements[i]!.textContent =
-            `Peer ID: ${peerUsername} (${userId})`;
-        break;
-      }
-    }
-  };
   useEffect(() => {
     if (!socketRef.current) return;
 
-    socketRef.current.on(
-      'welcome',
-      async (userId: string, peerUsername: string) => {
-        if (!myPeerConnectionsRef.current[userId]) {
-          const newPeerConnection = createPeerConnection(userId, peerUsername);
-          myPeerConnectionsRef.current[userId] = newPeerConnection;
+    socketRef.current.on('welcome', async () => {
+      console.log('Received welcome event');
+      peerConnectionRef.current = createPeerConnection();
+      const offer = await peerConnectionRef.current.createOffer();
+      await peerConnectionRef.current.setLocalDescription(offer);
+      socketRef.current?.emit('offer', offer, roomName);
+    });
 
-          const offer = await newPeerConnection.createOffer();
-          await newPeerConnection.setLocalDescription(offer);
-          socketRef.current?.emit('offer', offer, roomName, userId);
-        }
-      },
-    );
+    socketRef.current.on('offer', async (offer: RTCSessionDescriptionInit) => {
+      console.log('Received offer');
+      peerConnectionRef.current = createPeerConnection();
+      await peerConnectionRef.current.setRemoteDescription(offer);
+      const answer = await peerConnectionRef.current.createAnswer();
+      await peerConnectionRef.current.setLocalDescription(answer);
+      console.log('Created and set local offer');
+      socketRef.current?.emit('answer', answer, roomName);
+    });
 
-    socketRef.current.on(
-      'offer',
-      async (
-        offer: RTCSessionDescriptionInit,
-        userId: string,
-        peerUsername: string,
-      ) => {
-        if (!myPeerConnectionsRef.current[userId]) {
-          const newPeerConnection = createPeerConnection(userId, peerUsername);
-          myPeerConnectionsRef.current[userId] = newPeerConnection;
+    socketRef.current.on('answer', (answer: RTCSessionDescriptionInit) => {
+      console.log('Received answer');
+      if (peerConnectionRef.current) {
+        peerConnectionRef.current.setRemoteDescription(answer);
+      }
+    });
 
-          await newPeerConnection.setRemoteDescription(offer);
-          const answer = await newPeerConnection.createAnswer();
-          await newPeerConnection.setLocalDescription(answer);
-          socketRef.current?.emit('answer', answer, roomName, userId);
-        }
-      },
-    );
-
-    socketRef.current.on(
-      'answer',
-      (answer: RTCSessionDescriptionInit, userId: string) => {
-        if (myPeerConnectionsRef.current[userId]) {
-          myPeerConnectionsRef.current[userId].setRemoteDescription(answer);
-        }
-      },
-    );
-
-    socketRef.current.on(
-      'ice',
-      (iceCandidate: RTCIceCandidate, userId: string) => {
-        if (myPeerConnectionsRef.current[userId]) {
-          myPeerConnectionsRef.current[userId].addIceCandidate(
-            new RTCIceCandidate(iceCandidate),
-          );
-        }
-      },
-    );
+    socketRef.current.on('ice', (iceCandidate: RTCIceCandidate) => {
+      console.log('Received ICE candidate');
+      if (peerConnectionRef.current) {
+        peerConnectionRef.current.addIceCandidate(
+          new RTCIceCandidate(iceCandidate),
+        );
+      }
+    });
   }, [roomName, username]);
+
   return (
     <div className="container mt-4">
       <h2 className="text-center">WebRTC Room</h2>
@@ -240,38 +204,32 @@ const WebRTCRoom: React.FC = () => {
         Room Name: {roomName || 'Loading...'}
       </div>
       <div className="row">
-        <div className="col-3"></div>
-        <div className="col-6" id="call">
-          <div className="flex justify-center gap-5 flex-wrap mb-5">
-            <div className="text-center">
-              <video
-                ref={myVideoRef}
-                autoPlay
-                playsInline
-                muted={muted}
-                className="border-2 border-gray-300 rounded-md"
-              />
-              <div>You</div>
-            </div>
-            <div className="text-center">
-              <video
-                ref={peerVideo1Ref}
-                autoPlay
-                playsInline
-                className="border-2 border-gray-300 rounded-md"
-              />
-              <div>Peer 1</div>
-            </div>
-            <div className="text-center">
-              <video
-                ref={peerVideo2Ref}
-                autoPlay
-                playsInline
-                className="border-2 border-gray-300 rounded-md"
-              />
-              <div>Peer 2</div>
-            </div>
+        <div className="col-6">
+          <div className="text-center">
+            <video
+              ref={myVideoRef}
+              autoPlay
+              playsInline
+              muted={muted}
+              className="border-2 border-gray-300 rounded-md"
+            />
+            <div>You</div>
           </div>
+        </div>
+        <div className="col-6">
+          <div className="text-center">
+            <video
+              ref={peerVideoRef}
+              autoPlay
+              playsInline
+              className="border-2 border-gray-300 rounded-md"
+            />
+            <div>Peer</div>
+          </div>
+        </div>
+      </div>
+      <div className="row mt-3">
+        <div className="col-12 text-center">
           <button
             onClick={handleMuteClick}
             className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
@@ -296,7 +254,6 @@ const WebRTCRoom: React.FC = () => {
             ))}
           </select>
         </div>
-        <div className="col-3"></div>
       </div>
     </div>
   );
