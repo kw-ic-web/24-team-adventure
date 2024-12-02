@@ -24,7 +24,7 @@ export default function Router() {
         <Route path="/" element={<Start />} />
         <Route path="/home" element={<Home />} />
         <Route path="/mypage" element={<MyPage />} />
-        <Route path="/videoroom" element={<VideoRoom />} />
+        <Route path="/room" element={<VideoRoom />} />
         <Route path="/video-chat" element={<VideoChat />} />
         <Route path="/roomlist" element={<RoomList />} />
         {/*video/end 변경 예정*/}
