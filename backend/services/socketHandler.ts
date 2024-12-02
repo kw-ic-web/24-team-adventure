@@ -13,6 +13,7 @@ import {
   addUserToRoom,
   removeUserFromRoom,
 } from "./roomService";
+import { JWT_SECRET } from "../config/keys"; // JWT_SECRET 임포트 추가
 
 dotenv.config();
 
@@ -36,19 +37,32 @@ const socketHandler = (server: HttpServer) => {
   });
 
   // 인증 미들웨어
-  io.use((socket: Socket, next) => {
-    const token = (socket.handshake.auth as AuthPayload).token;
+
+  io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    console.log("Socket.IO 인증 토큰:", token);
+
     if (!token) {
-      return next(new Error("인증 토큰이 필요합니다."));
+      console.error("Socket.IO authentication error: No token provided");
+      return next(new Error("Authentication error: No token provided"));
     }
-    jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
-      if (err) {
-        return next(new Error("유효하지 않은 토큰입니다."));
-      }
-      const user = decoded as DecodedToken;
-      (socket as any).user = user;
+
+    try {
+      const tokenWithoutBearer = token.replace(/^Bearer\s/, "");
+      console.log("Bearer 제거된 토큰:", tokenWithoutBearer);
+
+      const decoded = jwt.verify(tokenWithoutBearer, JWT_SECRET) as {
+        user_id: string;
+      };
+      console.log("Decoded JWT:", decoded);
+
+      // socket.user에 사용자 정보 저장
+      (socket as any).user = { userId: decoded.user_id };
       next();
-    });
+    } catch (error) {
+      console.error("Socket.IO authentication error: Invalid token", error);
+      return next(new Error("Authentication error: Invalid token"));
+    }
   });
 
   io.on("connection", (socket: Socket) => {

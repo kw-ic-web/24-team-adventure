@@ -5,10 +5,7 @@ import axiosInstance from '../../apis/axiosInstance';
 import { Room } from '../../models/room.model';
 import { showToast } from '../../components/Toast';
 import { useUserData } from '../auth/useUserData'; // 사용자 정보 가져오는 커스텀 훅
-
-interface CreateRoomData {
-  roomName: string;
-}
+import { useNavigate } from 'react-router-dom';
 
 interface CreateRoomResponse {
   room: Room;
@@ -16,6 +13,8 @@ interface CreateRoomResponse {
 
 export function useRoomData() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate(); // 네비게이션 훅 추가
+
   const {
     data: user,
     isLoading: isUserLoading,
@@ -36,16 +35,14 @@ export function useRoomData() {
   });
 
   // 방 생성
-  const mutation = useMutation<CreateRoomResponse, Error, string>({
+  const mutation = useMutation({
     mutationFn: async (roomName: string) => {
-      if (!user || !user.id) {
-        throw new Error('User is not authenticated');
-      }
       const response = await axiosInstance.post('/rooms', { roomName });
-      return response.data;
+      return response.data.room; // 방 정보를 반환
     },
-    onSuccess: () => {
+    onSuccess: (newRoom) => {
       queryClient.invalidateQueries(['rooms']);
+      navigate(`/room/${newRoom.id}`); // 방 ID로 리다이렉트
       showToast('방이 성공적으로 생성되었습니다!', 'success');
     },
     onError: () => {
@@ -54,16 +51,6 @@ export function useRoomData() {
   });
 
   const handleCreateRoom = (roomName: string) => {
-    if (isUserLoading) {
-      showToast('사용자 정보를 불러오는 중입니다.', 'info');
-      return;
-    }
-
-    if (isUserError || !user) {
-      showToast('사용자 정보가 필요합니다.', 'error');
-      return;
-    }
-
     mutation.mutate(roomName);
   };
 
