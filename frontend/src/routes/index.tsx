@@ -10,6 +10,7 @@ import MyPage from '../pages/Mypage';
 import VideoRoom from '../pages/Video/videoRoom';
 import VideoChat from '../pages/Video';
 import VideoChatEndPage from '../pages/Video/videoChatEnd';
+import RoomList from '../pages/Video/roomList';
 import StoryGrid from '../pages/Board/StoryGrid';
 import BoardPage from '../pages/Board/BoardPage';
 import PostDetail from '../pages/Board/PostDetail';
@@ -25,6 +26,7 @@ export default function Router() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/videoroom" element={<VideoRoom />} />
         <Route path="/video-chat" element={<VideoChat />} />
+        <Route path="/roomlist" element={<RoomList />} />
         {/*video/end 변경 예정*/}
         <Route path="/video-end" element={<VideoChatEndPage />} />
         <Route path="/games" element={<GameStart />} />

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
-import { socketHandler } from "./services/socketService";
+import socketHandler from "./services/socketService";
 import storyRoutes from "./routes/storyRoutes";
 import boardRoutes from "./routes/boardRoutes";
 import listRoutes from "./routes/listRoutes";
