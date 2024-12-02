@@ -1,0 +1,26 @@
+/* frontend/src/pages/Room/RoomPage.css */
+
+.room-page {
+  padding: 20px;
+}
+
+.room-page h1 {
+  color: #2c3e50;
+}
+
+.room-page .welcome-message {
+  margin-bottom: 20px;
+}
+
+.room-page button {
+  margin-right: 10px;
+  padding: 10px 15px;
+  background-color: #3498db;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.room-page button:hover {
+  background-color: #2980b9;
+}

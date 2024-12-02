@@ -15,6 +15,8 @@ import BoardPage from '../pages/Board/BoardPage';
 import PostDetail from '../pages/Board/PostDetail';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
+import RoomPage from '../pages/Room/RoomPage';
+import RoomDetail from '../pages/Room/RoomDetail';
 
 export default function Router() {
   return (
@@ -24,6 +26,8 @@ export default function Router() {
         <Route path="/home" element={<Home />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/videoroom" element={<VideoRoom />} />
+        <Route path="/room" element={<RoomPage />} />
+        <Route path="/room/:roomId" element={<RoomDetail />} />
         <Route path="/video-chat" element={<VideoChat />} />
         {/*video/end 변경 예정*/}
         <Route path="/video-end" element={<VideoChatEndPage />} />

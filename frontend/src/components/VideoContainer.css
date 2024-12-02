@@ -1,0 +1,19 @@
+/* frontend/src/components/VideoContainer.css */
+
+.video-container {
+  display: inline-block;
+  margin: 10px;
+  text-align: center;
+}
+
+.video-container video {
+  width: 200px;
+  height: 150px;
+  background-color: black;
+}
+
+.video-container p {
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: #555;
+}
