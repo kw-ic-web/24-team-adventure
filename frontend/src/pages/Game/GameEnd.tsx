@@ -101,7 +101,7 @@ function GameEnd() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              navigate('/home');
+              navigate('/room');
             }}
             className="webrtc-button"
           >
