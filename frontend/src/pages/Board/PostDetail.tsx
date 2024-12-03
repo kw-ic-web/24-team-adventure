@@ -213,7 +213,7 @@ const PostDetail: React.FC = () => {
       </BigBox>
       <button
         onClick={() => navigate('/board')}
-        className="absolute bottom-[30px] right-[160px] w-[90px] h-[1240px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
+        className="absolute bottom-[660px] right-[160px] w-[90px] h-[40px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
         title="나가기"
         aria-label="나가기"
       >

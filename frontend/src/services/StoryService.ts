@@ -1,4 +1,3 @@
-// /frontend/src/services/StoryService.ts
 import api from '../api'; // Axios 인스턴스 임포트
 
 // 서버로 스토리 진행 요청을 보내는 함수
@@ -12,9 +11,11 @@ export const generateStoryContinuation = async (userInput: string) => {
   }
 };
 
-export const generateStoryContinuation_second= async (userInput: string) => {
+export const generateStoryContinuation_second = async (userInput: string) => {
   try {
-    const response = await api.post('/api/generate-story-second', { userInput });
+    const response = await api.post('/api/generate-story-second', {
+      userInput,
+    });
     return response.data; // 서버에서 반환된 데이터 (연속된 이야기와 키워드)
   } catch (error) {
     console.error('Error generating second story continuation:', error);

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
-import socketHandler from "./services/socketService";
+import socketHandler from "./services/socketHandler";
 import storyRoutes from "./routes/storyRoutes";
 import boardRoutes from "./routes/boardRoutes";
 import listRoutes from "./routes/listRoutes";
@@ -10,9 +10,8 @@ import commentRoutes from "./routes/commentRoutes";
 import authRoutes from "./routes/authRoutes";
 import mypageRoutes from "./routes/mypageRoutes";
 import protectedRoutes from "./routes/protectedRoutes";
-import finalstorySave from "./routes/finalstorySave";
-import userStatusRoutes from "./routes/userStatusRoutes";
-import "./services/userStatusCron";
+import roomRoutes from "./routes/roomRoutes"; // 새로 추가
+import http from "http"; // import으로 변경
 
 dotenv.config();
 
@@ -42,10 +41,10 @@ app.use(commentRoutes);
 app.use(authRoutes);
 app.use(mypageRoutes);
 app.use(protectedRoutes);
-app.use(finalstorySave);
-app.use(userStatusRoutes);
+app.use(roomRoutes);
 
-const server = require("http").createServer(app);
+// HTTP 서버 생성
+const server = http.createServer(app);
 socketHandler(server);
 
 // 서버 시작
