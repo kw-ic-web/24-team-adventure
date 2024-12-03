@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../apis/axiosInstance';
 import Loader from '../../components/Loader';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
@@ -41,9 +41,7 @@ const BoardPage: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/board/${story_id}`,
-        );
+        const response = await axiosInstance.get(`/board/${story_id}`);
         setPosts(response.data);
         setError('');
       } catch (err) {
@@ -78,25 +76,26 @@ const BoardPage: React.FC = () => {
         <HeaderLogo />
       </div>
       <SmallBox>
-
-      <h1 className="board-title">게시물 목록</h1>
-      <div className="post-grid">
-        {posts.map((post) => (
-          <Link
-            key={post.geul_id}
-            to={`/board/${post.story_id}/post/${post.geul_id}`}
-            className="post-card"
-          >
-            <h3>{post.geul_title}</h3>
-            <p>{post.geul_content.substring(0, 100)}...</p>
-            <p>작성자: {post.user.name}</p> {/* 작성자 이름 표시 */}
-            <p>업로드 시간: {new Date(post.uploaded_time).toLocaleString()}</p>
-          </Link>
-        ))}
-      </div>
+        <h1 className="board-title">게시물 목록</h1>
+        <div className="post-grid">
+          {posts.map((post) => (
+            <Link
+              key={post.geul_id}
+              to={`/board/${post.story_id}/post/${post.geul_id}`}
+              className="post-card"
+            >
+              <h3>{post.geul_title}</h3>
+              <p>{post.geul_content.substring(0, 100)}...</p>
+              <p>작성자: {post.user.name}</p> {/* 작성자 이름 표시 */}
+              <p>
+                업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
+              </p>
+            </Link>
+          ))}
+        </div>
       </SmallBox>
       <div className="boxes-align">
-      <Profile/>
+        <Profile />
         <UserList users={users} />
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../apis/axiosInstance.ts';
 import { showToast } from '../../components/Toast';
 import './PostDetail.css';
 import { useUserData } from '../../hooks/auth/useUserData.ts';
@@ -53,8 +53,8 @@ const PostDetail: React.FC = () => {
     // 게시물 데이터를 가져오는 함수
     const fetchPost = async () => {
       try {
-        const postResponse = await axios.get(
-          `http://localhost:3000/board/${story_id}/post/${geul_id}`,
+        const postResponse = await axiosInstance.get(
+          `/board/${story_id}/post/${geul_id}`,
         );
         setPost(postResponse.data);
       } catch (error) {
@@ -65,8 +65,8 @@ const PostDetail: React.FC = () => {
     // 댓글 데이터를 가져오는 함수
     const fetchComments = async () => {
       try {
-        const commentsResponse = await axios.get(
-          `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
+        const commentsResponse = await axiosInstance.get(
+          `/board/${story_id}/post/${geul_id}/comments`,
         );
         setComments(commentsResponse.data);
       } catch (error) {
@@ -86,8 +86,8 @@ const PostDetail: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(
-        `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
+      const response = await axiosInstance.post(
+        `/board/${story_id}/post/${geul_id}/comments`,
         {
           user_id: loggedInUserId,
           comm_content: newComment,
@@ -107,8 +107,8 @@ const PostDetail: React.FC = () => {
   // 댓글 삭제 함수
   const handleDeleteComment = async (comment_id: number) => {
     try {
-      await axios.delete(
-        `http://localhost:3000/board/${story_id}/post/${geul_id}/comments/${comment_id}`,
+      await axiosInstance.delete(
+        `/board/${story_id}/post/${geul_id}/comments/${comment_id}`,
       );
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.comment_id !== comment_id),
