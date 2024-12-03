@@ -4,6 +4,7 @@ import Home from '../pages/Home';
 import Start from '../pages/Start';
 import GameStart from '../pages/Game/GameSelect';
 import GamePlay from '../pages/Game/GamePlay';
+import GamePlay2 from '../pages/Game/GamePlay3';
 import Testgpt from '../pages/Game/Testgpt';
 import GameEnd from '../pages/Game/GameEnd';
 import MyPage from '../pages/Mypage';
@@ -16,10 +17,13 @@ import BoardPage from '../pages/Board/BoardPage';
 import PostDetail from '../pages/Board/PostDetail';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
+import IdleHandler from '../components/userStatus/IdleHandler';
+import UserList from '../components/userStatus/UserList';
 
 export default function Router() {
   return (
     <BrowserRouter>
+      <IdleHandler />
       <Routes>
         <Route path="/" element={<Start />} />
         <Route path="/home" element={<Home />} />
@@ -40,6 +44,8 @@ export default function Router() {
         <Route path="/board/:story_id" element={<BoardPage />} />
         {/*post는 수정 예정*/}
         <Route path="/board/:story_id/post/:geul_id" element={<PostDetail />} />
+        <Route path="/users" element={<UserList />} />
+        {/* 사용자 실시간 상태 조회 */}
       </Routes>
     </BrowserRouter>
   );

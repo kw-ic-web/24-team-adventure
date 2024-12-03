@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import './GameEnd.css';
 
 function GameEnd() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [author, setAuthor] = useState('');
@@ -12,19 +14,72 @@ function GameEnd() {
     isFullyOpen: false,
   });
 
+  const effectRan = useRef(false); // useEffect 중복 실행 방지 플래그
+
+  const saveStoryToBackend = async (storyData) => {
+    console.log('전송할 데이터:', storyData);
+    try {
+      const { userId, storyId, title, content } = storyData;
+
+      if (!userId || !storyId || !title || !content) {
+        throw new Error('스토리 데이터를 완전히 제공하지 않았습니다.');
+      }
+
+      const response = await axios.post('http://localhost:3000/api/saveStory', {
+        user_id: userId,
+        story_id: Number(storyId),
+        geul_title: title,
+        geul_content: content,
+      });
+
+      if (response.status !== 201) {
+        const errorData = response.data;
+        throw new Error(errorData.error || '스토리 저장에 실패했습니다.');
+      }
+
+      console.log('스토리 저장 성공:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('스토리 저장 중 오류 발생:', error.message);
+      alert(`스토리 저장 실패: ${error.message}`);
+      throw error;
+    }
+  };
+
   useEffect(() => {
+    if (effectRan.current) return; // useEffect가 이미 실행되었으면 중단
+    effectRan.current = true; // 첫 실행 이후에는 실행되지 않도록 설정
+
     const savedTitle = localStorage.getItem('storyTitle');
     const savedContent = localStorage.getItem('storyContent');
     const savedAuthor = localStorage.getItem('userName');
 
-    if (savedTitle && savedContent) {
+    const userId = location.state?.userId;
+    const storyId = location.state?.story_id;
+
+    if (!userId || !storyId) {
+      alert('필수 데이터가 누락되었습니다. 홈으로 이동합니다.');
+      navigate('/');
+      return;
+    }
+
+    if (savedTitle && savedContent && savedAuthor) {
       setTitle(savedTitle);
       setContent(savedContent);
-      setAuthor(savedAuthor); // 작성자 이름 설정
+      setAuthor(savedAuthor);
+
+      // 백엔드로 데이터 전송
+      saveStoryToBackend({
+        userId,
+        storyId,
+        title: savedTitle,
+        content: savedContent,
+      });
     } else {
-      navigate('/'); // 데이터가 없으면 홈으로 리다이렉트
+      alert('스토리 데이터가 없습니다. 홈으로 이동합니다.');
+      navigate('/');
     }
-  }, [navigate]);
+  }, [location.state, navigate]);
 
   const handleBookClick = () => {
     if (!bookState.isOpen) {
@@ -58,7 +113,7 @@ function GameEnd() {
           <div className="book-content">
             <div className="cover">
               <h1>{title || '최종 스토리'}</h1>
-              <p>작성자: {author || '알 수 없음'}</p> {/* 작성자 이름 표시 */}
+              <p className="author">작성자: {author || '알 수 없음'}</p>
             </div>
             {[...Array(8)].map((_, i) => (
               <div key={i} className={`page page-${i + 1}`} />

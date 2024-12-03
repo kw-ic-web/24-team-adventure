@@ -10,6 +10,9 @@ import commentRoutes from "./routes/commentRoutes";
 import authRoutes from "./routes/authRoutes";
 import mypageRoutes from "./routes/mypageRoutes";
 import protectedRoutes from "./routes/protectedRoutes";
+import finalstorySave from "./routes/finalstorySave";
+import userStatusRoutes from "./routes/userStatusRoutes";
+import "./services/userStatusCron";
 
 dotenv.config();
 
@@ -39,6 +42,8 @@ app.use(commentRoutes);
 app.use(authRoutes);
 app.use(mypageRoutes);
 app.use(protectedRoutes);
+app.use(finalstorySave);
+app.use(userStatusRoutes);
 
 const server = require("http").createServer(app);
 socketHandler(server);

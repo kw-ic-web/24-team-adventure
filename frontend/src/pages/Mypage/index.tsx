@@ -2,12 +2,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import PostCard from '../../components/myPage/PostCard';
 import { useUserGeulData } from '../../hooks/mypage/useUserGeulData';
 import { useUserData } from '../../hooks/auth/useUserData';
-import React from 'react';
+import React, { useState } from 'react';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
 import Profile from '../../components/ui/Profile';
-import UserList from '../../components/ui/Userlist';
+import HomeBtn from '../../components/ui/HomeBtn';
 import HeaderLogo from '../../components/ui/HeaderLogo';
+import UserList from '../../components/userStatus/UserList';
+import UserStatusUpdater from '../../components/userStatus/UserStatusUpdater';
 
 interface User {
   id: number;
@@ -16,6 +18,7 @@ interface User {
 }
 
 export default function Mypage() {
+  const [users, setUsers] = useState<User[]>([]);
   const navigate = useNavigate();
 
   // 사용자 데이터를 불러오는 hook
@@ -105,6 +108,7 @@ export default function Mypage() {
         <Profile />
         {/* Userlist Box */}
         <div>
+          <UserStatusUpdater onUpdate={setUsers} />
           <UserList users={users} />
         </div>
         <div>
