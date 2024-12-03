@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import io, { Socket } from 'socket.io-client';
 import { showToast } from '../../components/Toast';
+import { SOCKET_SERVER_URL } from '../../constants/socketUrl';
 
 const RoomDetail: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -9,15 +10,21 @@ const RoomDetail: React.FC = () => {
   const location = useLocation();
   const roomName =
     new URLSearchParams(location.search).get('name') || '알 수 없음';
-  const [socket, setSocket] = useState<Socket | null>(null);
+
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<
     { user: string; message: string; time: string }[]
   >([]);
-  const localVideoRef = useRef<HTMLVideoElement>(null);
-  const remoteVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    console.log('useEffect 실행');
+
     if (!roomId) {
       showToast('유효하지 않은 방입니다.', 'error');
       navigate('/room');
@@ -31,16 +38,25 @@ const RoomDetail: React.FC = () => {
       return;
     }
 
-    // 소켓 초기화
-    const newSocket = io(import.meta.env.VITE_SOCKET_SERVER_URL as string, {
+    // 소켓 및 피어 연결 초기화
+    const socket = io(SOCKET_SERVER_URL, {
       auth: { token },
     });
+    socketRef.current = socket;
 
-    setSocket(newSocket);
+    const pc = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: 'stun:stun.l.google.com:19302',
+        },
+      ],
+    });
+    peerConnectionRef.current = pc;
 
-    newSocket.on('connect', () => {
+    // 소켓 이벤트 핸들러 등록
+    socket.on('connect', () => {
       console.log('소켓 연결 성공');
-      newSocket.emit(
+      socket.emit(
         'joinRoom',
         roomId,
         (response: { success: boolean; message?: string }) => {
@@ -52,32 +68,116 @@ const RoomDetail: React.FC = () => {
       );
     });
 
-    newSocket.on('update_users', (users: { id: string }[]) => {
-      console.log('현재 방의 사용자들:', users);
+    socket.on('offer', async ({ offer }) => {
+      console.log('오퍼 수신:', offer);
+      try {
+        if (pc.signalingState !== 'closed') {
+          if (
+            !pc.currentRemoteDescription ||
+            pc.signalingState === 'have-local-offer'
+          ) {
+            await pc.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            console.log('앤서 전송:', answer);
+            socket.emit('answer', { roomId, answer });
+          }
+        } else {
+          console.error(
+            'RTCPeerConnection이 닫혀 있어 오퍼를 처리할 수 없습니다.',
+          );
+        }
+      } catch (error) {
+        console.error('오퍼 처리 중 오류:', error);
+      }
     });
 
-    newSocket.on(
-      'chat_message',
-      (data: { user: string; message: string; time: string }) => {
-        setMessages((prev) => [...prev, data]);
-      },
-    );
+    socket.on('answer', async ({ answer }) => {
+      console.log('앤서 수신:', answer);
+      try {
+        if (pc.signalingState !== 'closed') {
+          await pc.setRemoteDescription(new RTCSessionDescription(answer));
+        } else {
+          console.error(
+            'RTCPeerConnection이 닫혀 있어 앤서를 처리할 수 없습니다.',
+          );
+        }
+      } catch (error) {
+        console.error('앤서 처리 중 오류:', error);
+      }
+    });
 
-    // WebRTC 미디어 스트림 가져오기
+    socket.on('ice_candidate', async ({ candidate }) => {
+      console.log('ICE 후보 수신:', candidate);
+      try {
+        if (pc.signalingState !== 'closed') {
+          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+        } else {
+          console.error(
+            'RTCPeerConnection이 닫혀 있어 ICE 후보를 추가할 수 없습니다.',
+          );
+        }
+      } catch (error) {
+        console.error('ICE 후보 추가 중 오류:', error);
+      }
+    });
+
+    // 피어 연결 이벤트 핸들러 등록
+    pc.onicecandidate = (event) => {
+      if (event.candidate && socket) {
+        console.log('ICE 후보 전송:', event.candidate);
+        socket.emit('ice_candidate', {
+          roomId,
+          candidate: event.candidate,
+        });
+      }
+    };
+
+    pc.ontrack = (event) => {
+      console.log('원격 스트림 수신:', event.streams);
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = event.streams[0];
+      }
+    };
+
+    pc.onnegotiationneeded = async () => {
+      console.log('네고시에이션 필요');
+      if (pc.signalingState === 'stable') {
+        try {
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          console.log('오퍼 전송:', offer);
+          socket.emit('offer', { roomId, offer });
+        } catch (error) {
+          console.error('오퍼 생성 중 오류:', error);
+        }
+      }
+    };
+
+    // 로컬 미디어 스트림 가져오기
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (localVideoRef.current) {
           localVideoRef.current.srcObject = stream;
         }
+        localStreamRef.current = stream;
+
+        // 로컬 트랙을 피어 연결에 추가
+        stream.getTracks().forEach((track) => {
+          console.log('트랙 추가:', track);
+          pc.addTrack(track, stream);
+        });
       })
       .catch((err) => {
-        console.error('Error accessing media devices:', err);
+        console.error('미디어 장치 접근 오류:', err);
       });
 
+    // 컴포넌트 언마운트 시 정리
     return () => {
-      if (newSocket) {
-        newSocket.emit(
+      console.log('클린업 함수 실행');
+      if (socketRef.current) {
+        socketRef.current.emit(
           'leaveRoom',
           roomId,
           (response: { success: boolean }) => {
@@ -86,15 +186,24 @@ const RoomDetail: React.FC = () => {
             }
           },
         );
-        newSocket.disconnect();
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+      if (peerConnectionRef.current) {
+        if (peerConnectionRef.current.signalingState !== 'closed') {
+          console.log('RTCPeerConnection 닫힘');
+          peerConnectionRef.current.close();
+        }
+        peerConnectionRef.current = null;
       }
     };
-  }, [roomId, navigate]);
+  }, []); // 빈 배열로 설정하여 한 번만 실행
 
+  // leaveRoom 함수 정의
   const leaveRoom = () => {
-    if (socket) {
+    if (socketRef.current) {
       console.log('방 나가기 버튼 클릭');
-      socket.emit(
+      socketRef.current.emit(
         'leaveRoom',
         roomId,
         (response: { success: boolean; message?: string }) => {
@@ -112,14 +221,15 @@ const RoomDetail: React.FC = () => {
     }
   };
 
+  // sendMessage 함수 정의 (필요한 경우)
   const sendMessage = () => {
-    if (socket && message.trim()) {
+    if (socketRef.current && message.trim()) {
       const chatMessage = {
         user: '나',
         message,
         time: new Date().toLocaleTimeString(),
       };
-      socket.emit('chat_message', { roomName, message });
+      socketRef.current.emit('chat_message', { roomName, message });
       setMessages((prev) => [...prev, chatMessage]);
       setMessage('');
     }
