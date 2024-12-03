@@ -92,13 +92,21 @@ export default function GamePlay(): JSX.Element {
         userName: userData?.name || '익명 사용자', // 유저 이름 가져오기, 없으면 기본값 설정
       };
 
+      const userId = userData?.user_id;
+
       // 로컬 스토리지에 저장
       localStorage.setItem('storyTitle', fullStory.title);
       localStorage.setItem('storyContent', fullStory.content);
       localStorage.setItem('userName', fullStory.userName); // 유저 이름 저장
 
       // gameEnd 페이지로 이동
-      navigate('/gameEnd');
+      navigate('/gameEnd', {
+        state: {
+          userId,
+          story_id, // 추출한 gameplayNumber 전달
+          fullStory,
+        },
+      });
     }
   };
 
