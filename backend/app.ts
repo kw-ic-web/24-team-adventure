@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
-import { socketHandler } from "./services/socketService";
+import socketHandler from "./services/socketService";
 import storyRoutes from "./routes/storyRoutes";
 import boardRoutes from "./routes/boardRoutes";
 import listRoutes from "./routes/listRoutes";
@@ -10,10 +10,9 @@ import commentRoutes from "./routes/commentRoutes";
 import authRoutes from "./routes/authRoutes";
 import mypageRoutes from "./routes/mypageRoutes";
 import protectedRoutes from "./routes/protectedRoutes";
-import finalstorySave from "./routes/finalStorySave";
+import finalstorySave from "./routes/finalstorySave";
 import userStatusRoutes from "./routes/userStatusRoutes";
 import "./services/userStatusCron";
-import videoRoutes from "./routes/videoRoutes";
 
 dotenv.config();
 
@@ -45,7 +44,6 @@ app.use(mypageRoutes);
 app.use(protectedRoutes);
 app.use(finalstorySave);
 app.use(userStatusRoutes);
-app.use(videoRoutes);
 
 const server = require("http").createServer(app);
 socketHandler(server);
