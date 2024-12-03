@@ -449,7 +449,7 @@ export default function GamePlay(): JSX.Element {
               className={`fixed inset-x-0 bottom-0 px-3 pb-3 transition-transform duration-500 ease-in-out ${
                 isPromptVisible
                   ? 'transform translate-y-0'
-                  : 'transform translate-y-full'
+                  : 'transform translate-y-[102%]'
               }`}
             >
               <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden">
@@ -485,11 +485,12 @@ export default function GamePlay(): JSX.Element {
 
                 {/* 말하기 프롬프트부분*/}
                 <div className="px-6 py-4 flex items-center space-x-4">
-                  <SpeechRecognition
-                    language="ko-KR"
-                    onResult={handleSpeechResult}
-                    className="text-gray-600 hover:text-gray-800 transition-colors"
-                  />
+                  <div className="text-gray-600 hover:text-gray-800 transition-colors">
+                    <SpeechRecognition
+                      language="ko-KR"
+                      onResult={handleSpeechResult}
+                    />
+                  </div>
                   <div className="relative w-full">
                     <textarea
                       value={promptTexts[currentPage - 1]}
@@ -510,7 +511,9 @@ export default function GamePlay(): JSX.Element {
                       }}
                       className="w-full h-20 flex-grow p-3 text-gray-700 rounded-xl border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300/50 bg-gray-50 text-lg transition-all duration-300 ease-in-out"
                       placeholder="여기에 이야기를 입력하거나 음성 입력 버튼을 사용해보세요."
-                      style={{ userSelect: 'text' }}
+                      style={{
+                        userSelect: 'text',
+                      }}
                     />
                   </div>
                   <button
