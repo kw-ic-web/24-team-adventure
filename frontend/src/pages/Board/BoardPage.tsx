@@ -10,6 +10,9 @@ import UserList from '../../components/ui/Userlist';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 import './BoardPage.css';
 
+//동화별 게시판
+
+
 //db연결 전 **임시** 사용자 정보
 interface User {
   id: number;

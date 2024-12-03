@@ -27,7 +27,7 @@ const useGoogleAuthMutation = () => {
       }
 
       // 로그인 성공 후 /home 경로로 이동
-      // navigate('/home');
+       navigate('/home');
     },
     onError: (error) => {
       console.log('로그인 실패:', error);

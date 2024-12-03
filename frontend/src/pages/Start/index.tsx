@@ -2,48 +2,51 @@ import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import useGoogleAuthMutation from '../../hooks/auth/useGoogleAuthMutation';
 import StartBackground from '../../components/ui/StartBackground';
-import startlogo from './startlogo.jpg';
 
-/*
-To do:
-다른 사용자 목록 박스 : 사용자 db 연결, 본인 외 나머지
-*/
+
 
 export default function Start() {
+ 
+
   // TanStack Query의 useMutation을 사용하여 구글 로그인 후 인증 요청 처리
   const { mutate } = useGoogleAuthMutation();
+  
   const handleLoginSuccess = (credentialResponse: any) => {
     const { credential } = credentialResponse;
-    console.log('구글 로그인 성공:', credential);
-    // 백엔드에 credential을 전달
     mutate(credential);
   };
 
-  // 구글 로그인 실패 시 호출되는 함수 (error 파라미터를 받음)
   const handleLoginFailure = () => {
     console.error('Google login failed');
   };
 
+  
+  
+
+ 
+
   return (
     <div>
-      {' '}
       <StartBackground />
-      <div className="flex flex-col items-center justify-around h-screen">
-        {/* 프로그램 로고 */}
+      <div className="flex flex-col items-center justify-around mt-[9%]">
         <img
-          src="/images/startlogo.png"
+          src="/images/startlogo_marble.png"
           alt="Game Logo"
-          className="w-[900px] h-auto"
+          className="w-[70%] h-auto mt-[-70px]" // startlogo 위치 아래로 이동
         />
-        <div className="mt-[-150px]">
-          {/* 구글 로그인 버튼 */}
-          <GoogleLogin
-            onSuccess={handleLoginSuccess} // 로그인 성공 시 호출되는 함수
-            onError={handleLoginFailure} // 로그인 실패 시 호출되는 함수
-            width={'220px'}
-            useOneTap // One Tap 로그인 기능을 활성화
-          />
-        </div>
+
+        
+        
+          <div className="flex justify-center items-center mt-[1%]">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={handleLoginFailure}
+              width={'200px'}
+              useOneTap
+            />
+          </div>
+        
+        
       </div>
     </div>
   );

@@ -18,8 +18,7 @@ body {
 
 /* Full-page Background Style */
 .full-page-bg {
-  
-  position: absolute; /* 배경 고정 */
+  position: absolute; /* fixed로 바꾸기 */
   top: 0;
   left: 0;
   width: 100vw; /* 브라우저 너비 전체 */
@@ -32,23 +31,30 @@ body {
   left: 10%;
   width: 65%;
   height: 80%;
+
   background-color: white; /* 배경색 */
   border-radius: 50px; /* 둥근 모서리 */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
   padding: 40px;
+  overflow: auto;
+
 }
 
 .big-main-box {
   position: absolute; /* 배치 */
   top: 50%;
   left: 50%;
+
   transform: translate(-50%, -48%);
-  width:80%;
+  width:75%;
   height: 80%;
   background-color: white; /* 배경색 */
   border-radius: 50px; /* 둥근 모서리 */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
+  overflow: auto;
+
 }
+
 .big-main-box > div {
   transform: scale(0.8); /* 콘텐츠 축소 */
   transition: transform 0.3s ease-in-out; /* 축소할 때 애니메이션 추가 */
@@ -56,11 +62,11 @@ body {
 
 .boxes-align {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
   gap: 18px;
   position: absolute;
-  top: 48%;
+  top: 49%;
   left: 83%;
   transform: translate(-50%, -48%);
   width: 250px;
@@ -75,7 +81,6 @@ body {
   width: 55%;
   height: 50px;
   border: 4px solid #c8a2c8;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 19px;
   text-align: center;
   font-size: 85%;
@@ -88,12 +93,10 @@ body {
 
 /* Profile Box */
 .profile-box {
-  
   background-color: white;
   padding: 5%;
   width: 70%;
   border: 4px solid #c8a2c8;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
   border-radius: 19px;
   display: flex;
   justify-content: center;
@@ -119,19 +122,16 @@ body {
   font-weight: 400;
 }
 
-
-
 /*/////////////////////////big///////////////////////////*/
 /* Post List Box */
 .post-list-box {
- 
+  align-items: center;
   background-color: white;
   padding: 16px;
   width: 70%;
-  height: 250px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  height: 180px;
   border-radius: 20px;
-  overflow: hidden;
+  font-size: 90%;
 }
 
 .post-list-item {
@@ -148,7 +148,6 @@ body {
   padding: 16px;
   width: 70%;
   height: 250px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
   font-size: 90%;
 }
@@ -157,7 +156,6 @@ body {
   display: flex;
   justify-content: space-between;
   margin-bottom: 6px;
-  
 }
 .user-item-flex {
   display: flex;
@@ -178,8 +176,24 @@ body {
   transform: translate(-30%, 20%);
 }
 
-
 /*공백, 엔터 포함한 동화 글*/
 .preserve-spacing {
   white-space: pre-wrap; /* 줄바꿈과 공백 모두 유지 */
+}
+
+::-webkit-scrollbar {
+  width: 20px; /* 스크롤바 너비 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #F7E270; /* 스크롤바 색상 */
+  border-radius: 8px; /* 둥근 테두리 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #c8a2c8; /* 호버 시 색상 */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* 스크롤바 트랙 배경을 투명하게 */
 }

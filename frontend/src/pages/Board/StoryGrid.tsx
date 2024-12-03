@@ -10,6 +10,9 @@ import UserList from '../../components/ui/Userlist';
 import HomeBtn from '../../components/ui/HomeBtn';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 
+//메인 게시판
+
+
 // 사용자 정보 인터페이스 (임시)
 interface User {
   id: number;
@@ -97,7 +100,7 @@ const StoryGrid: React.FC = () => {
       <HeaderLogo />
       <BigBox>
         {/* 스토리 목록 */}
-        <div className="story-grid-scroll">
+        <div className="story-grid">
           {stories.length > 0 ? (
             stories.map((story) => (
               <div
@@ -119,7 +122,7 @@ const StoryGrid: React.FC = () => {
         </div>
 
         {/* 전체 게시물 보기 버튼과 게시물 리스트 컨테이너 */}
-        <div className="posts-container">
+        <div className="posts-container mt-[-40px]">
           {selectedStoryId && (
             <div className="show-all-button-container">
               <button onClick={handleShowAllPosts} className="show-all-button">
@@ -147,13 +150,7 @@ const StoryGrid: React.FC = () => {
             ))}
           </div>
         </div>
-
       </BigBox>
-      <div className="boxes-align">
-          <Profile />
-        <UserList users={users} />
-      </div>
-
     </div>
   );
 };

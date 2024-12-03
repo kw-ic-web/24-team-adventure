@@ -11,6 +11,9 @@ import BigBox from '../../components/ui/BigBox.tsx';
 import UserList from '../../components/ui/Userlist';
 import Profile from '../../components/ui/Profile';
 
+//글
+
+
 //db연결 전 **임시** 사용자 정보
 interface User {
   id: number;
@@ -134,12 +137,6 @@ const PostDetail: React.FC = () => {
     <div>
       {' '}
       <Background />
-
-        <div className="boxes-align">
-        <Profile />
-      {/* Userlist Box */}
-        <UserList users={users} />
-      </div>
       <BigBox className="big-box">
         <div className="scrollable-box">
           {post ? (
@@ -154,7 +151,6 @@ const PostDetail: React.FC = () => {
                   업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
                 </span>
               </div>
-
 
               {/* 게시물 본문 */}
               <p className="intro-text">{post.intro1}</p>
@@ -229,7 +225,7 @@ const PostDetail: React.FC = () => {
       </BigBox>
       <button
         onClick={() => navigate('/board')}
-        className="absolute bottom-[30px] right-[130px] w-[90px] h-[1250px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
+        className="absolute bottom-[30px] right-[160px] w-[80px] h-[100px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
         title="나가기"
         aria-label="나가기"
       >

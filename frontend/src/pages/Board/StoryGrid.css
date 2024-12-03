@@ -1,17 +1,18 @@
 /* 스토리 목록을 한 줄로 설정하고 스크롤 가능하게 */
-.story-grid-scroll {
+.story-grid {
+
   display: flex;
-  overflow-x: auto;
+  
   gap: 0.3rem; /* 간격 축소 */
   padding: 0.3rem; /* 여백 축소 */
-  scroll-snap-type: x mandatory;
   border-bottom: 0px solid #e2e8f0;
+  
 }
 
 /* 각 스토리 카드 스타일 */
 .story-card {
-  flex: 0 0 auto;
-  min-width: 140px; /* 크기를 조금 더 줄임 */
+  
+  min-width: 100px; /* 크기를 조금 더 줄임 */
   background-color: #ffffff;
   border-radius: 6px; /* 둥근 모서리 축소 */
   box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1); /* 그림자 크기 줄임 */
@@ -19,7 +20,7 @@
   text-align: center;
   cursor: pointer;
   transition: box-shadow 0.2s;
-  scroll-snap-align: start;
+ 
 }
 
 .story-card:hover {
@@ -48,7 +49,7 @@
 .posts-container {
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 380px); /* 화면 크기 기준으로 높이 계산 */
+  max-height: 55vh; /* 화면 크기 기준으로 높이 계산 */
   overflow-y: auto;
   padding: 0.3rem 0; /* 상하 여백 축소 */
   margin-top: 0.3rem; /* 위쪽 간격 최소화 */
@@ -80,7 +81,7 @@
 }
 
 .post-title {
-  font-size: 0.9rem; /* 제목 크기 축소 */
+  font-size: 0.5rem; /* 제목 크기 축소 */
   font-weight: 600;
   color: #2d3748;
   margin-bottom: 0rem; /* 제목과 작성자 간의 간격 축소 */
