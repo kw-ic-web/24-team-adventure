@@ -9,8 +9,10 @@ import {
   getRoom,
   addUserToRoom,
   removeUserFromRoom,
+  getUsersInRoom, // 사용자 목록을 가져오는 함수 임포트
 } from "./roomService";
 import { JWT_SECRET } from "../config/keys";
+import { getUserById } from "./userService"; // 사용자 정보를 가져오는 함수 임포트
 
 dotenv.config();
 
@@ -91,7 +93,9 @@ const socketHandler = (server: HttpServer) => {
         const updatedRoom = await addUserToRoom(roomId, userId);
         if (updatedRoom) {
           socket.join(roomId);
-          io.to(roomId).emit("userListUpdate", updatedRoom.users);
+          // 방의 사용자 목록 업데이트
+          const usersInRoom = await getUsersInRoom(roomId);
+          io.to(roomId).emit("userListUpdate", usersInRoom);
           callback({ success: true });
         } else {
           callback({ success: false, message: "Failed to join room." });
@@ -108,7 +112,9 @@ const socketHandler = (server: HttpServer) => {
         const room = await removeUserFromRoom(roomId, userId);
         if (room) {
           socket.leave(room.roomId);
-          io.to(room.roomId).emit("userListUpdate", room.users);
+          // 방의 사용자 목록 업데이트
+          const usersInRoom = await getUsersInRoom(roomId);
+          io.to(room.roomId).emit("userListUpdate", usersInRoom);
           io.emit("roomsUpdated", await getRooms());
           callback({ success: true });
         } else {
@@ -145,7 +151,9 @@ const socketHandler = (server: HttpServer) => {
         try {
           const room = await removeUserFromRoom(roomId, userId);
           if (room) {
-            io.to(room.roomId).emit("userListUpdate", room.users);
+            // 방의 사용자 목록 업데이트
+            const usersInRoom = await getUsersInRoom(roomId);
+            io.to(room.roomId).emit("userListUpdate", usersInRoom);
             io.emit("roomsUpdated", await getRooms());
           }
         } catch (error) {

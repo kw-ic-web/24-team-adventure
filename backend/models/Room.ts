@@ -1,5 +1,3 @@
-// backend/models/Room.ts
-
 export interface Room {
   roomId: string;
   roomName: string;

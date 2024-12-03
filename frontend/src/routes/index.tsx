@@ -24,7 +24,6 @@ export default function Router() {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/room" element={<RoomPage />} />
         <Route path="/room/:roomId" element={<RoomDetail />} />
-        {/*video/end 변경 예정*/}
         <Route path="/games" element={<GameStart />} />
         {/* 게임 api가 만들어지면, 각 동화(게임)별로 URL이동 ex. /games/:gameId*/}
         <Route path="/gameplay" element={<GamePlay />} />
@@ -34,7 +33,6 @@ export default function Router() {
         <Route path="/gameend" element={<GameEnd />} />
         <Route path="/board" element={<StoryGrid />} />
         <Route path="/board/:story_id" element={<BoardPage />} />
-        {/*post는 수정 예정*/}
         <Route path="/board/:story_id/post/:geul_id" element={<PostDetail />} />
       </Routes>
     </BrowserRouter>

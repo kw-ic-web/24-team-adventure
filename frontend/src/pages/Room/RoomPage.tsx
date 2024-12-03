@@ -1,4 +1,3 @@
-// frontend/src/pages/Room/RoomPage.tsx
 import React, { useState, useEffect } from 'react';
 import { useRoomData } from '../../hooks/room/useRoomData';
 import { showToast } from '../../components/Toast';

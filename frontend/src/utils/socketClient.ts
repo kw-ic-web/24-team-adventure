@@ -1,5 +1,3 @@
-// frontend/src/utils/socketClient.ts
-
 import { io } from 'socket.io-client';
 
 const SOCKET_SERVER_URL = 'http://localhost:3000';

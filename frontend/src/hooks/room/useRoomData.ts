@@ -1,5 +1,3 @@
-// frontend/src/hooks/room/useRoomData.ts
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '../../apis/axiosInstance';
 import { Room } from '../../models/room.model';

@@ -6,10 +6,7 @@ import './PostDetail.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
-import SmallBox from '../../components/ui/SmallBox.tsx';
 import BigBox from '../../components/ui/BigBox.tsx';
-import UserList from '../../components/ui/Userlist';
-import Profile from '../../components/ui/Profile';
 
 //db연결 전 **임시** 사용자 정보
 interface User {
@@ -17,12 +14,6 @@ interface User {
   name: string;
   online: boolean;
 }
-
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
 
 // 댓글 데이터 타입 정의
 interface Comment {
@@ -222,7 +213,7 @@ const PostDetail: React.FC = () => {
       </BigBox>
       <button
         onClick={() => navigate('/board')}
-        className="absolute bottom-[30px] right-[160px] w-[90px] h-[1240px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
+        className="absolute bottom-[660px] right-[160px] w-[90px] h-[40px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
         title="나가기"
         aria-label="나가기"
       >

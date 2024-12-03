@@ -1,4 +1,3 @@
-// frontend/src/hooks/room/useSocket.ts
 import { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { SOCKET_SERVER_URL } from '../../constants/url';

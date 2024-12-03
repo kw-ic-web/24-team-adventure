@@ -4,6 +4,11 @@ import io, { Socket } from 'socket.io-client';
 import { showToast } from '../../components/Toast';
 import { SOCKET_SERVER_URL } from '../../constants/socketUrl';
 
+interface User {
+  userId: string;
+  userName: string;
+}
+
 const RoomDetail: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
@@ -17,7 +22,6 @@ const RoomDetail: React.FC = () => {
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
 
-  // 추가된 상태 변수
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
 
@@ -25,6 +29,9 @@ const RoomDetail: React.FC = () => {
   const [messages, setMessages] = useState<
     { user: string; message: string; time: string }[]
   >([]);
+
+  // 사용자 목록 상태 추가
+  const [userList, setUserList] = useState<User[]>([]);
 
   useEffect(() => {
     console.log('useEffect 실행');
@@ -177,6 +184,14 @@ const RoomDetail: React.FC = () => {
         console.error('미디어 장치 접근 오류:', err);
       });
 
+    // 사용자 목록 업데이트 이벤트 수신
+    socket.on('userListUpdate', (users: User[]) => {
+      console.log('사용자 목록 업데이트:', users);
+      setUserList(users);
+    });
+
+    // 기존의 소켓 이벤트 핸들러들...
+
     // 컴포넌트 언마운트 시 정리
     return () => {
       console.log('클린업 함수 실행');
@@ -201,7 +216,7 @@ const RoomDetail: React.FC = () => {
         peerConnectionRef.current = null;
       }
     };
-  }, [roomId, navigate]); // 의존성 배열에 roomId와 navigate 추가
+  }, [roomId, navigate]);
 
   // 마이크 음소거 토글 함수 추가
   const toggleMute = () => {
@@ -265,6 +280,18 @@ const RoomDetail: React.FC = () => {
     <div className="min-h-screen p-8 bg-gray-100">
       <h1 className="text-2xl font-bold mb-4">방 ID: {roomId}</h1>
       <h2 className="text-lg font-semibold mb-4">방 이름: {roomName}</h2>
+
+      {/* 사용자 목록 표시 */}
+      <div className="mb-4">
+        <h3 className="text-md font-semibold">현재 입장한 사용자:</h3>
+        <ul className="list-disc list-inside">
+          {userList.map((user, index) => (
+            <li key={index}>
+              {user.userName} (ID: {user.userId})
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* 비디오 스트림 영역 */}
       <div className="flex justify-center mb-6 space-x-4">

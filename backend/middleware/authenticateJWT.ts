@@ -1,5 +1,3 @@
-// backend/middleware/authenticateJWT.ts
-
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { JWT_SECRET } from "../config/keys";
