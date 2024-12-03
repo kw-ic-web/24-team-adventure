@@ -119,7 +119,7 @@ export default function RoomPage() {
                   <h2 className="text-2xl font-semibold">{room.roomName}</h2>
                   <p className="text-gray-600">생성자: {room.createdBy}</p>
                   <p className="text-gray-600">
-                    참여자 수: {room.users.length}
+                    참여자 수: {room.users.length}/2
                   </p>
                 </div>
                 <div className="flex space-x-2">

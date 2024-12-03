@@ -17,6 +17,10 @@ const RoomDetail: React.FC = () => {
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
 
+  // 추가된 상태 변수
+  const [isMuted, setIsMuted] = useState(false);
+  const [isCameraOff, setIsCameraOff] = useState(false);
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<
     { user: string; message: string; time: string }[]
@@ -197,7 +201,29 @@ const RoomDetail: React.FC = () => {
         peerConnectionRef.current = null;
       }
     };
-  }, []); // 빈 배열로 설정하여 한 번만 실행
+  }, [roomId, navigate]); // 의존성 배열에 roomId와 navigate 추가
+
+  // 마이크 음소거 토글 함수 추가
+  const toggleMute = () => {
+    if (localStreamRef.current) {
+      const audioTrack = localStreamRef.current.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setIsMuted(!audioTrack.enabled);
+      }
+    }
+  };
+
+  // 카메라 토글 함수 추가
+  const toggleCamera = () => {
+    if (localStreamRef.current) {
+      const videoTrack = localStreamRef.current.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setIsCameraOff(!videoTrack.enabled);
+      }
+    }
+  };
 
   // leaveRoom 함수 정의
   const leaveRoom = () => {
@@ -229,7 +255,7 @@ const RoomDetail: React.FC = () => {
         message,
         time: new Date().toLocaleTimeString(),
       };
-      socketRef.current.emit('chat_message', { roomName, message });
+      // 채팅 기능을 구현하려면 서버로 메시지를 보내는 로직을 추가하세요.
       setMessages((prev) => [...prev, chatMessage]);
       setMessage('');
     }
@@ -259,6 +285,22 @@ const RoomDetail: React.FC = () => {
             className="w-64 h-48 bg-black rounded"
           />
         </div>
+      </div>
+
+      {/* 마이크 및 카메라 토글 버튼 추가 */}
+      <div className="flex justify-center mb-4 space-x-4">
+        <button
+          onClick={toggleMute}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          {isMuted ? '마이크 켜기' : '마이크 끄기'}
+        </button>
+        <button
+          onClick={toggleCamera}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          {isCameraOff ? '카메라 켜기' : '카메라 끄기'}
+        </button>
       </div>
 
       {/* 채팅 메시지 영역 */}
