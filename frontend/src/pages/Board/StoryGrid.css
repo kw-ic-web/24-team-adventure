@@ -1,47 +1,50 @@
 /* 스토리 목록을 한 줄로 설정하고 스크롤 가능하게 */
 .story-grid {
-
-  display: flex;
-  
-  gap: 0.3rem; /* 간격 축소 */
-  padding: 0.3rem; /* 여백 축소 */
-  border-bottom: 0px solid #e2e8f0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); 
+  height: auto; 
+  flex-wrap: nowrap; /* 줄 바꿈 금지 */
+  padding: 0rem; /* 전체 여백 */
+  width: 100%;
+  gap: 0.5rem;
   
 }
 
 /* 각 스토리 카드 스타일 */
 .story-card {
-  
-  min-width: 100px; /* 크기를 조금 더 줄임 */
-  background-color: #ffffff;
+  height: auto; /* 높이를 자동으로 설정 */
+  box-sizing: border-box;
+  background-color: #F7E270;
   border-radius: 6px; /* 둥근 모서리 축소 */
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1); /* 그림자 크기 줄임 */
-  padding: 0.3rem 0.3rem 0.2rem; /* 내부 여백 축소 */
+  box-shadow: 4px 8px 3px rgba(0, 0, 0, 0.1); /* 그림자 크기 줄임 */
+  padding: 0.3rem; /* 내부 여백 축소 */
   text-align: center;
   cursor: pointer;
   transition: box-shadow 0.2s;
+  transform: scale(0.97); 
  
 }
 
 .story-card:hover {
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 8px 3px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
 }
 
-/* 스토리 이미지 및 제목 */
+/* 크기엔 영향없음*/
 .story-image {
   width: 100%;
-  height: 110px; /* 높이를 줄임 */
+  
   object-fit: cover;
   border-radius: 6px; /* 이미지 모서리 축소 */
 }
 
-/* 스토리 제목 스타일 */
-.story-title {
-  color: #000000; /* 검정색 */
+/* 스토리 제목 스타일 : */
+.story-title-sg {
+  color: #8f1010; /* 검정색 */
   font-weight: 600;
   margin-top: 0.3rem; /* 위 여백 줄임 */
   margin-bottom: 0rem; /* 아래 여백 제거 */
-  font-size: 1.2rem; /* 글자 크기 약간 축소 */
+  font-size: 1.1rem; /* 글자 크기 약간 축소 */
   line-height: 1.3; /* 줄 간격을 약간 줄임 */
 }
 
@@ -49,7 +52,7 @@
 .posts-container {
   display: flex;
   flex-direction: column;
-  max-height: 55vh; /* 화면 크기 기준으로 높이 계산 */
+  width: 100%;
   overflow-y: auto;
   padding: 0.3rem 0; /* 상하 여백 축소 */
   margin-top: 0.3rem; /* 위쪽 간격 최소화 */
@@ -65,7 +68,7 @@
 }
 
 /* 게시물 스타일 */
-.post-link {
+.post-link-sg {
   display: block;
   background-color: #ffffff;
   border-radius: 6px; /* 둥근 모서리 축소 */
@@ -76,14 +79,14 @@
   text-decoration: none;
 }
 
-.post-link:hover {
+.post-link-sg:hover {
   background-color: #f0f4f8;
 }
 
 .post-title {
-  font-size: 0.5rem; /* 제목 크기 축소 */
+  font-size: 1.5rem; /* 제목 크기 축소 */
   font-weight: 600;
-  color: #2d3748;
+  color: #8dace0;
   margin-bottom: 0rem; /* 제목과 작성자 간의 간격 축소 */
 }
 
@@ -92,8 +95,8 @@
   display: flex;
   justify-content: space-between; /* 좌우로 배치 */
   align-items: center; /* 세로 중앙 정렬 */
-  color: #4a5568; /* 텍스트 색상 */
-  font-size: 0.8rem; /* 텍스트 크기 축소 */
+  color: #7bc12c; /* 텍스트 색상 */
+  font-size: 1rem; /* 텍스트 크기 축소 */
   margin-top: 0rem; /* 위쪽 여백 최소화 */
 }
 

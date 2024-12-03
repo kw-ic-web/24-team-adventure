@@ -7,7 +7,7 @@
 }
 
 /* 제목 스타일 */
-.post-title {
+.post-title-pd {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -15,7 +15,7 @@
 }
 
 /* 작성자와 업로드 시간 같은 줄에 정렬 */
-.post-meta-row {
+.post-meta-row-pd {
   display: flex;
   justify-content: space-between; /* 좌우 정렬 */
   align-items: center; /* 수직 정렬 */
@@ -25,18 +25,18 @@
 }
 
 /* 작성자 스타일 */
-.post-author {
+.post-author-pd {
   flex: 1; /* 좌측으로 정렬 */
 }
 
 /* 업로드 시간 스타일 */
-.post-time {
+.post-time-pd {
   white-space: nowrap; /* 텍스트 줄바꿈 방지 */
   text-align: right; /* 우측 정렬 */
 }
 
 /* 게시물 이미지 스타일 */
-.final-image {
+.final-image-pd {
   width: 100%;
   height: auto;
   border-radius: 8px;
@@ -44,8 +44,8 @@
 }
 
 /* 본문 내용 스타일 */
-.intro-text,
-.post-content {
+.intro-text-pd,
+.post-content-pd {
   font-size: 16px;
   line-height: 1.6;
   margin-bottom: 15px;

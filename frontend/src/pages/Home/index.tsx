@@ -57,7 +57,7 @@ export default function Home() {
       <div>
         <HeaderLogo />
       </div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
         <img
           src="/images/GameStart7.png"
           alt="Game Start"
@@ -69,7 +69,17 @@ export default function Home() {
 
       <div className="boxes-align">
         {/* Profile Box */}
-        <Profile/>
+        <Profile>
+        <button onClick={handleLogout}>
+            <img
+              src="/images/xBtn.png"
+              alt="Log out"
+              style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
+              className="ml-7 transform transition-transform hover:scale-110"
+            />
+</button>
+      </Profile>
+
 
         {/* Userlist Box */}
         <UserList users={users} />
@@ -99,3 +109,5 @@ export default function Home() {
     </div>
   );
 }
+
+

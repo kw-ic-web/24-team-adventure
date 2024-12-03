@@ -28,16 +28,16 @@ export default function Start() {
   return (
     <div>
       <StartBackground />
-      <div className="flex flex-col items-center justify-around mt-[9%]">
+      <div className="flex flex-col items-center justify-around mt-[0%]">
         <img
           src="/images/startlogo_marble.png"
           alt="Game Logo"
-          className="w-[70%] h-auto mt-[-70px]" // startlogo 위치 아래로 이동
+          className="w-[70%] h-auto mt-[5%]" // startlogo 위치 아래로 이동
         />
 
         
         
-          <div className="flex justify-center items-center mt-[1%]">
+          <div className="flex justify-center items-center mt-[2%]">
             <GoogleLogin
               onSuccess={handleLoginSuccess}
               onError={handleLoginFailure}

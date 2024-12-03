@@ -82,13 +82,13 @@ const BoardPage: React.FC = () => {
       </div>
       <SmallBox>
 
-      <h1 className="board-title">게시물 목록</h1>
-      <div className="post-grid">
+      <h1 className="board-title-bp">게시물 목록</h1>
+      <div className="post-grid-bp">
         {posts.map((post) => (
           <Link
             key={post.geul_id}
             to={`/board/${post.story_id}/post/${post.geul_id}`}
-            className="post-card"
+            className="post-card-bp"
           >
             <h3>{post.geul_title}</h3>
             <p>{post.geul_content.substring(0, 100)}...</p>

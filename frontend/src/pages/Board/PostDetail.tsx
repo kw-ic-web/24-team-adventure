@@ -137,26 +137,35 @@ const PostDetail: React.FC = () => {
     <div>
       {' '}
       <Background />
-      <BigBox className="big-box">
-        <div className="scrollable-box">
+      <BigBox >
+        <div className="mt-[1%]">
+        <button
+        onClick={() => navigate('/board')}
+        className="absolute top-[-10%] right-[-7%] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110  origin-center "
+        title="나가기"
+        aria-label="나가기"
+      >
+        <img src="/images/xBtn.png" alt="나가기" className="w-8 h-8" />
+      </button>
+
           {post ? (
             <div className="post-detail">
               {/* 게시물 제목 */}
-              <h2 className="post-title">{post.geul_title}</h2>
+              <h2 className="post-title-pd">{post.geul_title}</h2>
 
               {/* 작성자 이름과 업로드 시간 */}
-              <div className="post-meta-row">
-                <span className="post-author">작성자: {post.user.name}</span>
-                <span className="post-time">
+              <div className="post-meta-row-pd">
+                <span className="post-author-pd">작성자: {post.user.name}</span>
+                <span className="post-time-pd">
                   업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
                 </span>
               </div>
 
               {/* 게시물 본문 */}
-              <p className="intro-text">{post.intro1}</p>
-              <p className="intro-text">{post.intro2}</p>
-              <p className="intro-text">{post.intro3}</p>
-              <p className="post-content">{post.geul_content}</p>
+              <p className="intro-text-pd">{post.intro1}</p>
+              <p className="intro-text-pd">{post.intro2}</p>
+              <p className="intro-text-pd">{post.intro3}</p>
+              <p className="post-content-pd">{post.geul_content}</p>
 
               <hr className="divider" />
 
@@ -222,15 +231,9 @@ const PostDetail: React.FC = () => {
             <p>Loading post...</p>
           )}
         </div>
+        
       </BigBox>
-      <button
-        onClick={() => navigate('/board')}
-        className="absolute bottom-[30px] right-[160px] w-[80px] h-[100px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
-        title="나가기"
-        aria-label="나가기"
-      >
-        <img src="/images/xBtn.png" alt="나가기" className="w-30 h-30" />
-      </button>
+      
     </div>
   );
 };
