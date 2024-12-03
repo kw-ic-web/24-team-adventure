@@ -3,26 +3,10 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { showToast } from '../../components/Toast';
 import './PostDetail.css';
-import { Link } from 'react-router-dom';
+import { useUserData } from '../../hooks/auth/useUserData.ts';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
-import SmallBox from '../../components/ui/SmallBox.tsx';
 import BigBox from '../../components/ui/BigBox.tsx';
-import UserList from '../../components/ui/Userlist';
-import Profile from '../../components/ui/Profile';
-
-//db연결 전 **임시** 사용자 정보
-interface User {
-  id: number;
-  name: string;
-  online: boolean;
-}
-
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
 
 // 댓글 데이터 타입 정의
 interface Comment {
@@ -51,12 +35,19 @@ const PostDetail: React.FC = () => {
     story_id: string;
     geul_id: string;
   }>();
+  const { data: userData } = useUserData();
 
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>(''); // 새로운 댓글 입력 상태
-  const [loggedInUserId, setLoggedInUserId] = useState<string>('1'); // 로그인된 사용자 ID (임시)
+  const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
   const [showDeleteMenu, setShowDeleteMenu] = useState<number | null>(null); // 삭제 메뉴 표시 상태
+
+  useEffect(() => {
+    if (userData && userData.user_id) {
+      setLoggedInUserId(userData.user_id); // userData에서 user_id를 가져와 설정
+    }
+  }, [userData]);
 
   useEffect(() => {
     // 게시물 데이터를 가져오는 함수
@@ -134,7 +125,7 @@ const PostDetail: React.FC = () => {
     <div>
       {' '}
       <Background />
-      <BigBox className="big-box">
+      <BigBox>
         <div className="scrollable-box">
           {post ? (
             <div className="post-detail">
