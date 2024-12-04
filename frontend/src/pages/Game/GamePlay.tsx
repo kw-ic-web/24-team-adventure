@@ -312,9 +312,9 @@ export default function GamePlay(): JSX.Element {
           {/* X 버튼 */}
           <button
             onClick={() => navigate(-1)} // 이전 페이지로 이동
-            className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-white bg-red-400 text-2xl font-extrabold rounded-full shadow-lg hover:bg-red-600 transition-transform transform hover:scale-110 hover:shadow-2xl"
+            className="absolute top-6 right-6 w-15 h-15 flex items-center justify-center text-white transition-transform transform hover:scale-110 hover:shadow-2xl"
           >
-            ✖
+            <img src="/images/xBtn.png" alt="나가기" className="w-8 h-8" />
           </button>
           <h1 className="story-title">
             {pages[0]?.story_title || '동화 제목'}
