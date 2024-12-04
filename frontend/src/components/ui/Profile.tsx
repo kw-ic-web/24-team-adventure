@@ -46,8 +46,6 @@ export default function Profile({ children }) {
       </Link>
       {children}
       </div>
-      
-      
     </div>
     
   );

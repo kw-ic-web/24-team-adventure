@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
 import Profile from '../../components/ui/Profile';
-import HomeBtn from '../../components/ui/HomeBtn';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 import UserList from '../../components/userStatus/UserList';
 import UserStatusUpdater from '../../components/userStatus/UserStatusUpdater';
@@ -18,7 +17,7 @@ interface User {
 
 export default function Mypage() {
   const [users, setUsers] = useState<User[]>([]);
-  const navigate = useNavigate();
+  
 
   // 사용자 데이터를 불러오는 hook
   const { data: userData, isLoading: userLoading } = useUserData();
@@ -107,15 +106,17 @@ export default function Mypage() {
       {/* Right Side: 사용자 정보 섹션 */}
       <div className="boxes-align">
         <Profile />
-        {/* Userlist Box */}
+       
+        
         <div>
+          {/* Userlist Box */}
           <UserStatusUpdater onUpdate={setUsers} />
           <UserList users={users} />
-        </div>
-        <div>
-          <HomeBtn />
         </div>
       </div>
     </div>
   );
 }
+
+
+

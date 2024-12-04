@@ -31,7 +31,7 @@ body {
   position: absolute; /* 배치 */
   top: 11%;
   left: 13%;
-  width: 65%;
+  width: 40%;
   height: 80%;
 
   background-color: rgb(255, 255, 255); /* 배경색 */
@@ -233,4 +233,3 @@ body {
 ::-webkit-scrollbar-track {
   background: transparent; /* 스크롤바 트랙 배경을 투명하게 */
 }
-
