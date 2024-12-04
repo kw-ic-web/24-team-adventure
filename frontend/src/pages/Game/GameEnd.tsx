@@ -66,6 +66,7 @@ function GameEnd() {
     if (savedTitle && savedContent && savedAuthor) {
       setTitle(savedTitle);
       setContent(savedContent);
+
       setAuthor(savedAuthor);
 
       // 백엔드로 데이터 전송
@@ -75,6 +76,7 @@ function GameEnd() {
         title: savedTitle,
         content: savedContent,
       });
+
     } else {
       alert('스토리 데이터가 없습니다. 홈으로 이동합니다.');
       navigate('/');
@@ -109,6 +111,7 @@ function GameEnd() {
               화상채팅하러가기
             </button>
           </div>
+
         ) : (
           <div className={`book ${bookState.isOpen ? 'open' : ''}`}>
             <div className="book-content">
@@ -119,6 +122,7 @@ function GameEnd() {
               {[...Array(8)].map((_, i) => (
                 <div key={i} className={`page page-${i + 1}`} />
               ))}
+
             </div>
           </div>
         )}

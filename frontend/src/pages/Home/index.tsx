@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+
+import { Link, useNavigate } from 'react-router-dom';
+
 import Background from '../../components/ui/Background';
 import Profile from '../../components/ui/Profile';
 import HeaderLogo from '../../components/ui/HeaderLogo';
@@ -22,6 +23,7 @@ interface Post {
   geul_title: string;
 }
 
+
 const decodeJWT = (token: string): any => {
   try {
     const payload = token.split('.')[1]; // JWT의 두 번째 부분 (Payload)
@@ -34,8 +36,10 @@ const decodeJWT = (token: string): any => {
 };
 
 export default function Home(user_id: string | number) {
+  
   console.log(`로그아웃 요청 user_id: ${user_id}`);
   const [users, setUsers] = useState<User[]>([]);
+
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const maxVisiblePosts = 5; // 박스 안에 표시할 최대 게시물 수
@@ -54,6 +58,7 @@ export default function Home(user_id: string | number) {
 
     fetchPosts();
   }, []);
+
 
   const handleLogout = async () => {
     const token = localStorage.getItem('token'); // JWT 토큰 가져오기
@@ -84,14 +89,14 @@ export default function Home(user_id: string | number) {
   };
 
   return (
-    <div className="">
+    <div className="h-screen w-screen ">
       <Background />
       <div>
         <HeaderLogo />
       </div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-2/3 -translate-y-1/2">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
         <img
-          src="/images/GameStart3.png"
+          src="/images/GameStart7.png"
           alt="Game Start"
           onClick={() => navigate('/games')}
           style={{ width: '500px', height: 'auto', cursor: 'pointer' }}
@@ -125,24 +130,52 @@ export default function Home(user_id: string | number) {
             게시판 이동하기
           </Link>
 
-          {/* Board Box */}
-          <div className="post-list-box">
-            {posts.slice(0, maxVisiblePosts).map((post) => (
-              <div key={post.geul_id} className="post-list-item">
-                <Link
-                  to={`/board/${post.story_id}/post/${post.geul_id}`}
-                  className="truncate"
-                  title={post.geul_title}
-                >
-                  {post.geul_title.length > 15
-                    ? `${post.geul_title.slice(0, 15)}...`
-                    : post.geul_title}
-                </Link>
-              </div>
-            ))}
+
+      <div className="boxes-align">
+        {/* Profile Box */}
+        <Profile>
+        <button onClick={handleLogout}>
+            <img
+              src="/images/xBtn.png"
+              alt="Log out"
+              style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
+              className="ml-7 transform transition-transform hover:scale-110"
+            />
+</button>
+      </Profile>
+
+
+        {/* Userlist Box */}
+        <UserList users={users} />
+
+        {/* Board Button */}
+        <Link to="/Board" className="board-link-button">
+          게시판 이동하기
+        </Link>
+
+        {/* Board Box */}
+        <div className="post-list-box">
+          {posts.slice(0, maxVisiblePosts).map((post) => (
+            <div key={post.geul_id} className="post-list-item">
+              <Link
+                to={`/board/${post.story_id}/post/${post.geul_id}`}
+                className="truncate"
+                title={post.geul_title}
+              >
+                {post.geul_title.length > 15
+                  ? `${post.geul_title.slice(0, 15)}...`
+                  : post.geul_title}
+              </Link>
+            </div>
+          ))}
+
+          
           </div>
+
         </div>
       </div>
     </div>
   );
 }
+
+

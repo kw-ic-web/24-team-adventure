@@ -1,13 +1,13 @@
 import React from 'react';
 import './CommonUi.css'
-import bg_withpink from './bg_withpink.jpg';
+import bg_onlygreen from './bg_onlygreen.jpg';
 
 export default function StartBackground() {
   return (
     <div
       className="full-page-bg"
       style={{
-        backgroundImage:   `url(${bg_withpink})`,
+        backgroundImage:   `url(${bg_onlygreen})`,
         backgroundSize: 'cover',
         backgroundPosition: 'left 70%',
         backgroundRepeat: "no-repeat",
@@ -16,3 +16,11 @@ export default function StartBackground() {
     ></div>
   );
 }
+
+//bg_withyellow2
+//bg_onlygreen
+
+//bg_withyellow
+
+
+//bg_onlypink
