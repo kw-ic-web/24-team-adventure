@@ -69,14 +69,16 @@ export default function GamePlay(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태
   const keyword_generated_bygpt = async () => {
     try {
-      const promptText = promptTexts[currentPage - 1];
-      if (!promptText) {
-        alert('프롬프터에 내용을 입력해주세요.');
+      const previousPageText = pageTexts[currentPage - 2];
+
+      // 이전 페이지 내용이 완전히 비어있지 않은지 확인
+      if (!previousPageText.trim()) {
+        alert('키워드를 생성할 이전 페이지 내용이 부족합니다.');
         return;
       }
 
       // generateStoryKeywords 호출
-      const response = await generateStoryKeywords(promptText);
+      const response = await generateStoryKeywords(previousPageText);
       if (response && response.keywords) {
         setKeywords(response.keywords); // 키워드 상태 업데이트
       } else {
