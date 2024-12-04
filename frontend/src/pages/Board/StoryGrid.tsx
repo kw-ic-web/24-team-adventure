@@ -3,8 +3,9 @@ import axiosInstance from '../../apis/axiosInstance.ts';
 import { Link } from 'react-router-dom';
 import './StoryGrid.css';
 import Background from '../../components/ui/Background';
-import BigBox from '../../components/ui/BigBox.tsx';
+import BigBox_NoScroll from '../../components/ui/BigBox_NoScroll.tsx';
 import HeaderLogo from '../../components/ui/HeaderLogo';
+
 
 // 스토리 데이터 타입 정의
 interface Story {
@@ -80,9 +81,9 @@ const StoryGrid: React.FC = () => {
     <div>
       <Background />
       <HeaderLogo />
-      <BigBox>
+      <BigBox_NoScroll>
         {/* 스토리 목록 */}
-        <div className="story-grid-scroll">
+        <div className="story-grid mt-[30px]">
           {stories.length > 0 ? (
             stories.map((story) => (
               <div
@@ -95,7 +96,7 @@ const StoryGrid: React.FC = () => {
                   alt={story.story_title}
                   className="story-image"
                 />
-                <p className="story-title">{story.story_title}</p>
+                <p className="story-title-sg">{story.story_title}</p>
               </div>
             ))
           ) : (
@@ -104,7 +105,7 @@ const StoryGrid: React.FC = () => {
         </div>
 
         {/* 전체 게시물 보기 버튼과 게시물 리스트 컨테이너 */}
-        <div className="posts-container">
+        <div className="posts-container mt-[-30px]">
           {selectedStoryId && (
             <div className="show-all-button-container">
               <button onClick={handleShowAllPosts} className="show-all-button">
@@ -119,7 +120,7 @@ const StoryGrid: React.FC = () => {
               <Link
                 key={post.geul_id} // 게시물 ID를 key로 사용
                 to={`/board/${post.story_id}/post/${post.geul_id}`} // 게시물 상세 페이지로 이동
-                className="post-link"
+                className="post-link-sg"
               >
                 <h3 className="post-title">{post.geul_title}</h3>
                 <div className="post-meta">
@@ -132,7 +133,9 @@ const StoryGrid: React.FC = () => {
             ))}
           </div>
         </div>
-      </BigBox>
+
+      </BigBox_NoScroll>
+
     </div>
   );
 };
