@@ -7,13 +7,13 @@
   gap: 20px;
 }
 /* 시작동화 제목 */
-.story-title {
+.relative .story-title {
   font-size: 4.5rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
   text-align: center;
 
-  color: #f8f9fa !important;
+  color: #f8f9fa;
   text-shadow:
     0 0 5px rgba(0, 0, 0, 0.9),
     0 0 10px rgba(0, 0, 0, 0.8),
@@ -109,6 +109,7 @@
 
 /* 공통 버튼 스타일 */
 .next-button {
+  z-index: 100;
   position: relative;
   overflow: hidden;
   padding: 12px 30px;

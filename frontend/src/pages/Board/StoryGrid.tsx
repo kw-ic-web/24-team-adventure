@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../apis/axiosInstance.ts';
 import { Link } from 'react-router-dom';
 import './StoryGrid.css';
 import Background from '../../components/ui/Background';
 import BigBox from '../../components/ui/BigBox.tsx';
-import HomeBtn from '../../components/ui/HomeBtn';
 import HeaderLogo from '../../components/ui/HeaderLogo';
-
-// 사용자 정보 인터페이스 (임시)
-interface User {
-  id: number;
-  name: string;
-  online: boolean;
-}
 
 // 스토리 데이터 타입 정의
 interface Story {
@@ -40,7 +32,7 @@ const StoryGrid: React.FC = () => {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/stories'); // API 호출
+        const response = await axiosInstance.get('/stories'); // API 호출
         if (response.data.success && Array.isArray(response.data.data)) {
           setStories(response.data.data); // 스토리 데이터 상태 업데이트
         } else {
@@ -59,7 +51,7 @@ const StoryGrid: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/posts'); // API 호출
+        const response = await axiosInstance.get('/posts'); // API 호출
         setPosts(response.data); // 게시물 데이터 상태 업데이트
       } catch (error) {
         console.error('Error fetching posts:', error); // 에러 로그 출력
