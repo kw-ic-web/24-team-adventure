@@ -23,7 +23,6 @@ interface Post {
   geul_title: string;
 }
 
-
 const decodeJWT = (token: string): any => {
   try {
     const payload = token.split('.')[1]; // JWT의 두 번째 부분 (Payload)
@@ -36,7 +35,6 @@ const decodeJWT = (token: string): any => {
 };
 
 export default function Home(user_id: string | number) {
-  
   console.log(`로그아웃 요청 user_id: ${user_id}`);
   const [users, setUsers] = useState<User[]>([]);
 
@@ -58,7 +56,6 @@ export default function Home(user_id: string | number) {
 
     fetchPosts();
   }, []);
-
 
   const handleLogout = async () => {
     const token = localStorage.getItem('token'); // JWT 토큰 가져오기
@@ -89,12 +86,10 @@ export default function Home(user_id: string | number) {
   };
 
   return (
-    <div className="h-screen w-screen ">
+    <div className="h-screen w-screen">
       <Background />
-      <div>
-        <HeaderLogo />
-      </div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+      <HeaderLogo />
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <img
           src="/images/GameStart7.png"
           alt="Game Start"
@@ -103,49 +98,21 @@ export default function Home(user_id: string | number) {
           className="transform transition-transform hover:scale-110"
         />
       </div>
-      {/* Profile Box */}
-      <Link to="/MyPage"></Link>
-      {/* Userlist Box */}
-      <div>
-        {/* 사용자 상태 업데이트 */}
-        <UserStatusUpdater onUpdate={setUsers} />
-        <div className="boxes-align">
-          {/* Profile Box */}
-          <Profile>
-            <button onClick={handleLogout}>
-              <img
-                src="/images/xBtn.png"
-                alt="Log out"
-                style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
-                className="ml-7 transform transition-transform hover:scale-110"
-              />
-            </button>
-          </Profile>
-
-          {/* Userlist Box */}
-          <UserList users={users} />
-
-          {/* Board Button */}
-          <Link to="/Board" className="board-link-button">
-            게시판 이동하기
-          </Link>
-
-
       <div className="boxes-align">
         {/* Profile Box */}
         <Profile>
-        <button onClick={handleLogout}>
+          <button onClick={handleLogout}>
             <img
               src="/images/xBtn.png"
               alt="Log out"
               style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
               className="ml-7 transform transition-transform hover:scale-110"
             />
-</button>
-      </Profile>
-
+          </button>
+        </Profile>
 
         {/* Userlist Box */}
+        <UserStatusUpdater onUpdate={setUsers} />
         <UserList users={users} />
 
         {/* Board Button */}
@@ -168,14 +135,8 @@ export default function Home(user_id: string | number) {
               </Link>
             </div>
           ))}
-
-          
-          </div>
-
         </div>
       </div>
     </div>
   );
 }
-
-
