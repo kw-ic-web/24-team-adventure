@@ -41,7 +41,6 @@ export default function GamePlay(): JSX.Element {
   const [keywords, setKeywords] = useState<string[]>([]); // 키워드 상태 추가
   const [isPromptVisible, setIsPromptVisible] = useState(false); // 프롬프트 보이기 상태 추가
   const { data: userData } = useUserData();
-
   const [pageTexts, setPageTexts] = useState<string[]>([
     '',
     '',
@@ -471,10 +470,11 @@ export default function GamePlay(): JSX.Element {
           {/* 전체 프롬프터 부분 */}
           {currentPage >= 4 && (
             <div
-              className={`fixed inset-x-0 bottom-0 px-3 pb-3 transition-transform duration-500 ease-in-out ${
+              onClick={() => setIsPromptVisible(!isPromptVisible)}
+              className={`fixed inset-x-0 bottom-0 px-3 pb-3 transition-transform duration-500 ease-in-out cursor-pointer ${
                 isPromptVisible
                   ? 'transform translate-y-0 z-50'
-                  : 'transform translate-y-[102%] z-50'
+                  : 'transform translate-y-[94%] z-50'
               }`}
             >
               <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden">
