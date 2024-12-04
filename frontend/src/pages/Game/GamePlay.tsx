@@ -463,11 +463,11 @@ export default function GamePlay(): JSX.Element {
                           다음 키워드를 활용해서 이야기를 만들어도 좋아요!
                         </p>
                       ) : (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2 justify-center">
                           {keywords.map((keyword, index) => (
                             <span
                               key={index}
-                              className="px-3 py-1 bg-blue-50 text-blue-600 text-sm font-semibold rounded-full border border-blue-200"
+                              className="px-3 py-1 bg-blue-50 text-blue-600 text-base font-semibold rounded-full border border-blue-200"
                             >
                               {keyword}
                             </span>
