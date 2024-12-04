@@ -10,6 +10,7 @@ interface User {
 }
 
 const RoomDetail: React.FC = () => {
+  const myUserId = localStorage.getItem('userId') || 'defaultUserId';
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -297,20 +298,45 @@ const RoomDetail: React.FC = () => {
       <div className="flex justify-center mb-6 space-x-4">
         <div>
           <h2 className="text-lg font-semibold">내 비디오</h2>
+          <div className="video-container"></div>
           <video
             ref={localVideoRef}
             autoPlay
             muted
             className="w-256 h-96 bg-black rounded"
           />
+          <div className="overlay">
+            <ul className="list-disc list-inside mt-2">
+              {userList.length > 0 && (
+                <li>
+                  {userList[0].userId === myUserId
+                    ? `나 (${userList[0].userName})`
+                    : userList[0].userName}
+                </li>
+              )}
+            </ul>
+          </div>
         </div>
         <div>
-          <h2 className="text-lg font-semibold">상대방 비디오</h2>
-          <video
-            ref={remoteVideoRef}
-            autoPlay
-            className="w-256 h-96 bg-black rounded"
-          />
+          <div className="video-container">
+            <h2 className="text-lg font-semibold">상대방 비디오</h2>
+            <video
+              ref={remoteVideoRef}
+              autoPlay
+              className="w-256 h-96 bg-black rounded"
+            />
+            <div className="overlay">
+              <ul className="list-disc list-inside mt-2">
+                {userList.length > 1 && (
+                  <li>
+                    {userList[1].userId === myUserId
+                      ? `나 (${userList[1].userName})`
+                      : userList[1].userName}
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -327,38 +353,6 @@ const RoomDetail: React.FC = () => {
           className="px-4 py-2 bg-blue-500 text-white rounded"
         >
           {isCameraOff ? '카메라 켜기' : '카메라 끄기'}
-        </button>
-      </div>
-
-      {/* 채팅 메시지 영역 */}
-      <div className="mb-4 p-4 bg-white rounded shadow h-40 overflow-y-scroll">
-        {messages.map((msg, index) => (
-          <div key={index} className="mb-2">
-            <strong>
-              {msg.user} [{msg.time}]:{' '}
-            </strong>
-            <span>{msg.message}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* 메시지 입력 영역 */}
-      <div className="flex">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="메시지를 입력하세요..."
-          className="flex-1 p-2 border border-gray-300 rounded mr-2"
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') sendMessage();
-          }}
-        />
-        <button
-          onClick={sendMessage}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          보내기
         </button>
       </div>
 
