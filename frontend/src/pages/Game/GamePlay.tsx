@@ -468,18 +468,27 @@ export default function GamePlay(): JSX.Element {
           )}
 
           {/* 전체 프롬프터 부분 */}
+
           {currentPage >= 4 && (
             <div
-              onClick={() => setIsPromptVisible(!isPromptVisible)}
               className={`fixed inset-x-0 bottom-0 px-3 pb-3 transition-transform duration-500 ease-in-out cursor-pointer ${
                 isPromptVisible
                   ? 'transform translate-y-0 z-50'
                   : 'transform translate-y-[94%] z-50'
               }`}
             >
-              <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden">
+              <div
+                className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden"
+                onClick={(e) => e.stopPropagation()} // 내부 클릭 이벤트 전파 차단
+              >
                 {/* 키워드 부분 */}
-                <div className="px-3 py-3 border-b border-gray-100">
+                <div
+                  className="px-3 py-3 border-b border-gray-100"
+                  onClick={(e) => {
+                    e.stopPropagation(); // 내부 클릭 이벤트 전파 차단
+                    setIsPromptVisible(!isPromptVisible); // 프롬프터 상태 토글
+                  }}
+                >
                   <div className="flex items-center justify-between space-x-2">
                     <div className="flex-grow">
                       {keywords.length === 0 ? (
@@ -489,11 +498,10 @@ export default function GamePlay(): JSX.Element {
                       ) : (
                         <div className="flex flex-wrap gap-2 justify-center">
                           {keywords.map((keyword, index) => {
-                            // 색상 클래스 동적 할당
                             const colorClasses = [
-                              'bg-red-50 text-red-600 border-red-200', // 첫 번째 색상
-                              'bg-green-50 text-green-600 border-green-200', // 두 번째 색상
-                              'bg-blue-50 text-blue-600 border-blue-200', // 세 번째 색상
+                              'bg-red-50 text-red-600 border-red-200',
+                              'bg-green-50 text-green-600 border-green-200',
+                              'bg-blue-50 text-blue-600 border-blue-200',
                             ];
                             return (
                               <span
@@ -510,7 +518,10 @@ export default function GamePlay(): JSX.Element {
                       )}
                     </div>
                     <button
-                      onClick={keyword_generated_bygpt}
+                      onClick={(e) => {
+                        e.stopPropagation(); // 버튼 클릭 이벤트 전파 차단
+                        keyword_generated_bygpt();
+                      }}
                       className="px-3.5 py-1.5 translate-x-[-18px] bg-gradient-to-r from-green-300 via-green-400 to-green-500 text-white text-base font-bold rounded-lg shadow-lg hover:from-green-400 hover:via-green-500 hover:to-green-600 transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-200 focus:ring-offset-2"
                     >
                       ✨힌트
@@ -518,7 +529,7 @@ export default function GamePlay(): JSX.Element {
                   </div>
                 </div>
 
-                {/* 말하기 프롬프트부분*/}
+                {/* 말하기 프롬프트 부분 */}
                 <div className="px-6 py-4 flex items-center space-x-4">
                   <div className="text-gray-600 hover:text-gray-800 transition-colors">
                     <SpeechRecognition
@@ -552,16 +563,14 @@ export default function GamePlay(): JSX.Element {
                     />
                   </div>
                   <button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation(); // 이벤트 전파 차단
                       if (!promptTexts[currentPage - 1]) {
                         alert('프롬프트를 입력해주세요!');
                         return;
                       }
 
-                      // GPT 결과 가져오는 기존 기능 호출
                       fetchGptResult();
-
-                      // 프롬프트 보이기/숨기기 상태 변경
                       setIsPromptVisible(!isPromptVisible);
                     }}
                     disabled={gptButtonDisabled}
