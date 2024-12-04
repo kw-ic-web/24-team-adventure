@@ -58,14 +58,14 @@ router.post(
 
       // 6. JWT 생성 (서버에서 인증된 사용자를 위한 토큰)
       const jwtToken = jwt.sign(
-        { user_id: user.user_id },
+        { user_id: user!.user_id },
         JWT_SECRET,
         { expiresIn: "1h" } // 1시간 동안 유효한 토큰
       );
 
       // 7. 성공적인 인증 후 JWT 토큰을 반환
       res.json({
-        user: { id: user.user_id },
+        user: { id: user!.user_id },
         token: jwtToken,
         isNewUser,
       });

@@ -1,4 +1,3 @@
-// src/services/userService.ts
 import supabase from "../config/supabaseClient";
 
 // Supabase에 새 사용자 추가
@@ -43,4 +42,19 @@ export async function fetchUserFromSupabase(user_id: string) {
 
   return data || null;
 
+}
+
+// 사용자 정보를 user_id로 가져오는 함수 추가
+export async function getUserById(user_id: string) {
+  try {
+    const user = await fetchUserFromSupabase(user_id);
+    if (!user) {
+      console.log("사용자를 찾을 수 없습니다.");
+      return null;
+    }
+    return user;
+  } catch (error) {
+    console.error("getUserById 오류:", error);
+    return null;
+  }
 }

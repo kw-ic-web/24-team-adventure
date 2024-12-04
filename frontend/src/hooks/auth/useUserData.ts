@@ -1,4 +1,3 @@
-// src/hooks/useUserData.ts
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '../../apis/axiosInstance';
 
