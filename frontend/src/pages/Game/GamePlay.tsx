@@ -58,6 +58,7 @@ export default function GamePlay(): JSX.Element {
   // 페이지 변경 시 프롬프트 상태 리셋
   useEffect(() => {
     setIsPromptVisible(true); // 페이지가 바뀔 때마다 프롬프트를 다시 보이게 설정
+    setKeywords([]);
   }, [currentPage]); // currentPage가 변경될 때마다 실행
 
   const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화
@@ -462,15 +463,25 @@ export default function GamePlay(): JSX.Element {
                           다음 키워드를 활용해서 이야기를 만들어도 좋아요!
                         </p>
                       ) : (
-                        <div className="flex flex-wrap gap-2">
-                          {keywords.map((keyword, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-blue-50 text-blue-600 text-sm font-semibold rounded-full border border-blue-200"
-                            >
-                              {keyword}
-                            </span>
-                          ))}
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          {keywords.map((keyword, index) => {
+                            // 색상 클래스 동적 할당
+                            const colorClasses = [
+                              'bg-red-50 text-red-600 border-red-200', // 첫 번째 색상
+                              'bg-green-50 text-green-600 border-green-200', // 두 번째 색상
+                              'bg-blue-50 text-blue-600 border-blue-200', // 세 번째 색상
+                            ];
+                            return (
+                              <span
+                                key={index}
+                                className={`px-3 py-1 text-base font-semibold rounded-full border ${
+                                  colorClasses[index % colorClasses.length]
+                                }`}
+                              >
+                                {keyword}
+                              </span>
+                            );
+                          })}
                         </div>
                       )}
                     </div>

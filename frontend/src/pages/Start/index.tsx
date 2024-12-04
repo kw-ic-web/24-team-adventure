@@ -6,7 +6,6 @@ import {
 } from '../../utils/userStatusApi'; // API 함수 가져오기
 import useGoogleAuthMutation from '../../hooks/auth/useGoogleAuthMutation';
 import StartBackground from '../../components/ui/StartBackground';
-import startlogo from './startlogo.jpg';
 
 interface User {
   id: number;
@@ -46,9 +45,11 @@ export default function Start() {
   };
 
   // Google Login 실패 핸들러
+
   const handleLoginFailure = () => {
     console.error('Google login failed');
   };
+
 
   // 실시간 사용자 상태 가져오기
   useEffect(() => {
@@ -67,27 +68,31 @@ export default function Start() {
     return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 정리
   }, []);
 
+
   return (
     <div>
       <StartBackground />
-      {/* 화면 중앙에 로고와 구글 로그인 버튼 추가 */}
-      <div className="relative flex flex-col items-center justify-around pt-45 h-screen">
-        {/* 프로그램 로고 */}
+
+      <div className="flex flex-col items-center justify-around mt-[0%]">
+
         <img
-          src="/images/startlogo.png"
+          src="/images/startlogo_marble.png"
           alt="Game Logo"
-          className="w-[900px] h-auto"
+          className="w-[70%] h-auto mt-[5%]" // startlogo 위치 아래로 이동
         />
 
-        <div className="mt-[-150px]">
-          {/* Google 로그인 버튼 */}
-          <GoogleLogin
-            onSuccess={handleLoginSuccess}
-            onError={handleLoginFailure}
-            width={'220px'}
-            useOneTap
-          />
-        </div>
+        
+        
+          <div className="flex justify-center items-center mt-[2%]">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={handleLoginFailure}
+              width={'200px'}
+              useOneTap
+            />
+          </div>
+        
+
       </div>
     </div>
   );

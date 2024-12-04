@@ -5,6 +5,7 @@ import { Room } from '../../models/room.model';
 import io, { Socket } from 'socket.io-client';
 import { SOCKET_SERVER_URL } from '../../constants/socketUrl';
 import { useQueryClient } from '@tanstack/react-query';
+import './RoomPage.css';
 
 export default function RoomPage() {
   const { rooms, isLoading, isError } = useRoomData();
@@ -58,7 +59,6 @@ export default function RoomPage() {
           if (response.success && response.roomId) {
             showToast(`방 "${newRoomName}"이 생성되었습니다!`, 'success');
             setNewRoomName('');
-            // 방 생성 성공 시 해당 방으로 이동 (방 이름 포함)
             window.location.href = `/room/${response.roomId}?name=${encodeURIComponent(newRoomName)}`;
           } else {
             showToast(response.message || '방 생성에 실패했습니다.', 'error');
@@ -70,7 +70,7 @@ export default function RoomPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="page-container flex items-center justify-center">
         <p>방 목록을 불러오는 중...</p>
       </div>
     );
@@ -78,55 +78,47 @@ export default function RoomPage() {
 
   if (isError) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="page-container flex items-center justify-center">
         <p>방 목록을 불러오는 데 실패했습니다.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6 text-center">화상채팅 방</h1>
+    <div className="page-container">
+      <h1 className="title">화상채팅 방</h1>
 
       {/* 방 생성 섹션 */}
-      <div className="flex justify-center mb-8">
+      <div className="input-section">
         <input
           type="text"
           value={newRoomName}
           onChange={(e) => setNewRoomName(e.target.value)}
           placeholder="새로운 방 이름"
-          className="p-3 border border-gray-300 rounded-l-md w-1/2"
+          className="input-field"
         />
-        <button
-          onClick={onCreateRoom}
-          className="px-6 py-3 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 transition"
-        >
+        <button onClick={onCreateRoom} className="create-button">
           방 생성
         </button>
       </div>
 
       {/* 방 목록 섹션 */}
-      <div className="max-w-4xl mx-auto">
+      <div className="room-list-container">
         {rooms && rooms.length > 0 ? (
-          <ul className="space-y-4">
+          <ul>
             {rooms.map((room: Room) => (
-              <li
-                key={room.roomId}
-                className="flex justify-between items-center p-6 bg-white rounded-lg shadow-md"
-              >
-                <div>
-                  <h2 className="text-2xl font-semibold">{room.roomName}</h2>
-                  <p className="text-gray-600">생성자: {room.createdBy}</p>
-                  <p className="text-gray-600">
-                    참여자 수: {room.users.length}/2
-                  </p>
+              <li key={room.roomId} className="room-item">
+                <div className="room-info">
+                  <h2 className="room-title">{room.roomName}</h2>
+                  <p className="room-meta">생성자: {room.createdBy}</p>
+                  <p className="room-meta">참여자 수: {room.users.length}/2</p>
                 </div>
-                <div className="flex space-x-2">
+                <div>
                   <button
                     onClick={() =>
                       (window.location.href = `/room/${room.roomId}?name=${encodeURIComponent(room.roomName)}`)
                     }
-                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
+                    className="join-button"
                   >
                     들어가기
                   </button>

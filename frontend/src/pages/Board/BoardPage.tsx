@@ -10,17 +10,7 @@ import UserList from '../../components/ui/Userlist';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 import './BoardPage.css';
 
-//db연결 전 **임시** 사용자 정보
-interface User {
-  id: number;
-  name: string;
-  online: boolean;
-}
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
+//동화별 게시판
 
 // 게시물 데이터 타입 정의
 interface Post {
@@ -76,23 +66,24 @@ const BoardPage: React.FC = () => {
         <HeaderLogo />
       </div>
       <SmallBox>
-        <h1 className="board-title">게시물 목록</h1>
-        <div className="post-grid">
-          {posts.map((post) => (
-            <Link
-              key={post.geul_id}
-              to={`/board/${post.story_id}/post/${post.geul_id}`}
-              className="post-card"
-            >
-              <h3>{post.geul_title}</h3>
-              <p>{post.geul_content.substring(0, 100)}...</p>
-              <p>작성자: {post.user.name}</p> {/* 작성자 이름 표시 */}
-              <p>
-                업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
-              </p>
-            </Link>
-          ))}
-        </div>
+
+
+      <h1 className="board-title-bp">게시물 목록</h1>
+      <div className="post-grid-bp">
+        {posts.map((post) => (
+          <Link
+            key={post.geul_id}
+            to={`/board/${post.story_id}/post/${post.geul_id}`}
+            className="post-card-bp"
+          >
+            <h3>{post.geul_title}</h3>
+            <p>{post.geul_content.substring(0, 100)}...</p>
+            <p>작성자: {post.user.name}</p> {/* 작성자 이름 표시 */}
+            <p>업로드 시간: {new Date(post.uploaded_time).toLocaleString()}</p>
+          </Link>
+        ))}
+      </div>
+
       </SmallBox>
       <div className="boxes-align">
         <Profile />

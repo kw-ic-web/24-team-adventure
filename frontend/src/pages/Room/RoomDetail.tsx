@@ -10,6 +10,7 @@ interface User {
 }
 
 const RoomDetail: React.FC = () => {
+  const myUserId = localStorage.getItem('userId') || 'defaultUserId';
   const { roomId } = useParams<{ roomId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,11 +25,6 @@ const RoomDetail: React.FC = () => {
 
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
-
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<
-    { user: string; message: string; time: string }[]
-  >([]);
 
   // 사용자 목록 상태 추가
   const [userList, setUserList] = useState<User[]>([]);
@@ -262,24 +258,9 @@ const RoomDetail: React.FC = () => {
     }
   };
 
-  // sendMessage 함수 정의 (필요한 경우)
-  const sendMessage = () => {
-    if (socketRef.current && message.trim()) {
-      const chatMessage = {
-        user: '나',
-        message,
-        time: new Date().toLocaleTimeString(),
-      };
-      // 채팅 기능을 구현하려면 서버로 메시지를 보내는 로직을 추가하세요.
-      setMessages((prev) => [...prev, chatMessage]);
-      setMessage('');
-    }
-  };
-
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">방 ID: {roomId}</h1>
-      <h2 className="text-lg font-semibold mb-4">방 이름: {roomName}</h2>
+    <div className="relative min-h-screen p-8 bg-gray-100">
+      <h2 className="text-2xl font-bold mb-4">방 이름: {roomName}</h2>
 
       {/* 사용자 목록 표시 */}
       <div className="mb-4">
@@ -297,20 +278,45 @@ const RoomDetail: React.FC = () => {
       <div className="flex justify-center mb-6 space-x-4">
         <div>
           <h2 className="text-lg font-semibold">내 비디오</h2>
+          <div className="video-container"></div>
           <video
             ref={localVideoRef}
             autoPlay
             muted
-            className="w-64 h-48 bg-black rounded"
+            className="w-256 h-96 bg-black rounded"
           />
+          <div className="overlay">
+            <ul className="list-disc list-inside mt-2">
+              {userList.length > 0 && (
+                <li>
+                  {userList[0].userId === myUserId
+                    ? `나 (${userList[0].userName})`
+                    : userList[0].userName}
+                </li>
+              )}
+            </ul>
+          </div>
         </div>
         <div>
-          <h2 className="text-lg font-semibold">상대방 비디오</h2>
-          <video
-            ref={remoteVideoRef}
-            autoPlay
-            className="w-64 h-48 bg-black rounded"
-          />
+          <div className="video-container">
+            <h2 className="text-lg font-semibold">상대방 비디오</h2>
+            <video
+              ref={remoteVideoRef}
+              autoPlay
+              className="w-256 h-96 bg-black rounded"
+            />
+            <div className="overlay">
+              <ul className="list-disc list-inside mt-2">
+                {userList.length > 1 && (
+                  <li>
+                    {userList[1].userId === myUserId
+                      ? `나 (${userList[1].userName})`
+                      : userList[1].userName}
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -330,42 +336,10 @@ const RoomDetail: React.FC = () => {
         </button>
       </div>
 
-      {/* 채팅 메시지 영역 */}
-      <div className="mb-4 p-4 bg-white rounded shadow h-40 overflow-y-scroll">
-        {messages.map((msg, index) => (
-          <div key={index} className="mb-2">
-            <strong>
-              {msg.user} [{msg.time}]:{' '}
-            </strong>
-            <span>{msg.message}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* 메시지 입력 영역 */}
-      <div className="flex">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="메시지를 입력하세요..."
-          className="flex-1 p-2 border border-gray-300 rounded mr-2"
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') sendMessage();
-          }}
-        />
-        <button
-          onClick={sendMessage}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          보내기
-        </button>
-      </div>
-
       {/* 방 나가기 버튼 */}
       <button
         onClick={leaveRoom}
-        className="px-4 py-2 mt-4 bg-red-500 text-white rounded"
+        className="absolute top-8 right-8 px-4 py-2 bg-red-500 text-white rounded shadow-md"
       >
         방 나가기
       </button>

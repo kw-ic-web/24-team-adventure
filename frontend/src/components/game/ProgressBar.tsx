@@ -17,7 +17,7 @@ export default function ProgressBar({
           className={`w-2 h-10 rounded-full transition-colors duration-300 ${
             index < currentPage + 1
               ? index < 3
-                ? 'bg-blue-500'
+                ? 'bg-blue-600'
                 : 'bg-green-500'
               : 'bg-gray-700'
           }`}

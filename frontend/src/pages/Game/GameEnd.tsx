@@ -66,6 +66,7 @@ function GameEnd() {
     if (savedTitle && savedContent && savedAuthor) {
       setTitle(savedTitle);
       setContent(savedContent);
+
       setAuthor(savedAuthor);
 
       // 백엔드로 데이터 전송
@@ -75,6 +76,7 @@ function GameEnd() {
         title: savedTitle,
         content: savedContent,
       });
+
     } else {
       alert('스토리 데이터가 없습니다. 홈으로 이동합니다.');
       navigate('/');
@@ -91,36 +93,40 @@ function GameEnd() {
   };
 
   return (
-    <div className="container" onClick={handleBookClick}>
-      {bookState.isFullyOpen ? (
-        <div className="story-screen">
-          <h2>{title}</h2>
-          <div className="story-content">
-            <p className="text-content">{content}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              navigate('/room');
-            }}
-            className="webrtc-button"
-          >
-            화상채팅하러가기
-          </button>
-        </div>
-      ) : (
-        <div className={`book ${bookState.isOpen ? 'open' : ''}`}>
-          <div className="book-content">
-            <div className="cover">
-              <h1>{title || '최종 스토리'}</h1>
-              <p className="author">작성자: {author || '알 수 없음'}</p>
+    <div className="GameEnd">
+      <div className="container" onClick={handleBookClick}>
+        {bookState.isFullyOpen ? (
+          <div className="story-screen">
+            <h2>{title}</h2>
+            <div className="story-content">
+              <p className="text-content">{content}</p>
             </div>
-            {[...Array(8)].map((_, i) => (
-              <div key={i} className={`page page-${i + 1}`} />
-            ))}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate('/room');
+              }}
+              className="webrtc-button"
+            >
+              화상채팅하러가기
+            </button>
           </div>
-        </div>
-      )}
+
+        ) : (
+          <div className={`book ${bookState.isOpen ? 'open' : ''}`}>
+            <div className="book-content">
+              <div className="cover">
+                <h1>{title || '최종 스토리'}</h1>
+                <p className="author">작성자: {author || '알 수 없음'}</p>
+              </div>
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className={`page page-${i + 1}`} />
+              ))}
+
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
