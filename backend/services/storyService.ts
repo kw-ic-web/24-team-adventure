@@ -101,7 +101,7 @@ export const generateStoryKeywords = async (userInput: string) => {
         { role: "system", content: "You are a storyteller." },
         {
           role: "user",
-          content: `Generate two keywords based on the text I provide, excluding the first sentence. And generate one keyword that's not in this text, but has possibility to continue the story with. (Give me exactly 3 related keywords with no explanation )(in korean) : ${userInput}`,
+          content: `Generate one keywords based on the text I provide, excluding the first sentence. And generate two keyword that's not in this text, but has possibility to continue the story with. (Give me exactly 3 related keywords with no explanation )(in korean) : ${userInput}`,
         },
       ],
     });

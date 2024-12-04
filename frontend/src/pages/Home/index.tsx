@@ -86,7 +86,7 @@ export default function Home(user_id: string | number) {
   };
 
   return (
-    <div className="h-screen w-screen ">
+    <div className="h-screen w-screen">
       <Background />
       <div>
         <HeaderLogo />
@@ -146,6 +146,7 @@ export default function Home(user_id: string | number) {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
