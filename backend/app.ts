@@ -12,7 +12,7 @@ import mypageRoutes from "./routes/mypageRoutes";
 import protectedRoutes from "./routes/protectedRoutes";
 import roomRoutes from "./routes/roomRoutes"; // 새로 추가
 import http from "http"; // import으로 변경
-
+import userStatusRoutes from "./routes/userStatusRoutes";
 dotenv.config();
 
 const app = express();
@@ -42,6 +42,7 @@ app.use(authRoutes);
 app.use(mypageRoutes);
 app.use(protectedRoutes);
 app.use(roomRoutes);
+app.use(userStatusRoutes);
 
 // HTTP 서버 생성
 const server = http.createServer(app);
