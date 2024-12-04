@@ -26,11 +26,6 @@ const RoomDetail: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
 
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<
-    { user: string; message: string; time: string }[]
-  >([]);
-
   // 사용자 목록 상태 추가
   const [userList, setUserList] = useState<User[]>([]);
 
@@ -263,24 +258,9 @@ const RoomDetail: React.FC = () => {
     }
   };
 
-  // sendMessage 함수 정의 (필요한 경우)
-  const sendMessage = () => {
-    if (socketRef.current && message.trim()) {
-      const chatMessage = {
-        user: '나',
-        message,
-        time: new Date().toLocaleTimeString(),
-      };
-      // 채팅 기능을 구현하려면 서버로 메시지를 보내는 로직을 추가하세요.
-      setMessages((prev) => [...prev, chatMessage]);
-      setMessage('');
-    }
-  };
-
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">방 ID: {roomId}</h1>
-      <h2 className="text-lg font-semibold mb-4">방 이름: {roomName}</h2>
+    <div className="relative min-h-screen p-8 bg-gray-100">
+      <h2 className="text-2xl font-bold mb-4">방 이름: {roomName}</h2>
 
       {/* 사용자 목록 표시 */}
       <div className="mb-4">
@@ -359,7 +339,7 @@ const RoomDetail: React.FC = () => {
       {/* 방 나가기 버튼 */}
       <button
         onClick={leaveRoom}
-        className="px-4 py-2 mt-4 bg-red-500 text-white rounded"
+        className="absolute top-8 right-8 px-4 py-2 bg-red-500 text-white rounded shadow-md"
       >
         방 나가기
       </button>
