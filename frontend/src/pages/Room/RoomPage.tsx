@@ -86,7 +86,7 @@ export default function RoomPage() {
 
   return (
     <div className="page-container">
-      <h1 className="title">화상채팅 방</h1>
+      <h1 className="title">화상채팅 방목록</h1>
 
       {/* 방 생성 섹션 */}
       <div className="input-section">
