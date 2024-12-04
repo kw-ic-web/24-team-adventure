@@ -99,7 +99,7 @@ function GameEnd() {
           <div className="story-screen">
             <h2>{title}</h2>
             <div className="story-content">
-              <p className="text-content">{content}</p>
+              <p className="text-content preserve-spacing">{content}</p>
             </div>
             <button
               onClick={(e) => {
