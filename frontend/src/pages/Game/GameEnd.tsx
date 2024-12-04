@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import './GameEnd.css';
-import axiosInstance from '../../apis/axiosInstance';
 
 function GameEnd() {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ function GameEnd() {
         throw new Error('스토리 데이터를 완전히 제공하지 않았습니다.');
       }
 
-      const response = await axiosInstance.post('/api/saveStory', {
+      const response = await axios.post('http://localhost:3000/api/saveStory', {
         user_id: userId,
         story_id: Number(storyId),
         geul_title: title,
