@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import io, { Socket } from 'socket.io-client';
 import { showToast } from '../../components/Toast';
 import { SOCKET_SERVER_URL } from '../../constants/socketUrl';
+import './RoomDetail.css';
 
 interface User {
   userId: string;
@@ -28,6 +29,16 @@ const RoomDetail: React.FC = () => {
 
   // 사용자 목록 상태 추가
   const [userList, setUserList] = useState<User[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const toBoard = () => {
+    setShowModal(false);
+    navigate('/board');
+  };
 
   useEffect(() => {
     console.log('useEffect 실행');
@@ -246,7 +257,7 @@ const RoomDetail: React.FC = () => {
         (response: { success: boolean; message?: string }) => {
           if (response.success) {
             console.log('방 나가기 성공');
-            navigate('/room'); // 방 목록 화면으로 이동
+            navigate('/home'); // 방 목록 화면으로 이동
             showToast('방을 떠났습니다.', 'info');
           } else {
             showToast(response.message || '방 나가기에 실패했습니다.', 'error');
@@ -337,12 +348,43 @@ const RoomDetail: React.FC = () => {
       </div>
 
       {/* 방 나가기 버튼 */}
-      <button
-        onClick={leaveRoom}
-        className="absolute top-8 right-8 px-4 py-2 bg-red-500 text-white rounded shadow-md"
-      >
-        방 나가기
-      </button>
+      <div>
+        {/* 방 나가기 버튼 */}
+        <button
+          onClick={openModal}
+          className="absolute top-8 right-8 px-4 py-2 bg-red-500 text-white rounded shadow-md"
+        >
+          방 나가기
+        </button>
+
+        {/* 모달 */}
+        {showModal && (
+          <div className="modal-container">
+            <div className="modal-content">
+              <h2 className="modal-title">동화 종료</h2>
+              <p className="modal-message">
+                정말 화상채팅 방에서 나가시겠습니까?
+                <br />
+                나가면 진행 중인 활동이 종료됩니다.
+              </p>
+              <div className="modal-actions">
+                <button
+                  onClick={leaveRoom}
+                  className="confirm-button bg-red-500 text-white px-4 py-2 rounded shadow-md"
+                >
+                  홈으로 가기
+                </button>
+                <button
+                  onClick={toBoard}
+                  className="cancel-button bg-gray-300 text-black px-4 py-2 rounded shadow-md"
+                >
+                  게시판 가기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
