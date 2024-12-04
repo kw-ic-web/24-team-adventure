@@ -1,4 +1,3 @@
-// backend/routes/storyRoutes.ts
 import express, { Request, Response } from "express";
 import supabase from "../config/supabaseClient";
 import dotenv from "dotenv";

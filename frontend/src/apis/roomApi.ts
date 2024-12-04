@@ -1,4 +1,3 @@
-// frontend/src/apis/roomApi.ts
 import axiosInstance from './axiosInstance';
 import { Room } from '../models/room.model';
 import { generateRoomId } from '../utils/generateRoomId';

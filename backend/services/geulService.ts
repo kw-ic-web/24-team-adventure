@@ -1,4 +1,3 @@
-// src/services/geulService.ts
 import supabase from "../config/supabaseClient";
 
 // Supabase에서 user_id로 geul 데이터 조회

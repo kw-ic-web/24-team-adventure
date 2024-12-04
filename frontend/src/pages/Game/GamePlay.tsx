@@ -6,7 +6,11 @@ import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
 import back from './동화배경3.jpg';
 import axiosInstance from '../../apis/axiosInstance';
-import { generateStoryContinuation } from '../../services/StoryService';
+import {
+  generateStoryContinuation,
+  generateStoryContinuation_second,
+  generateStoryContinuation_end,
+} from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
 import './GamePlay.css';
 import { useUserData } from '../../hooks/auth/useUserData';
@@ -65,14 +69,16 @@ export default function GamePlay(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false); // 로딩 상태
   const keyword_generated_bygpt = async () => {
     try {
-      const promptText = promptTexts[currentPage - 1];
-      if (!promptText) {
-        alert('프롬프터에 내용을 입력해주세요.');
+      const previousPageText = pageTexts[currentPage - 2];
+
+      // 이전 페이지 내용이 완전히 비어있지 않은지 확인
+      if (!previousPageText.trim()) {
+        alert('키워드를 생성할 이전 페이지 내용이 부족합니다.');
         return;
       }
 
       // generateStoryKeywords 호출
-      const response = await generateStoryKeywords(promptText);
+      const response = await generateStoryKeywords(previousPageText);
       if (response && response.keywords) {
         setKeywords(response.keywords); // 키워드 상태 업데이트
       } else {
@@ -177,17 +183,28 @@ export default function GamePlay(): JSX.Element {
 
   const fetchGptResult = async () => {
     setGptButtonDisabled(true);
-    setIsLoading(true); // 로딩 시작
+    setIsLoading(true);
     try {
-      const response = await generateStoryContinuation(
-        promptTexts[currentPage - 1],
-      );
+      const combinedPrompt =
+        pageTexts[currentPage - 2] + '\n' + promptTexts[currentPage - 1];
+      console.log(combinedPrompt);
+
+      let response;
+      // 페이지에 따라 다른 GPT 함수 선택
+      if (currentPage === 4) {
+        response = await generateStoryContinuation(combinedPrompt);
+      } else if (currentPage === 5) {
+        response = await generateStoryContinuation_second(combinedPrompt);
+      } else if (currentPage === 6) {
+        response = await generateStoryContinuation_end(combinedPrompt);
+      }
+
       const gptResponse = response.continuation;
 
       setPageTexts((prev) => {
         const updatedTexts = [...prev];
         updatedTexts[currentPage - 1] =
-          (updatedTexts[currentPage - 1] || '') + '\n' + gptResponse; // 줄바꿈 추가
+          (updatedTexts[currentPage - 1] || '') + '\n' + gptResponse;
         return updatedTexts;
       });
     } catch (error) {
@@ -197,7 +214,7 @@ export default function GamePlay(): JSX.Element {
       );
     } finally {
       setGptButtonDisabled(false);
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false);
     }
   };
 
@@ -293,6 +310,13 @@ export default function GamePlay(): JSX.Element {
             backgroundImage: `url(${coverImage || '/images/default-cover.jpg'})`,
           }}
         >
+          {/* X 버튼 */}
+          <button
+            onClick={() => navigate(-1)} // 이전 페이지로 이동
+            className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-white bg-red-400 text-2xl font-extrabold rounded-full shadow-lg hover:bg-red-600 transition-transform transform hover:scale-110 hover:shadow-2xl"
+          >
+            ✖
+          </button>
           <h1 className="story-title">
             {pages[0]?.story_title || '동화 제목'}
           </h1>

@@ -1,5 +1,3 @@
-// frontend/src/components/RoomList.tsx
-
 import React from 'react';
 
 interface Room {

@@ -1,5 +1,3 @@
-// frontend/src/components/CreateRoomModal.tsx
-
 import React, { useState } from 'react';
 
 interface CreateRoomModalProps {
