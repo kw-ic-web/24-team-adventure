@@ -230,3 +230,56 @@
 .story-screen-456::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* 로딩화면 꾸미기 수정 */
+/* 점 기본 스타일 */
+
+.dot {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  animation: bounce 1.5s infinite;
+}
+
+
+.dot:nth-child(1) {
+  background-color: #a7c7e7; 
+  animation-delay: 0s;
+}
+.dot:nth-child(2) {
+  background-color: #f4b6c2; 
+  animation-delay: 0.3s;
+}
+.dot:nth-child(3) {
+  background-color: #b8e1dd; 
+  animation-delay: 0.6s;
+}
+
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-15px);
+  }
+}
+
+/* 텍스트 도착 애니메이션 */
+@keyframes drop {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-drop {
+  animation: drop 1s ease-out;
+}
