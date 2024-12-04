@@ -14,12 +14,12 @@
 }
 
 /* 모달 본체 스타일 */
-.modal-content {
+.my-modal .modal-content {
   background-color: #ffffff; /* 밝은 배경 */
   border-radius: 15px;
   padding: 40px 50px; /* 더 넓은 패딩 */
   width: 90%;
-  max-width: 690px; /* 더 큰 최대 너비 */
+  max-width: 750px; /* 더 큰 최대 너비 */
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4); /* 더 강한 그림자 */
   text-align: center;
   color: #1a202c; /* 다크 텍스트 */
