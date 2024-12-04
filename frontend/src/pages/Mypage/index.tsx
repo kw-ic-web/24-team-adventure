@@ -83,7 +83,7 @@ export default function Mypage() {
                 <Link
                   key={geul.user_id} // 게시물 ID를 key로 사용
                   to={`/board/${geul.story_id}/post/${geul.geul_id}`} // 게시물 상세 페이지로 이동
-                  className="post-link"
+                  className="post-link-sg"
                 >
                   <h3 className="post-title">
                     {geul.geul_title || '제목 없음'}
