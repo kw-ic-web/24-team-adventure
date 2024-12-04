@@ -1,28 +1,23 @@
 import { useNavigate, Link } from 'react-router-dom';
-import PostCard from '../../components/myPage/PostCard';
 import { useUserGeulData } from '../../hooks/mypage/useUserGeulData';
 import { useUserData } from '../../hooks/auth/useUserData';
-import React from 'react';
+import React, { useState } from 'react';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
 import Profile from '../../components/ui/Profile';
-import UserList from '../../components/ui/Userlist';
 import HeaderLogo from '../../components/ui/HeaderLogo';
+import UserList from '../../components/userStatus/UserList';
+import UserStatusUpdater from '../../components/userStatus/UserStatusUpdater';
 
 interface User {
   id: number;
   name: string;
   online: boolean;
 }
-// 예시 사용자 데이터
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
 
 export default function Mypage() {
-  const navigate = useNavigate();
+  const [users, setUsers] = useState<User[]>([]);
+  
 
   // 사용자 데이터를 불러오는 hook
   const { data: userData, isLoading: userLoading } = useUserData();
@@ -74,46 +69,53 @@ export default function Mypage() {
   return (
     <div>
       <Background />
-      <div>
-        <HeaderLogo />
-      </div>
+      <HeaderLogo />
       {/* 스크롤 가능한 흰색 직사각형 박스 */}
       <SmallBox>
         {/* Left Side: 게시물 리스트 */}
-        <div className="grid grid-cols-2 gap-4">
-          {userGeul && userGeul.length > 0 ? (
-            userGeul.map((geul: any) => (
-              <div key={geul.user_id} className="post-card-container">
-                {/* 이미지 클릭 시 이동하는 링크 */}
+
+        <div className="flex flex-col max-h-[calc(100vh-200px)] overflow-y-auto py-[0.3rem] mt-[0.3rem] gap-[0.3rem]">
+          <div className="posts-list-scroll">
+            {userGeul && userGeul.length > 0 ? (
+              userGeul.map((geul: any) => (
                 <Link
+                  key={geul.user_id} // 게시물 ID를 key로 사용
                   to={`/board/${geul.story_id}/post/${geul.geul_id}`} // 게시물 상세 페이지로 이동
+                  className="post-link"
                 >
-                  <PostCard
-                    imageUrl={
-                      geul.final_pic || 'https://via.placeholder.com/150'
-                    }
-                    title={geul.geul_title || '제목 없음'}
-                    description={geul.geul_content || '내용 없음'}
-                  />
+                  <h3 className="post-title">
+                    {geul.geul_title || '제목 없음'}
+                  </h3>
+                  <div className="post-meta">
+                    <span className="post-time">
+                      업로드 시간:{' '}
+                      {new Date(geul.uploaded_time).toLocaleString()}
+                    </span>
+                  </div>
                 </Link>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500 col-span-2 text-center mt-4">
-              작성한 게시물이 없습니다.
-            </p>
-          )}
+              ))
+            ) : (
+              <p className="text-gray-500 col-span-2 text-center mt-4">
+                작성한 게시물이 없습니다.
+              </p>
+            )}
+          </div>
         </div>
       </SmallBox>
 
       {/* Right Side: 사용자 정보 섹션 */}
       <div className="boxes-align">
-        <Profile >
+        <Profile />
        
-          </Profile>
         {/* Userlist Box */}
-        <UserList users={users} />
+        <div>
+          <UserStatusUpdater onUpdate={setUsers} />
+          <UserList users={users} />
+        </div>
       </div>
     </div>
   );
 }
+
+
+

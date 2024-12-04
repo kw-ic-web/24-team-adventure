@@ -1,28 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../apis/axiosInstance.ts';
 import { showToast } from '../../components/Toast';
 import './PostDetail.css';
-import { Link } from 'react-router-dom';
+import { useUserData } from '../../hooks/auth/useUserData.ts';
 import { useNavigate } from 'react-router-dom';
 import Background from '../../components/ui/Background';
-import SmallBox from '../../components/ui/SmallBox.tsx';
 import BigBox from '../../components/ui/BigBox.tsx';
-import UserList from '../../components/ui/Userlist';
-import Profile from '../../components/ui/Profile';
-
-//db연결 전 **임시** 사용자 정보
-interface User {
-  id: number;
-  name: string;
-  online: boolean;
-}
-
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
 
 // 댓글 데이터 타입 정의
 interface Comment {
@@ -51,19 +35,26 @@ const PostDetail: React.FC = () => {
     story_id: string;
     geul_id: string;
   }>();
+  const { data: userData } = useUserData();
 
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>(''); // 새로운 댓글 입력 상태
-  const [loggedInUserId, setLoggedInUserId] = useState<string>('1'); // 로그인된 사용자 ID (임시)
+  const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
   const [showDeleteMenu, setShowDeleteMenu] = useState<number | null>(null); // 삭제 메뉴 표시 상태
+
+  useEffect(() => {
+    if (userData && userData.user_id) {
+      setLoggedInUserId(userData.user_id); // userData에서 user_id를 가져와 설정
+    }
+  }, [userData]);
 
   useEffect(() => {
     // 게시물 데이터를 가져오는 함수
     const fetchPost = async () => {
       try {
-        const postResponse = await axios.get(
-          `http://localhost:3000/board/${story_id}/post/${geul_id}`,
+        const postResponse = await axiosInstance.get(
+          `/board/${story_id}/post/${geul_id}`,
         );
         setPost(postResponse.data);
       } catch (error) {
@@ -74,8 +65,8 @@ const PostDetail: React.FC = () => {
     // 댓글 데이터를 가져오는 함수
     const fetchComments = async () => {
       try {
-        const commentsResponse = await axios.get(
-          `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
+        const commentsResponse = await axiosInstance.get(
+          `/board/${story_id}/post/${geul_id}/comments`,
         );
         setComments(commentsResponse.data);
       } catch (error) {
@@ -95,8 +86,8 @@ const PostDetail: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(
-        `http://localhost:3000/board/${story_id}/post/${geul_id}/comments`,
+      const response = await axiosInstance.post(
+        `/board/${story_id}/post/${geul_id}/comments`,
         {
           user_id: loggedInUserId,
           comm_content: newComment,
@@ -116,8 +107,8 @@ const PostDetail: React.FC = () => {
   // 댓글 삭제 함수
   const handleDeleteComment = async (comment_id: number) => {
     try {
-      await axios.delete(
-        `http://localhost:3000/board/${story_id}/post/${geul_id}/comments/${comment_id}`,
+      await axiosInstance.delete(
+        `/board/${story_id}/post/${geul_id}/comments/${comment_id}`,
       );
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.comment_id !== comment_id),
@@ -135,32 +126,36 @@ const PostDetail: React.FC = () => {
       {' '}
       <Background />
 
-        <div className="boxes-align">
-        <Profile />
-      {/* Userlist Box */}
-        <UserList users={users} />
-      </div>
-      <BigBox className="big-box">
-        <div className="scrollable-box">
+      <BigBox >
+        <div className="mt-[1%]">
+        <button
+        onClick={() => navigate('/board')}
+        className="absolute top-[-10%] right-[-7%] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110  origin-center "
+        title="나가기"
+        aria-label="나가기"
+      >
+        <img src="/images/xBtn.png" alt="나가기" className="w-8 h-8" />
+      </button>
+
+
           {post ? (
             <div className="post-detail">
               {/* 게시물 제목 */}
-              <h2 className="post-title">{post.geul_title}</h2>
+              <h2 className="post-title-pd">{post.geul_title}</h2>
 
               {/* 작성자 이름과 업로드 시간 */}
-              <div className="post-meta-row">
-                <span className="post-author">작성자: {post.user.name}</span>
-                <span className="post-time">
+              <div className="post-meta-row-pd">
+                <span className="post-author-pd">작성자: {post.user.name}</span>
+                <span className="post-time-pd">
                   업로드 시간: {new Date(post.uploaded_time).toLocaleString()}
                 </span>
               </div>
 
-
               {/* 게시물 본문 */}
-              <p className="intro-text">{post.intro1}</p>
-              <p className="intro-text">{post.intro2}</p>
-              <p className="intro-text">{post.intro3}</p>
-              <p className="post-content">{post.geul_content}</p>
+              <p className="intro-text-pd">{post.intro1}</p>
+              <p className="intro-text-pd">{post.intro2}</p>
+              <p className="intro-text-pd">{post.intro3}</p>
+              <p className="post-content-pd">{post.geul_content}</p>
 
               <hr className="divider" />
 
@@ -226,15 +221,9 @@ const PostDetail: React.FC = () => {
             <p>Loading post...</p>
           )}
         </div>
+        
       </BigBox>
-      <button
-        onClick={() => navigate('/board')}
-        className="absolute bottom-[30px] right-[130px] w-[90px] h-[1250px] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110"
-        title="나가기"
-        aria-label="나가기"
-      >
-        <img src="/images/xBtn.png" alt="나가기" className="w-30 h-30" />
-      </button>
+
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// src/hooks/useUserData.ts
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '../../apis/axiosInstance';
 
@@ -11,7 +10,7 @@ const fetchUserData = async () => {
     console.error('No token found in localStorage');
     throw new Error('No token found');
   }
-  console.log('Sending request with token:', token);
+  // console.log('Sending request with token:', token);
   const response = await axiosInstance.get('/api/user', {
     headers: {
       Authorization: `Bearer ${token}`, // Authorization 헤더에 JWT 포함

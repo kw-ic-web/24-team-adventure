@@ -9,6 +9,7 @@ import axiosInstance from '../../apis/axiosInstance';
 import { generateStoryContinuation } from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
 import './GamePlay.css';
+import { useUserData } from '../../hooks/auth/useUserData';
 
 interface StoryPage {
   story_id: number;
@@ -35,6 +36,7 @@ export default function GamePlay(): JSX.Element {
   const [showImageOnly, setShowImageOnly] = useState<boolean>(false); // 이미지만 보기
   const [keywords, setKeywords] = useState<string[]>([]); // 키워드 상태 추가
   const [isPromptVisible, setIsPromptVisible] = useState(false); // 프롬프트 보이기 상태 추가
+  const { data: userData } = useUserData();
 
   const [pageTexts, setPageTexts] = useState<string[]>([
     '',
@@ -56,6 +58,7 @@ export default function GamePlay(): JSX.Element {
   // 페이지 변경 시 프롬프트 상태 리셋
   useEffect(() => {
     setIsPromptVisible(true); // 페이지가 바뀔 때마다 프롬프트를 다시 보이게 설정
+    setKeywords([]);
   }, [currentPage]); // currentPage가 변경될 때마다 실행
 
   const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화
@@ -81,21 +84,30 @@ export default function GamePlay(): JSX.Element {
       setKeywords([]);
     }
   };
-
   // 최종동화합치기 및 gameEnd로 넘기는 부분
   const handleCompleteClick = () => {
     if (currentPage === 6) {
       const fullStory = {
         title: pages[0]?.story_title || '동화 제목', // 제목이 없으면 기본 제목 사용
         content: pageTexts.join('\n\n'), // pageTexts 배열을 줄바꿈으로 구분하여 하나의 문자열로 합침
+        userName: userData?.name || '익명 사용자', // 유저 이름 가져오기, 없으면 기본값 설정
       };
+
+      const userId = userData?.user_id;
 
       // 로컬 스토리지에 저장
       localStorage.setItem('storyTitle', fullStory.title);
       localStorage.setItem('storyContent', fullStory.content);
+      localStorage.setItem('userName', fullStory.userName); // 유저 이름 저장
 
       // gameEnd 페이지로 이동
-      navigate('/gameEnd');
+      navigate('/gameEnd', {
+        state: {
+          userId,
+          story_id, // 추출한 gameplayNumber 전달
+          fullStory,
+        },
+      });
     }
   };
 
@@ -437,8 +449,8 @@ export default function GamePlay(): JSX.Element {
             <div
               className={`fixed inset-x-0 bottom-0 px-3 pb-3 transition-transform duration-500 ease-in-out ${
                 isPromptVisible
-                  ? 'transform translate-y-0'
-                  : 'transform translate-y-full'
+                  ? 'transform translate-y-0 z-50'
+                  : 'transform translate-y-[102%] z-50'
               }`}
             >
               <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden">
@@ -451,15 +463,25 @@ export default function GamePlay(): JSX.Element {
                           다음 키워드를 활용해서 이야기를 만들어도 좋아요!
                         </p>
                       ) : (
-                        <div className="flex flex-wrap gap-2">
-                          {keywords.map((keyword, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-blue-50 text-blue-600 text-sm font-semibold rounded-full border border-blue-200"
-                            >
-                              {keyword}
-                            </span>
-                          ))}
+                        <div className="flex flex-wrap gap-2 justify-center">
+                          {keywords.map((keyword, index) => {
+                            // 색상 클래스 동적 할당
+                            const colorClasses = [
+                              'bg-red-50 text-red-600 border-red-200', // 첫 번째 색상
+                              'bg-green-50 text-green-600 border-green-200', // 두 번째 색상
+                              'bg-blue-50 text-blue-600 border-blue-200', // 세 번째 색상
+                            ];
+                            return (
+                              <span
+                                key={index}
+                                className={`px-3 py-1 text-base font-semibold rounded-full border ${
+                                  colorClasses[index % colorClasses.length]
+                                }`}
+                              >
+                                {keyword}
+                              </span>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -474,11 +496,12 @@ export default function GamePlay(): JSX.Element {
 
                 {/* 말하기 프롬프트부분*/}
                 <div className="px-6 py-4 flex items-center space-x-4">
-                  <SpeechRecognition
-                    language="ko-KR"
-                    onResult={handleSpeechResult}
-                    className="text-gray-600 hover:text-gray-800 transition-colors"
-                  />
+                  <div className="text-gray-600 hover:text-gray-800 transition-colors">
+                    <SpeechRecognition
+                      language="ko-KR"
+                      onResult={handleSpeechResult}
+                    />
+                  </div>
                   <div className="relative w-full">
                     <textarea
                       value={promptTexts[currentPage - 1]}
@@ -497,9 +520,11 @@ export default function GamePlay(): JSX.Element {
                           return updatedTexts;
                         });
                       }}
-                      className="w-full h-20 flex-grow p-3 text-gray-700 rounded-xl border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300/50 bg-gray-50 text-lg transition-all duration-300 ease-in-out"
+                      className="w-full min-h-20 flex-grow p-3 text-gray-700 rounded-xl border border-gray-200 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300/50 bg-gray-50 text-lg transition-all duration-300 ease-in-out"
                       placeholder="여기에 이야기를 입력하거나 음성 입력 버튼을 사용해보세요."
-                      style={{ userSelect: 'text' }}
+                      style={{
+                        userSelect: 'text',
+                      }}
                     />
                   </div>
                   <button

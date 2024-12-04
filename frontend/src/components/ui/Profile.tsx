@@ -31,21 +31,28 @@ export default function Profile({ children }) {
     );
   }
   return (
+    
     <div className="profile-box">
+      
       <div className="flex  items-center">
-      <Link to="/MyPage">
+      
       <img
         src={userData?.icon || 'https://via.placeholder.com/100'}
         alt="프로필 사진"
-        className="profile-icon transform transition-transform hover:scale-110"
+        className="profile-icon "
       />
-      </Link>
       <Link to="/MyPage">
       <h3 className="profile-name transform transition-transform hover:scale-110">{userData?.name}</h3>
       </Link>
       {children}
       </div>
+<<<<<<< HEAD
 
+=======
+      
+      
+>>>>>>> 7335f24a569f92ffe2798b6c640fd70c6276b72a
     </div>
+    
   );
 }

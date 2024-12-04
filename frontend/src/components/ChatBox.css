@@ -1,0 +1,17 @@
+/* frontend/src/components/ChatBox.css */
+
+.chat-box {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.chat-box div {
+  margin-bottom: 10px;
+}
+
+.chat-box strong {
+  color: #2980b9;
+}

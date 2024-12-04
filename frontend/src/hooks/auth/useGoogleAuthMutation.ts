@@ -9,13 +9,13 @@ const useGoogleAuthMutation = () => {
 
   return useMutation({
     mutationFn: async (token: string) => {
-      console.log('구글 인증 요청 중...'); // 서버로 토큰을 보내기 전에 로그
+      // console.log('구글 인증 요청 중...'); // 서버로 토큰을 보내기 전에 로그
       return authenticateWithGoogle(token);
     },
     onSuccess: (data) => {
       // JWT 토큰을 로컬 스토리지에 저장
       localStorage.setItem('token', data.token);
-      console.log('로그인 성공:', data);
+      // console.log('로그인 성공:', data);
 
       // Show appropriate toast message
       if (data.isNewUser) {
@@ -27,7 +27,7 @@ const useGoogleAuthMutation = () => {
       }
 
       // 로그인 성공 후 /home 경로로 이동
-      // navigate('/home');
+       navigate('/home');
     },
     onError: (error) => {
       console.log('로그인 실패:', error);

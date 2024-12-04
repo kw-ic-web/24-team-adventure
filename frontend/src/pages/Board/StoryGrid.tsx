@@ -1,25 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../apis/axiosInstance.ts';
 import { Link } from 'react-router-dom';
 import './StoryGrid.css';
 import Background from '../../components/ui/Background';
-import SmallBox from '../../components/ui/SmallBox';
-import BigBox from '../../components/ui/BigBox.tsx';
-import Profile from '../../components/ui/Profile';
-import UserList from '../../components/ui/Userlist';
-import HomeBtn from '../../components/ui/HomeBtn';
+import BigBox_NoScroll from '../../components/ui/BigBox_NoScroll.tsx';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 
-// 사용자 정보 인터페이스 (임시)
-interface User {
-  id: number;
-  name: string;
-  online: boolean;
-}
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-];
 
 // 스토리 데이터 타입 정의
 interface Story {
@@ -47,7 +33,7 @@ const StoryGrid: React.FC = () => {
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/stories'); // API 호출
+        const response = await axiosInstance.get('/stories'); // API 호출
         if (response.data.success && Array.isArray(response.data.data)) {
           setStories(response.data.data); // 스토리 데이터 상태 업데이트
         } else {
@@ -66,7 +52,7 @@ const StoryGrid: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/posts'); // API 호출
+        const response = await axiosInstance.get('/posts'); // API 호출
         setPosts(response.data); // 게시물 데이터 상태 업데이트
       } catch (error) {
         console.error('Error fetching posts:', error); // 에러 로그 출력
@@ -95,9 +81,9 @@ const StoryGrid: React.FC = () => {
     <div>
       <Background />
       <HeaderLogo />
-      <BigBox>
+      <BigBox_NoScroll>
         {/* 스토리 목록 */}
-        <div className="story-grid-scroll">
+        <div className="story-grid mt-[30px]">
           {stories.length > 0 ? (
             stories.map((story) => (
               <div
@@ -110,7 +96,7 @@ const StoryGrid: React.FC = () => {
                   alt={story.story_title}
                   className="story-image"
                 />
-                <p className="story-title">{story.story_title}</p>
+                <p className="story-title-sg">{story.story_title}</p>
               </div>
             ))
           ) : (
@@ -119,7 +105,7 @@ const StoryGrid: React.FC = () => {
         </div>
 
         {/* 전체 게시물 보기 버튼과 게시물 리스트 컨테이너 */}
-        <div className="posts-container">
+        <div className="posts-container mt-[-30px]">
           {selectedStoryId && (
             <div className="show-all-button-container">
               <button onClick={handleShowAllPosts} className="show-all-button">
@@ -134,7 +120,7 @@ const StoryGrid: React.FC = () => {
               <Link
                 key={post.geul_id} // 게시물 ID를 key로 사용
                 to={`/board/${post.story_id}/post/${post.geul_id}`} // 게시물 상세 페이지로 이동
-                className="post-link"
+                className="post-link-sg"
               >
                 <h3 className="post-title">{post.geul_title}</h3>
                 <div className="post-meta">
@@ -148,11 +134,7 @@ const StoryGrid: React.FC = () => {
           </div>
         </div>
 
-      </BigBox>
-      <div className="boxes-align">
-          <Profile />
-        <UserList users={users} />
-      </div>
+      </BigBox_NoScroll>
 
     </div>
   );

@@ -1,0 +1,40 @@
+/* frontend/src/pages/Room/RoomDetail.css */
+
+.room-detail {
+  padding: 20px;
+}
+
+.room-detail h1 {
+  color: #34495e;
+}
+
+.room-detail .videos {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.room-detail .video-container {
+  margin: 10px;
+}
+
+.room-detail .controls {
+  margin-top: 20px;
+}
+
+.room-detail button {
+  margin-right: 10px;
+  padding: 10px 15px;
+  background-color: #e67e22;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.room-detail button:hover {
+  background-color: #d35400;
+}
+
+.room-detail select {
+  margin-left: 10px;
+  padding: 5px;
+}

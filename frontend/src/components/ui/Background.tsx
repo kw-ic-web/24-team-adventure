@@ -6,9 +6,9 @@ export default function Background() {
     <div
       className="full-page-bg"
       style={{
-        backgroundImage: "url('/images/bg_withyellow.jpg')",
+        backgroundImage: "url('/images/수정배경9.jpg')",
         backgroundSize: 'cover',
-        backgroundPosition: 'left 70%',
+        backgroundPosition: 'center 70%',
         backgroundRepeat: "no-repeat",
         zIndex: -1, 
       }}

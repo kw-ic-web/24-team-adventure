@@ -1,4 +1,3 @@
-// frontend/src/store/useAuthStore.ts
 //일단 넣어놓은 코드.
 import { create } from 'zustand';
 
