@@ -1,8 +1,8 @@
 /* 전체 컨테이너 스타일 */
 .post-detail-container {
-  max-width: 600px;
+  
   margin: 0 auto;
-  padding: 20px;
+  padding: 0px;
   font-family: Arial, sans-serif;
 }
 
@@ -10,7 +10,7 @@
 .post-title-pd {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   text-align: left;
 }
 

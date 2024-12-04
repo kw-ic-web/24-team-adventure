@@ -139,7 +139,7 @@ const PostDetail: React.FC = () => {
 
 
           {post ? (
-            <div className="post-detail">
+            <div className="post-detail-container">
               {/* 게시물 제목 */}
               <h2 className="post-title-pd">{post.geul_title}</h2>
 

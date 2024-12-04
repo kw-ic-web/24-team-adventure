@@ -75,8 +75,9 @@ export default function Mypage() {
       {/* 스크롤 가능한 흰색 직사각형 박스 */}
       <SmallBox>
         {/* Left Side: 게시물 리스트 */}
+        <div className="posts-container">
 
-        <div className="flex flex-col max-h-[calc(100vh-200px)] overflow-y-auto py-[0.3rem] mt-[0.3rem] gap-[0.3rem]">
+        <div className="  py-[0.3rem] mt-[0.3rem] gap-[0.3rem]">
           <div className="posts-list-scroll">
             {userGeul && userGeul.length > 0 ? (
               userGeul.map((geul: any) => (
@@ -101,6 +102,7 @@ export default function Mypage() {
                 작성한 게시물이 없습니다.
               </p>
             )}
+          </div>
           </div>
         </div>
       </SmallBox>
