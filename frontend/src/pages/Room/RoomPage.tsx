@@ -5,6 +5,7 @@ import { Room } from '../../models/room.model';
 import io, { Socket } from 'socket.io-client';
 import { SOCKET_SERVER_URL } from '../../constants/socketUrl';
 import { useQueryClient } from '@tanstack/react-query';
+import './RoomPage.css';
 
 export default function RoomPage() {
   const { rooms, isLoading, isError } = useRoomData();
