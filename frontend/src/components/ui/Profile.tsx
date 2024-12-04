@@ -46,12 +46,6 @@ export default function Profile({ children }) {
       </Link>
       {children}
       </div>
-<<<<<<< HEAD
-
-=======
-      
-      
->>>>>>> 7335f24a569f92ffe2798b6c640fd70c6276b72a
     </div>
     
   );
