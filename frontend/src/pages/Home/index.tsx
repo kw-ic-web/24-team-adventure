@@ -23,7 +23,6 @@ interface Post {
   geul_title: string;
 }
 
-
 const decodeJWT = (token: string): any => {
   try {
     const payload = token.split('.')[1]; // JWT의 두 번째 부분 (Payload)
@@ -36,7 +35,6 @@ const decodeJWT = (token: string): any => {
 };
 
 export default function Home(user_id: string | number) {
-  
   console.log(`로그아웃 요청 user_id: ${user_id}`);
   const [users, setUsers] = useState<User[]>([]);
 
@@ -58,7 +56,6 @@ export default function Home(user_id: string | number) {
 
     fetchPosts();
   }, []);
-
 
   const handleLogout = async () => {
     const token = localStorage.getItem('token'); // JWT 토큰 가져오기
@@ -109,6 +106,7 @@ export default function Home(user_id: string | number) {
       <div>
         {/* 사용자 상태 업데이트 */}
         <UserStatusUpdater onUpdate={setUsers} />
+
         <div className="boxes-align">
           {/* Profile Box */}
           <Profile>
@@ -130,52 +128,24 @@ export default function Home(user_id: string | number) {
             게시판 이동하기
           </Link>
 
-
-      <div className="boxes-align">
-        {/* Profile Box */}
-        <Profile>
-        <button onClick={handleLogout}>
-            <img
-              src="/images/xBtn.png"
-              alt="Log out"
-              style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
-              className="ml-7 transform transition-transform hover:scale-110"
-            />
-</button>
-      </Profile>
-
-
-        {/* Userlist Box */}
-        <UserList users={users} />
-
-        {/* Board Button */}
-        <Link to="/Board" className="board-link-button">
-          게시판 이동하기
-        </Link>
-
-        {/* Board Box */}
-        <div className="post-list-box">
-          {posts.slice(0, maxVisiblePosts).map((post) => (
-            <div key={post.geul_id} className="post-list-item">
-              <Link
-                to={`/board/${post.story_id}/post/${post.geul_id}`}
-                className="truncate"
-                title={post.geul_title}
-              >
-                {post.geul_title.length > 15
-                  ? `${post.geul_title.slice(0, 15)}...`
-                  : post.geul_title}
-              </Link>
-            </div>
-          ))}
-
-          
+          {/* Board Box */}
+          <div className="post-list-box">
+            {posts.slice(0, maxVisiblePosts).map((post) => (
+              <div key={post.geul_id} className="post-list-item">
+                <Link
+                  to={`/board/${post.story_id}/post/${post.geul_id}`}
+                  className="truncate"
+                  title={post.geul_title}
+                >
+                  {post.geul_title.length > 15
+                    ? `${post.geul_title.slice(0, 15)}...`
+                    : post.geul_title}
+                </Link>
+              </div>
+            ))}
           </div>
-
         </div>
       </div>
     </div>
   );
 }
-
-
