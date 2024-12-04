@@ -301,7 +301,7 @@ const RoomDetail: React.FC = () => {
             ref={localVideoRef}
             autoPlay
             muted
-            className="w-64 h-48 bg-black rounded"
+            className="w-256 h-96 bg-black rounded"
           />
         </div>
         <div>
@@ -309,7 +309,7 @@ const RoomDetail: React.FC = () => {
           <video
             ref={remoteVideoRef}
             autoPlay
-            className="w-64 h-48 bg-black rounded"
+            className="w-256 h-96 bg-black rounded"
           />
         </div>
       </div>
