@@ -89,7 +89,7 @@ export default function Home(user_id: string | number) {
     <div className="h-screen w-screen">
       <Background />
       <HeaderLogo />
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
         <img
           src="/images/GameStart7.png"
           alt="Game Start"
@@ -98,48 +98,43 @@ export default function Home(user_id: string | number) {
           className="transform transition-transform hover:scale-110"
         />
       </div>
-      {/* Profile Box */}
-      <Link to="/MyPage"></Link>
-      {/* Userlist Box */}
-      <div>
-        <div className="boxes-align">
-          {/* Profile Box */}
-          <Profile>
-            <button onClick={handleLogout}>
-              <img
-                src="/images/xBtn.png"
-                alt="Log out"
-                style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
-                className="ml-7 transform transition-transform hover:scale-110"
-              />
-            </button>
-          </Profile>
-          {/* 사용자 상태 업데이트 */}
-          <UserStatusUpdater onUpdate={setUsers} />
-          {/* Userlist Box */}
-          <UserList users={users} />
+      <div className="boxes-align">
+        {/* Profile Box */}
+        <Profile>
+          <button onClick={handleLogout}>
+            <img
+              src="/images/xBtn.png"
+              alt="Log out"
+              style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
+              className="ml-7 transform transition-transform hover:scale-110"
+            />
+          </button>
+        </Profile>
+        {/* 사용자 상태 업데이트 */}
+        <UserStatusUpdater onUpdate={setUsers} />
+        {/* Userlist Box */}
+        <UserList users={users} />
 
-          {/* Board Button */}
-          <Link to="/Board" className="board-link-button">
-            게시판 이동하기
-          </Link>
+        {/* Board Button */}
+        <Link to="/Board" className="board-link-button">
+          게시판 이동하기
+        </Link>
 
-          {/* Board Box */}
-          <div className="post-list-box">
-            {posts.slice(0, maxVisiblePosts).map((post) => (
-              <div key={post.geul_id} className="post-list-item">
-                <Link
-                  to={`/board/${post.story_id}/post/${post.geul_id}`}
-                  className="truncate"
-                  title={post.geul_title}
-                >
-                  {post.geul_title.length > 15
-                    ? `${post.geul_title.slice(0, 15)}...`
-                    : post.geul_title}
-                </Link>
-              </div>
-            ))}
-          </div>
+        {/* Board Box */}
+        <div className="post-list-box">
+          {posts.slice(0, maxVisiblePosts).map((post) => (
+            <div key={post.geul_id} className="post-list-item">
+              <Link
+                to={`/board/${post.story_id}/post/${post.geul_id}`}
+                className="truncate"
+                title={post.geul_title}
+              >
+                {post.geul_title.length > 15
+                  ? `${post.geul_title.slice(0, 15)}...`
+                  : post.geul_title}
+              </Link>
+            </div>
+          ))}
         </div>
       </div>
     </div>
