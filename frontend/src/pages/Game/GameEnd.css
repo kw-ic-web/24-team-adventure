@@ -1,9 +1,20 @@
+.GameEnd .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /*background-color: #fffcef*/
+  text-align: center;
+  overflow: hidden;
+}
 .gameend-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   background-color: #5c694a;
+  text-align: center; /* 텍스트 중앙 정렬 */
+  flex-direction: column; /* 자식 요소를 세로로 배치 */
 }
 /* 책 내부 텍스트 배치 */
 .book .text-container {
@@ -34,6 +45,7 @@
   width: 400px;
   height: 550px;
   position: relative;
+  margin: auto;
   cursor: pointer;
   perspective: 2500px;
   filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
@@ -129,19 +141,6 @@
     inset -1px 0 3px rgba(0, 0, 0, 0.03);
 }
 
-.page::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.01) 1px,
-    transparent 1px
-  );
-  background-size: 15px 100%;
-  opacity: 0.3;
-}
 .page::after {
   content: '';
   position: absolute;

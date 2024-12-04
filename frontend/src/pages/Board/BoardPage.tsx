@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../apis/axiosInstance';
 import Loader from '../../components/Loader';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
@@ -11,19 +11,6 @@ import HeaderLogo from '../../components/ui/HeaderLogo';
 import './BoardPage.css';
 
 //동화별 게시판
-
-
-//db연결 전 **임시** 사용자 정보
-interface User {
-  id: number;
-  name: string;
-  online: boolean;
-}
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-  // 추가 사용자 데이터...
-];
 
 // 게시물 데이터 타입 정의
 interface Post {
@@ -44,9 +31,7 @@ const BoardPage: React.FC = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/board/${story_id}`,
-        );
+        const response = await axiosInstance.get(`/board/${story_id}`);
         setPosts(response.data);
         setError('');
       } catch (err) {
@@ -82,6 +67,7 @@ const BoardPage: React.FC = () => {
       </div>
       <SmallBox>
 
+
       <h1 className="board-title-bp">게시물 목록</h1>
       <div className="post-grid-bp">
         {posts.map((post) => (
@@ -97,9 +83,10 @@ const BoardPage: React.FC = () => {
           </Link>
         ))}
       </div>
+
       </SmallBox>
       <div className="boxes-align">
-      <Profile/>
+        <Profile />
         <UserList users={users} />
       </div>
     </div>

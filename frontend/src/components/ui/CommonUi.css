@@ -18,7 +18,9 @@ body {
 
 /* Full-page Background Style */
 .full-page-bg {
+
   position: fixed; /* fixed로 바꾸기 */
+
   top: 0;
   left: 0;
   width: 100vw; /* 브라우저 너비 전체 */
@@ -46,6 +48,7 @@ body {
   left: 50%;
 
   transform: translate(-50%, -48%);
+
   width:75%;
   height: 80%;
   background-color: rgb(255, 255, 255); /* 배경색 */
@@ -149,6 +152,7 @@ body {
 }
 
 
+
 /*/////////////////////////big///////////////////////////*/
 /* Post List Box */
 .post-list-box {
@@ -158,6 +162,7 @@ body {
   padding: 16px;
   width: 70%;
   height: 180px;
+
   border-radius: 20px;
   font-size: 100%;
 }
@@ -167,6 +172,7 @@ body {
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 100%;
+
 }
 
 /* User List Box */
@@ -210,6 +216,7 @@ body {
   white-space: pre-wrap; /* 줄바꿈과 공백 모두 유지 */
 }
 
+
 ::-webkit-scrollbar {
   width: 16px; /* 스크롤바 너비 */
 }
@@ -226,3 +233,4 @@ body {
 ::-webkit-scrollbar-track {
   background: transparent; /* 스크롤바 트랙 배경을 투명하게 */
 }
+

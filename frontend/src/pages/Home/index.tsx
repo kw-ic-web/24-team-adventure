@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
+
 import { Link, useNavigate } from 'react-router-dom';
-import UserList from '../../components/ui/Userlist';
+
 import Background from '../../components/ui/Background';
 import Profile from '../../components/ui/Profile';
 import HeaderLogo from '../../components/ui/HeaderLogo';
+import UserList from '../../components/userStatus/UserList';
+import UserStatusUpdater from '../../components/userStatus/UserStatusUpdater';
+import { logoutUser } from '../../utils/userStatusApi';
 
 import '../../components/ui/CommonUi.css';
 
@@ -19,13 +23,23 @@ interface Post {
   geul_title: string;
 }
 
-// 예시 사용자 데이터
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-];
 
-export default function Home() {
+const decodeJWT = (token: string): any => {
+  try {
+    const payload = token.split('.')[1]; // JWT의 두 번째 부분 (Payload)
+    const decodedPayload = atob(payload.replace(/-/g, '+').replace(/_/g, '/')); // Base64 URL 디코딩
+    return JSON.parse(decodedPayload); // JSON 파싱
+  } catch (error) {
+    console.error('JWT 디코딩 실패:', error);
+    return null;
+  }
+};
+
+export default function Home(user_id: string | number) {
+  
+  console.log(`로그아웃 요청 user_id: ${user_id}`);
+  const [users, setUsers] = useState<User[]>([]);
+
   const navigate = useNavigate();
   const [posts, setPosts] = useState<Post[]>([]);
   const maxVisiblePosts = 5; // 박스 안에 표시할 최대 게시물 수
@@ -45,10 +59,33 @@ export default function Home() {
     fetchPosts();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // 토큰 삭제
-    console.log('로그아웃 완료: JWT 토큰 삭제됨');
-    navigate('/');
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token'); // JWT 토큰 가져오기
+
+    if (!token) {
+      console.error('로그아웃 실패: token이 없습니다.');
+      return;
+    }
+
+    // JWT 디코딩
+    const decodedToken = decodeJWT(token);
+    if (!decodedToken || !decodedToken.user_id) {
+      console.error('로그아웃 실패: JWT에서 user_id를 추출할 수 없습니다.');
+      return;
+    }
+
+    const user_id = decodedToken.user_id;
+
+    if (user_id) {
+      await logoutUser(user_id, token); // logoutUser에 user_id와 token 전달
+      localStorage.removeItem('token'); // 토큰 삭제
+      localStorage.removeItem('user_id'); // user_id 삭제
+      console.log('로그아웃 완료: JWT 토큰 및 user_id 삭제됨');
+      navigate('/');
+    } else {
+      console.error('로그아웃 실패: user_id가 없습니다.');
+    }
   };
 
   return (
@@ -66,6 +103,33 @@ export default function Home() {
           className="transform transition-transform hover:scale-110"
         />
       </div>
+      {/* Profile Box */}
+      <Link to="/MyPage"></Link>
+      {/* Userlist Box */}
+      <div>
+        {/* 사용자 상태 업데이트 */}
+        <UserStatusUpdater onUpdate={setUsers} />
+        <div className="boxes-align">
+          {/* Profile Box */}
+          <Profile>
+            <button onClick={handleLogout}>
+              <img
+                src="/images/xBtn.png"
+                alt="Log out"
+                style={{ width: '20px', height: 'auto', cursor: 'pointer' }}
+                className="ml-7 transform transition-transform hover:scale-110"
+              />
+            </button>
+          </Profile>
+
+          {/* Userlist Box */}
+          <UserList users={users} />
+
+          {/* Board Button */}
+          <Link to="/Board" className="board-link-button">
+            게시판 이동하기
+          </Link>
+
 
       <div className="boxes-align">
         {/* Profile Box */}
@@ -104,6 +168,10 @@ export default function Home() {
               </Link>
             </div>
           ))}
+
+          
+          </div>
+
         </div>
       </div>
     </div>
