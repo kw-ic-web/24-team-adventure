@@ -58,6 +58,7 @@ export default function GamePlay(): JSX.Element {
   // 페이지 변경 시 프롬프트 상태 리셋
   useEffect(() => {
     setIsPromptVisible(true); // 페이지가 바뀔 때마다 프롬프트를 다시 보이게 설정
+    setKeywords([]);
   }, [currentPage]); // currentPage가 변경될 때마다 실행
 
   const [gptButtonDisabled, setGptButtonDisabled] = useState<boolean>(false); // GPT 버튼 비활성화
