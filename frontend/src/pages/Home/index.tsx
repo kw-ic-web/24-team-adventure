@@ -89,7 +89,7 @@ export default function Home(user_id: string | number) {
     <div className="h-screen w-screen">
       <Background />
       <HeaderLogo />
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ml-[-2%]">
         <img
           src="/images/GameStart7.png"
           alt="Game Start"

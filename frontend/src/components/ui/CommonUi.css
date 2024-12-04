@@ -31,7 +31,7 @@ body {
   position: absolute; /* 배치 */
   top: 11%;
   left: 13%;
-  width: 40%;
+  width: 63%;
   height: 80%;
 
   background-color: rgb(255, 255, 255); /* 배경색 */
@@ -39,7 +39,6 @@ body {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
   padding: 40px;
   overflow: auto;
-
 }
 
 .big-main-box {
@@ -57,16 +56,12 @@ body {
   box-sizing: border-box; 
 
   display: flex; /* 내부 정렬을 위한 flexbox */
-  flex-direction: column; /* 세로 정렬 */
-  padding: 0rem; /* 전체 여백 */
+   /* 세로 정렬 */
   align-items: stretch;
-  overflow: hidden; /* 내용이 박스를 넘지 않도록 처리 */
+  overflow: auto; /* 내용이 박스를 넘지 않도록 처리 */
 
 }
 .big-main-box > * {
-  margin: 0; /* 자식 요소 간의 여백 제거 */
-  padding: 0; /* 자식 요소 내부 여백 제거 */
-  
   width: 100%; /* 부모 너비에 맞춤 */
   height: auto; /* 내용 높이에 맞춤 */
 }
@@ -218,7 +213,7 @@ body {
 
 
 ::-webkit-scrollbar {
-  width: 16px; /* 스크롤바 너비 */
+  width: 14px; /* 스크롤바 너비 */
 }
 
 ::-webkit-scrollbar-thumb {
@@ -232,4 +227,5 @@ body {
 
 ::-webkit-scrollbar-track {
   background: transparent; /* 스크롤바 트랙 배경을 투명하게 */
+  margin: 40px 0; 
 }
