@@ -350,9 +350,17 @@ export default function GamePlay(): JSX.Element {
 
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-white">GPT로 처리 중...</p>
+          <div className="flex flex-col items-center space-y-6">
+            {/* 점 애니메이션 */}
+            <div className="flex space-x-2">
+              <span className="dot bg-pastel-blue"></span>
+              <span className="dot bg-pastel-pink"></span>
+              <span className="dot bg-pastel-green"></span>
+            </div>
+            {/* 텍스트 애니메이션 */}
+            <p className="text-white text-3xl font-extrabold animate-drop">
+              단어들이 도착하고 있어요!
+            </p>
           </div>
         </div>
       )}
@@ -519,7 +527,7 @@ export default function GamePlay(): JSX.Element {
                     </div>
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); // 버튼 클릭 이벤트 전파 차단
+                        e.stopPropagation();
                         keyword_generated_bygpt();
                       }}
                       className="px-3.5 py-1.5 translate-x-[-18px] bg-gradient-to-r from-green-300 via-green-400 to-green-500 text-white text-base font-bold rounded-lg shadow-lg hover:from-green-400 hover:via-green-500 hover:to-green-600 transition-all duration-500 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-200 focus:ring-offset-2"
@@ -564,7 +572,7 @@ export default function GamePlay(): JSX.Element {
                   </div>
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); // 이벤트 전파 차단
+                      e.stopPropagation();
                       if (!promptTexts[currentPage - 1]) {
                         alert('프롬프트를 입력해주세요!');
                         return;
