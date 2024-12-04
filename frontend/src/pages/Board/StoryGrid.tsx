@@ -3,10 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './StoryGrid.css';
 import Background from '../../components/ui/Background';
-import SmallBox from '../../components/ui/SmallBox';
 import BigBox from '../../components/ui/BigBox.tsx';
-import Profile from '../../components/ui/Profile';
-import UserList from '../../components/ui/Userlist';
 import HomeBtn from '../../components/ui/HomeBtn';
 import HeaderLogo from '../../components/ui/HeaderLogo';
 
@@ -16,10 +13,6 @@ interface User {
   name: string;
   online: boolean;
 }
-const users: User[] = [
-  { id: 1, name: 'user1', online: true },
-  { id: 2, name: 'user2', online: false },
-];
 
 // 스토리 데이터 타입 정의
 interface Story {
