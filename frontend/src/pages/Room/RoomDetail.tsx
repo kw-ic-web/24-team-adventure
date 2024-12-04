@@ -274,11 +274,12 @@ const RoomDetail: React.FC = () => {
   return (
 
     
-    <div className=" relative min-h-screen p-8 text-white">
-      <Background />
+      
+    <div className=" min-h-screen p-8 text-white">
+    <Background/>
       <h2 className=" flex ml-[46%] text-2xl font-bold mb-3 ">방 이름: {roomName}</h2>
 
-
+      
       {/* 사용자 목록 표시 */}
       <div className=" ml-[46%] mb-5">
         <h3 className="text-md font-semibold">현재 입장한 사용자:</h3>
@@ -404,6 +405,7 @@ const RoomDetail: React.FC = () => {
         )}
       </div>
     </div>
+   
   );
 };
 
