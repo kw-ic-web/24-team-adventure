@@ -20,7 +20,7 @@
   padding: 20px; /* 내부 여백 */
   border-radius: 10px; /* 모서리 둥글게 */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* 그림자 */
-  overflow-y: auto; /* 내용이 많으면 스크롤 */
+  
 }
 
 .modal-title {

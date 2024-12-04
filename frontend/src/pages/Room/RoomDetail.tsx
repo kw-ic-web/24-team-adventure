@@ -364,8 +364,20 @@ const RoomDetail: React.FC = () => {
         {/* 모달 */}
         {showModal && (
           <div className="modal-container">
-            <div className="modal-content">
+            
+            <div className="modal-content  relative">
+            <div className="mt-[1%]">
+        <button
+        onClick={() =>  setShowModal(false)}
+        className=" absolute top-3 right-0 p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110  origin-center "
+        title="나가기"
+        aria-label="나가기"
+      >
+        <img src="/images/xBtn.png" alt="나가기" className="w-8 h-8" />
+      </button>
+      </div>
               <h2 className="modal-title">동화 종료</h2>
+              
               <p className="modal-message">
                 정말 화상채팅 방에서 나가시겠습니까?
                 <br />
