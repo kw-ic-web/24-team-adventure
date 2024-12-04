@@ -272,10 +272,12 @@ const RoomDetail: React.FC = () => {
   };
 
   return (
+
     
     <div className=" relative min-h-screen p-8 text-white">
       <Background />
       <h2 className=" flex ml-[46%] text-2xl font-bold mb-3 ">방 이름: {roomName}</h2>
+
 
       {/* 사용자 목록 표시 */}
       <div className=" ml-[46%] mb-5">

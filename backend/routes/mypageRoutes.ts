@@ -1,4 +1,3 @@
-// src/routes/geulRoutes.ts
 import { Router } from "express";
 import { getGeulByUserId } from "../controllers/geulController";
 
