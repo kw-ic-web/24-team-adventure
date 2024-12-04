@@ -3,6 +3,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import io, { Socket } from 'socket.io-client';
 import { showToast } from '../../components/Toast';
 import { SOCKET_SERVER_URL } from '../../constants/socketUrl';
+import Background from '../../components/ui/Background';
+
 import './RoomDetail.css';
 
 interface User {
@@ -270,23 +272,27 @@ const RoomDetail: React.FC = () => {
   };
 
   return (
-    <div className="page-container">
-      <h2 className="text-2xl font-bold mb-4">방 이름: {roomName}</h2>
+
+    
+    <div className=" relative min-h-screen p-8 text-white">
+      <Background />
+      <h2 className=" flex ml-[46%] text-2xl font-bold mb-3 ">방 이름: {roomName}</h2>
+
 
       {/* 사용자 목록 표시 */}
-      <div className="mb-4">
+      <div className=" ml-[46%] mb-5">
         <h3 className="text-md font-semibold">현재 입장한 사용자:</h3>
         <ul className="list-disc list-inside">
           {userList.map((user, index) => (
             <li key={index}>
-              {user.userName} (ID: {user.userId})
+              {user.userName} 
             </li>
           ))}
         </ul>
       </div>
 
       {/* 비디오 스트림 영역 */}
-      <div className="flex justify-center mb-6 space-x-4">
+      <div className="flex justify-center mb-3 space-x-4 text-white">
         <div>
           <h2 className="text-lg font-semibold">내 비디오</h2>
           <div className="video-container"></div>
@@ -296,7 +302,7 @@ const RoomDetail: React.FC = () => {
             muted
             className="w-256 h-96 bg-black rounded"
           />
-          <div className="overlay">
+          <div className="overlay ">
             <ul className="list-disc list-inside mt-2">
               {userList.length > 0 && (
                 <li>
@@ -310,7 +316,7 @@ const RoomDetail: React.FC = () => {
         </div>
         <div>
           <div className="video-container">
-            <h2 className="text-lg font-semibold">상대방 비디오</h2>
+            <h2 className="text-lg  font-semibold">상대방 비디오</h2>
             <video
               ref={remoteVideoRef}
               autoPlay
@@ -360,8 +366,20 @@ const RoomDetail: React.FC = () => {
         {/* 모달 */}
         {showModal && (
           <div className="modal-container">
-            <div className="modal-content">
+            
+            <div className="modal-content  relative">
+            <div className="mt-[1%]">
+        <button
+        onClick={() =>  setShowModal(false)}
+        className=" absolute top-3 right-0 p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110  origin-center "
+        title="나가기"
+        aria-label="나가기"
+      >
+        <img src="/images/xBtn.png" alt="나가기" className="w-8 h-8" />
+      </button>
+      </div>
               <h2 className="modal-title">동화 종료</h2>
+              
               <p className="modal-message">
                 정말 화상채팅 방에서 나가시겠습니까?
                 <br />

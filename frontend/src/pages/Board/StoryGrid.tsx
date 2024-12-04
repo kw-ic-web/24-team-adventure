@@ -78,7 +78,7 @@ const StoryGrid: React.FC = () => {
     : posts;
 
   return (
-    <div>
+    <div >
       <Background />
       <HeaderLogo />
       <BigBox_NoScroll>

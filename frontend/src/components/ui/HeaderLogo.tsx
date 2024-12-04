@@ -4,7 +4,7 @@ export default function HeaderLogo() {
   return (
     
     <div
-    className="absolute z-50 top-[0%] left-[17%] w-[190px]  p-7"
+    className="absolute z-50 top-[0%] left-[13%] w-[190px]  p-7"
     title="상단로고"
     aria-label="상단로고"
 

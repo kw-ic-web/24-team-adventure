@@ -5,6 +5,8 @@ import { Room } from '../../models/room.model';
 import io, { Socket } from 'socket.io-client';
 import { SOCKET_SERVER_URL } from '../../constants/socketUrl';
 import { useQueryClient } from '@tanstack/react-query';
+import Background from '../../components/ui/Background';
+
 import './RoomPage.css';
 
 export default function RoomPage() {
@@ -85,6 +87,8 @@ export default function RoomPage() {
   }
 
   return (
+    <div>
+      <Background />
     <div className="page-container">
       <h1 className="title">화상채팅 방목록</h1>
 
@@ -110,7 +114,6 @@ export default function RoomPage() {
               <li key={room.roomId} className="room-item">
                 <div className="room-info">
                   <h2 className="room-title">{room.roomName}</h2>
-                  <p className="room-meta">생성자: {room.createdBy}</p>
                   <p className="room-meta">참여자 수: {room.users.length}/2</p>
                 </div>
                 <div>
@@ -132,6 +135,7 @@ export default function RoomPage() {
           </p>
         )}
       </div>
+    </div>
     </div>
   );
 }
