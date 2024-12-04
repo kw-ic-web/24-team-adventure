@@ -1,5 +1,3 @@
-// frontend/src/components/ChatBox.tsx
-
 import React from 'react';
 import './ChatBox.css'; // CSS 파일 임포트
 
