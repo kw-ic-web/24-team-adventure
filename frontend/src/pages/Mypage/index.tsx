@@ -9,6 +9,8 @@ import HeaderLogo from '../../components/ui/HeaderLogo';
 import UserList from '../../components/userStatus/UserList';
 import UserStatusUpdater from '../../components/userStatus/UserStatusUpdater';
 
+import '../../components/ui/CommonUi.css';
+
 interface User {
   id: number;
   name: string;
@@ -67,7 +69,7 @@ export default function Mypage() {
 
   // 메인 페이지 UI
   return (
-    <div>
+    <div className="h-screen w-screen">
       <Background />
       <HeaderLogo />
       {/* 스크롤 가능한 흰색 직사각형 박스 */}
@@ -107,13 +109,14 @@ export default function Mypage() {
       <div className="boxes-align">
         <Profile />
        
-        
-        <div>
           {/* Userlist Box */}
           <UserStatusUpdater onUpdate={setUsers} />
           <UserList users={users} />
-        </div>
+        
+        
+
       </div>
+      
     </div>
   );
 }

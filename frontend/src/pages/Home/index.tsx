@@ -88,9 +88,7 @@ export default function Home(user_id: string | number) {
   return (
     <div className="h-screen w-screen">
       <Background />
-      <div>
-        <HeaderLogo />
-      </div>
+      <HeaderLogo />
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ">
         <img
           src="/images/GameStart7.png"
@@ -100,13 +98,7 @@ export default function Home(user_id: string | number) {
           className="transform transition-transform hover:scale-110"
         />
       </div>
-      {/* Profile Box */}
-      <Link to="/MyPage"></Link>
-      {/* Userlist Box */}
-      <div>
-        
-
-        <div className="boxes-align">
+      <div className="boxes-align">
           {/* Profile Box */}
           <Profile>
             <button onClick={handleLogout}>
@@ -145,7 +137,7 @@ export default function Home(user_id: string | number) {
             ))}
           </div>
         </div>
-      </div>
+      
     </div>
     
   );
