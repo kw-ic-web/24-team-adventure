@@ -6,7 +6,11 @@ import ProgressBar from '../../components/game/ProgressBar';
 import SpeechRecognition from '../../components/game/SpeechRecognition';
 import back from './동화배경3.jpg';
 import axiosInstance from '../../apis/axiosInstance';
-import { generateStoryContinuation } from '../../services/StoryService';
+import {
+  generateStoryContinuation,
+  generateStoryContinuation_second,
+  generateStoryContinuation_end,
+} from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
 import './GamePlay.css';
 import { useUserData } from '../../hooks/auth/useUserData';
@@ -177,17 +181,28 @@ export default function GamePlay(): JSX.Element {
 
   const fetchGptResult = async () => {
     setGptButtonDisabled(true);
-    setIsLoading(true); // 로딩 시작
+    setIsLoading(true);
     try {
-      const response = await generateStoryContinuation(
-        promptTexts[currentPage - 1],
-      );
+      const combinedPrompt =
+        pageTexts[currentPage - 2] + '\n' + promptTexts[currentPage - 1];
+      console.log(combinedPrompt);
+
+      let response;
+      // 페이지에 따라 다른 GPT 함수 선택
+      if (currentPage === 4) {
+        response = await generateStoryContinuation(combinedPrompt);
+      } else if (currentPage === 5) {
+        response = await generateStoryContinuation_second(combinedPrompt);
+      } else if (currentPage === 6) {
+        response = await generateStoryContinuation_end(combinedPrompt);
+      }
+
       const gptResponse = response.continuation;
 
       setPageTexts((prev) => {
         const updatedTexts = [...prev];
         updatedTexts[currentPage - 1] =
-          (updatedTexts[currentPage - 1] || '') + '\n' + gptResponse; // 줄바꿈 추가
+          (updatedTexts[currentPage - 1] || '') + '\n' + gptResponse;
         return updatedTexts;
       });
     } catch (error) {
@@ -197,7 +212,7 @@ export default function GamePlay(): JSX.Element {
       );
     } finally {
       setGptButtonDisabled(false);
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false);
     }
   };
 
