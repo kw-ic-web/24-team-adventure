@@ -1,40 +1,63 @@
-/* frontend/src/pages/Room/RoomDetail.css */
-
-.room-detail {
-  padding: 20px;
-}
-
-.room-detail h1 {
-  color: #34495e;
-}
-
-.room-detail .videos {
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* 화면 전체 너비 */
+  height: 100vh; /* 화면 전체 높이 */
+  background-color: rgba(0, 0, 0, 0.5); /* 배경 색상 (반투명) */
   display: flex;
-  flex-wrap: wrap;
+  align-items: center; /* 수직 가운데 정렬 */
+  justify-content: center; /* 수평 가운데 정렬 */
+  z-index: 1000; /* 다른 요소 위에 표시 */
 }
 
-.room-detail .video-container {
-  margin: 10px;
+.modal-content {
+  width: 80%; /* 모달의 너비 (화면의 80%) */
+  max-width: 500px; /* 최대 너비 */
+  height: auto; /* 내용에 따라 높이 자동 */
+  max-height: 90%; /* 최대 높이 */
+  background: white; /* 모달 배경색 */
+  padding: 20px; /* 내부 여백 */
+  border-radius: 10px; /* 모서리 둥글게 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* 그림자 */
+  overflow-y: auto; /* 내용이 많으면 스크롤 */
 }
 
-.room-detail .controls {
-  margin-top: 20px;
+.modal-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-align: center; /* 제목 가운데 정렬 */
 }
 
-.room-detail button {
-  margin-right: 10px;
-  padding: 10px 15px;
-  background-color: #e67e22;
+.modal-message {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  line-height: 1.5;
+  text-align: center; /* 메시지 가운데 정렬 */
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+}
+
+.confirm-button,
+.cancel-button {
+  padding: 10px 20px;
   border: none;
-  color: white;
+  border-radius: 5px;
+  font-size: 1rem;
   cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.room-detail button:hover {
-  background-color: #d35400;
+.confirm-button {
+  background-color: #e3342f;
+  color: white;
 }
 
-.room-detail select {
-  margin-left: 10px;
-  padding: 5px;
+.cancel-button {
+  background-color: #ddd;
+  color: black;
 }
