@@ -104,8 +104,7 @@ export default function Home(user_id: string | number) {
       <Link to="/MyPage"></Link>
       {/* Userlist Box */}
       <div>
-        {/* 사용자 상태 업데이트 */}
-        <UserStatusUpdater onUpdate={setUsers} />
+        
 
         <div className="boxes-align">
           {/* Profile Box */}
@@ -119,7 +118,8 @@ export default function Home(user_id: string | number) {
               />
             </button>
           </Profile>
-
+          {/* 사용자 상태 업데이트 */}
+          <UserStatusUpdater onUpdate={setUsers} />
           {/* Userlist Box */}
           <UserList users={users} />
 
@@ -147,6 +147,6 @@ export default function Home(user_id: string | number) {
         </div>
       </div>
     </div>
-    </div>
+    
   );
 }

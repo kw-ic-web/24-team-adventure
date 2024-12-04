@@ -107,8 +107,9 @@ export default function Mypage() {
       <div className="boxes-align">
         <Profile />
        
-        {/* Userlist Box */}
+        
         <div>
+          {/* Userlist Box */}
           <UserStatusUpdater onUpdate={setUsers} />
           <UserList users={users} />
         </div>

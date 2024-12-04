@@ -5,7 +5,7 @@ import Loader from '../../components/Loader';
 import Background from '../../components/ui/Background';
 import SmallBox from '../../components/ui/SmallBox';
 import Profile from '../../components/ui/Profile';
-import UserList from '../../components/ui/Userlist';
+import UserList from '../../components/userStatus/UserList';
 
 import HeaderLogo from '../../components/ui/HeaderLogo';
 import './BoardPage.css';
