@@ -349,7 +349,7 @@ export default function GamePlay(): JSX.Element {
       )}
 
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
           <div className="flex flex-col items-center space-y-6">
             {/* 점 애니메이션 */}
             <div className="flex space-x-2">
@@ -358,7 +358,7 @@ export default function GamePlay(): JSX.Element {
               <span className="dot bg-pastel-green"></span>
             </div>
             {/* 텍스트 애니메이션 */}
-            <p className="text-white text-3xl font-extrabold animate-drop">
+            <p className="relative text-white text-3xl font-extrabold animate-drop ">
               단어들이 도착하고 있어요!
             </p>
           </div>
