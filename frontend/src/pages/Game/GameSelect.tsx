@@ -62,7 +62,7 @@ const GameSelect = () => {
             {stories.map((story) => (
               <div
                 key={story.id}
-                className="card"
+                className="card cursor-pointer"
                 onClick={() => handleClick(story.id)}
               >
                 <img src={story.imageUrl} alt={story.name[language]} />
