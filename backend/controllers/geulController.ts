@@ -1,4 +1,3 @@
-// src/controllers/geulController.ts
 import { Request, Response } from "express";
 import { fetchGeulByUserId } from "../services/geulService";
 

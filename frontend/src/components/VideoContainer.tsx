@@ -1,5 +1,3 @@
-// frontend/src/components/VideoContainer.tsx
-
 import React, { useRef, useEffect } from 'react';
 import './VideoContainer.css'; // CSS 파일 임포트
 

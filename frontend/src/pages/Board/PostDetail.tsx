@@ -125,18 +125,16 @@ const PostDetail: React.FC = () => {
     <div>
       {' '}
       <Background />
-
-      <BigBox >
+      <BigBox>
         <div className="mt-[1%]">
-        <button
-        onClick={() => navigate('/board')}
-        className="absolute top-[-10%] right-[-7%] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110  origin-center "
-        title="나가기"
-        aria-label="나가기"
-      >
-        <img src="/images/xBtn.png" alt="나가기" className="w-8 h-8" />
-      </button>
-
+          <button
+            onClick={() => navigate('/board')}
+            className="absolute top-[-10%] right-[-7%] p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110  origin-center "
+            title="나가기"
+            aria-label="나가기"
+          >
+            <img src="/images/xBtn.png" alt="나가기" className="w-8 h-8" />
+          </button>
 
           {post ? (
             <div className="post-detail">
@@ -221,9 +219,7 @@ const PostDetail: React.FC = () => {
             <p>Loading post...</p>
           )}
         </div>
-        
       </BigBox>
-
     </div>
   );
 };

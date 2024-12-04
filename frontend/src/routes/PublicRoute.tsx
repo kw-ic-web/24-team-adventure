@@ -1,5 +1,4 @@
 //로그인 안해도 볼 수 있는 route 처리
-// frontend/src/routes/PublicRoute.tsx
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import useAuthStore from '../store/useAuthStore';

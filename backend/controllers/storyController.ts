@@ -1,4 +1,3 @@
-// backend/controllers/storyController.ts
 import { Request, Response, RequestHandler } from "express";
 import {
   generateStoryContinuation,
@@ -103,7 +102,7 @@ export const generateImage: RequestHandler = async (
 
   try {
     const imageUrl = await generateStoryImage(userInput);
-    res.json({imageUrl}); 
+    res.json({ imageUrl });
   } catch (error) {
     console.error("Error generating image:", error);
     res.status(500).json({ error: "Error generating image" });

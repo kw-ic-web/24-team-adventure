@@ -270,7 +270,7 @@ const RoomDetail: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen p-8 bg-gray-100">
+    <div className="page-container">
       <h2 className="text-2xl font-bold mb-4">방 이름: {roomName}</h2>
 
       {/* 사용자 목록 표시 */}
