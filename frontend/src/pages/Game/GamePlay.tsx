@@ -464,14 +464,24 @@ export default function GamePlay(): JSX.Element {
                         </p>
                       ) : (
                         <div className="flex flex-wrap gap-2 justify-center">
-                          {keywords.map((keyword, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-blue-50 text-blue-600 text-base font-semibold rounded-full border border-blue-200"
-                            >
-                              {keyword}
-                            </span>
-                          ))}
+                          {keywords.map((keyword, index) => {
+                            // 색상 클래스 동적 할당
+                            const colorClasses = [
+                              'bg-red-50 text-red-600 border-red-200', // 첫 번째 색상
+                              'bg-green-50 text-green-600 border-green-200', // 두 번째 색상
+                              'bg-blue-50 text-blue-600 border-blue-200', // 세 번째 색상
+                            ];
+                            return (
+                              <span
+                                key={index}
+                                className={`px-3 py-1 text-base font-semibold rounded-full border ${
+                                  colorClasses[index % colorClasses.length]
+                                }`}
+                              >
+                                {keyword}
+                              </span>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
