@@ -272,22 +272,18 @@ const RoomDetail: React.FC = () => {
   };
 
   return (
-
-    
-      
     <div className=" min-h-screen p-8 text-white">
-    <Background/>
-      <h2 className=" flex ml-[46%] text-2xl font-bold mb-3 ">방 이름: {roomName}</h2>
+      <Background />
+      <h2 className=" flex ml-[46%] text-2xl font-bold mb-3 ">
+        방 이름: {roomName}
+      </h2>
 
-      
       {/* 사용자 목록 표시 */}
       <div className=" ml-[46%] mb-5">
         <h3 className="text-md font-semibold">현재 입장한 사용자:</h3>
         <ul className="list-disc list-inside">
           {userList.map((user, index) => (
-            <li key={index}>
-              {user.userName} 
-            </li>
+            <li key={index}>{user.userName}</li>
           ))}
         </ul>
       </div>
@@ -367,20 +363,23 @@ const RoomDetail: React.FC = () => {
         {/* 모달 */}
         {showModal && (
           <div className="modal-container">
-            
             <div className="modal-content  relative">
-            <div className="mt-[1%]">
-        <button
-        onClick={() =>  setShowModal(false)}
-        className=" absolute top-3 right-0 p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110  origin-center "
-        title="나가기"
-        aria-label="나가기"
-      >
-        <img src="/images/xBtn.png" alt="나가기" className="w-8 h-8" />
-      </button>
-      </div>
+              <div className="mt-[1%]">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className=" absolute top-3 right-0 p-4 focus:outline-none transition-all duration-200 ease-in-out transform hover:scale-110  origin-center "
+                  title="나가기"
+                  aria-label="나가기"
+                >
+                  <img
+                    src="/images/xBtn.png"
+                    alt="나가기"
+                    className="w-8 h-8"
+                  />
+                </button>
+              </div>
               <h2 className="modal-title">동화 종료</h2>
-              
+
               <p className="modal-message">
                 정말 화상채팅 방에서 나가시겠습니까?
                 <br />
@@ -405,7 +404,6 @@ const RoomDetail: React.FC = () => {
         )}
       </div>
     </div>
-   
   );
 };
 
