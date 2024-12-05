@@ -127,3 +127,15 @@ export async function getUsersInRoom(
 
   return users;
 }
+
+/**
+ * 사용자가 모두 나간 방을 삭제하는 함수
+ * @returns {Promise<void>}
+ */
+export async function removeEmptyRooms(): Promise<void> {
+  for (let i = rooms.length - 1; i >= 0; i--) {
+    if (rooms[i].users.length === 0) {
+      rooms.splice(i, 1);
+    }
+  }
+}

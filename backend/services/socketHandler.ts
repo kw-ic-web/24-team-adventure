@@ -9,12 +9,16 @@ import {
   getRoom,
   addUserToRoom,
   removeUserFromRoom,
-  getUsersInRoom, // 사용자 목록을 가져오는 함수 임포트
+  getUsersInRoom,
+  removeEmptyRooms, // 사용자 목록을 가져오는 함수 임포트
 } from "./roomService";
 import { JWT_SECRET } from "../config/keys";
 import { getUserById } from "./userService"; // 사용자 정보를 가져오는 함수 임포트
 
 dotenv.config();
+
+// 방 삭제 타이머 관리 객체
+const roomDeletionTimers: Record<string, NodeJS.Timeout> = {};
 
 const socketHandler = (server: HttpServer) => {
   const io = new SocketIOServer(server, {
@@ -107,15 +111,32 @@ const socketHandler = (server: HttpServer) => {
     });
 
     // 방 나가기 처리
-    socket.on("leaveRoom", async (roomId: string, callback) => {
+    socket.on("leaveRoom", async (roomId, callback) => {
       try {
         const room = await removeUserFromRoom(roomId, userId);
         if (room) {
           socket.leave(room.roomId);
+
           // 방의 사용자 목록 업데이트
           const usersInRoom = await getUsersInRoom(roomId);
           io.to(room.roomId).emit("userListUpdate", usersInRoom);
-          io.emit("roomsUpdated", await getRooms());
+
+          // 방 삭제 타이머 설정
+          if (usersInRoom.length === 0) {
+            if (!roomDeletionTimers[roomId]) {
+              roomDeletionTimers[roomId] = setTimeout(async () => {
+                const updatedRoom = await getRoom(roomId);
+                if (updatedRoom && updatedRoom.users.length === 0) {
+                  await removeRoom(roomId);
+                  console.log(`방 ${roomId} 삭제`);
+                  io.emit("roomsUpdated", await getRooms());
+                }
+                delete roomDeletionTimers[roomId];
+              }, 5000); // 5초 후 삭제 시도
+              console.log(`방 ${roomId} 삭제 타이머 설정`);
+            }
+          }
+
           callback({ success: true });
         } else {
           callback({ success: false, message: "Failed to leave room." });
@@ -154,17 +175,27 @@ const socketHandler = (server: HttpServer) => {
             // 방의 사용자 목록 업데이트
             const usersInRoom = await getUsersInRoom(roomId);
             io.to(room.roomId).emit("userListUpdate", usersInRoom);
-            io.emit("roomsUpdated", await getRooms());
+
+            // 방 삭제 타이머 설정
+            if (usersInRoom.length === 0) {
+              if (!roomDeletionTimers[roomId]) {
+                roomDeletionTimers[roomId] = setTimeout(async () => {
+                  const updatedRoom = await getRoom(roomId);
+                  if (updatedRoom && updatedRoom.users.length === 0) {
+                    await removeRoom(roomId);
+                    console.log(`방 ${roomId} 삭제`);
+                    io.emit("roomsUpdated", await getRooms());
+                  }
+                  delete roomDeletionTimers[roomId];
+                }, 5000); // 5초 후 삭제 시도
+                console.log(`방 ${roomId} 삭제 타이머 설정`);
+              }
+            }
           }
         } catch (error) {
-          console.error("Error removing user on disconnect:", error);
+          console.error("Error during disconnecting:", error);
         }
       }
-      console.log(`Client disconnecting: ${socket.id} (User ID: ${userId})`);
-    });
-
-    socket.on("disconnect", () => {
-      console.log(`Client fully disconnected: ${socket.id}`);
     });
   });
 };
