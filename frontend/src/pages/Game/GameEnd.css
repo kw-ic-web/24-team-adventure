@@ -1,14 +1,9 @@
+
 .GameEnd .container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: linear-gradient(
-    to bottom right,
-    #e6d5c1 25%,
-    /* 부드러운 파스텔 브라운 */ #d4bba6 50%,
-    /* 더 따뜻한 브라운 */ #c2a18c 75% /* 깊은 브라운 */
-  );
   text-align: center;
   overflow: hidden;
 }
@@ -33,18 +28,19 @@
 }
 
 .book h1 {
-  font-size: 32px;
-  margin-bottom: 30px;
+  font-size: 50px;
+  margin-bottom: 60px;
   padding: 0;
   font-weight: bold;
-  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4);
+  font-family: 'HakgyoansimNadeuriTTF-B', sans-serif;
 }
 
 .book p {
-  font-size: 18px;
+  font-size: 25px;
   margin-top: 10px;
   font-weight: normal;
   text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  font-family: 'HakgyoansimNadeuriTTF-B', sans-serif;
 }
 .book {
   width: 400px;
@@ -54,7 +50,7 @@
   cursor: pointer;
   perspective: 2500px;
   border-radius: 0 20px 20px 0;
-  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.25));
   transition:
     transform 0.5s ease-in-out,
     box-shadow 0.3s ease-in-out;
@@ -62,30 +58,32 @@
 
 .book:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* 빛나는 효과 */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
 }
 /* 책 두께 표현 개선 */
 .book::before {
   content: '';
   position: absolute;
-  width: 40px;
+  width: 23px;
   height: 100%;
-  transform: translateX(-20px) rotateY(-20deg);
+  bottom: 1px;
+  left: -20px;
+  transform: rotateY(-25deg) skewY(8deg);
   background: linear-gradient(
     to right,
-    #f6f0e1,
-    /* 부드러운 크림색 */ #f3e1b5 15%,
-    /* 연한 복숭아색 */ #f0d1a0 30%,
-    /* 부드러운 노란색 */ #d1b084 50%,
-    /* 따뜻한 황토색 */ #f0d1a0 70%,
-    /* 부드러운 노란색 */ #f3e1b5 85%,
-    /* 연한 복숭아색 */ #f6f0e1 /* 부드러운 크림색 */
+    rgba(255, 249, 236, 0.9) 0%,
+    rgba(255, 242, 225, 0.962) 100%
   );
-  border-radius: 3px 0 0 3px;
+
+  border-radius: 2px 0 0 2px;
   box-shadow:
-    inset -5px 0 8px rgba(0, 0, 0, 0.1),
-    inset 0 0 3px rgba(255, 255, 255, 0.5);
-  z-index: -1; /* 책 뒤에 위치하도록 */
+    -3px 0 5px rgba(0, 0, 0, 0.08),
+    /* 부드러운 그림자 */ inset -2px 0 4px rgb(254, 245, 245); /* 내부 그림자 */
+  opacity: 0.9;
+
+  transition:
+    opacity 0.8s ease,
+    transform 0.3s ease; /* 부드러운 변형과 투명도 애니메이션 */
 }
 
 .book-content {
@@ -97,8 +95,9 @@
 }
 .open .book-content {
   transform: scale(1.1);
-  box-shadow: 0 0 30px rgba(233, 182, 30, 0.6); /* 빛나는 글로우 효과 */
+  box-shadow: 0 0 30px rgb(255, 249, 235); /* 빛나는 글로우 효과 */
 }
+
 .cover,
 .page {
   position: absolute;
@@ -106,11 +105,11 @@
   height: 100%;
   transform-origin: left;
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 0px 20px 20px 0px;
+  border-radius: 0px 15px 15px 0px;
 }
 
 .cover {
-  background: linear-gradient(45deg, #ffe4c4, #ffd7a8);
+  background: linear-gradient(to right, #fffbf1 0%, #fffbfc 100%);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -142,7 +141,7 @@
 
 .page {
   border-radius: 0 16px 16px 0;
-  background: #fffaf0;
+  background: #fffcf3;
   box-shadow:
     0 0 10px rgba(0, 0, 0, 0.03),
     2px 0 5px rgba(0, 0, 0, 0.03),
@@ -162,7 +161,7 @@
     rgba(0, 0, 0, 0.02) 50%,
     rgba(0, 0, 0, 0.05) 80%
   );
-  border-radius: 0 0 15px 0;
+  border-radius: 0 0 16px 0;
   transform-origin: bottom right;
   transition: all 0.3s ease;
 }
@@ -265,7 +264,7 @@
   background: linear-gradient(
     to right,
     #f8f3fc 0%,
-    /* 연한 라일락 */ #f8f3fc 50%,
+    /* 연한 라일락 */ #fbf7fe 50%,
     /* 연한 라일락 */ #fcf9f3 50%,
     /* 크림색 */ #fcf9f3 100% /* 크림색 */
   );
@@ -283,12 +282,13 @@
   overflow-y: auto;
   position: relative;
 }
+
 /* 왼쪽 줄 스타일 */
 .story-screen::before {
   content: '';
   position: fixed;
   top: 0;
-  left: 40px; /* 줄의 위치 */
+  left: 30px; /* 줄의 위치 */
   width: 2px; /* 줄 두께 */
   height: 100%; /* 줄 높이 */
   background: linear-gradient(
@@ -297,6 +297,23 @@
     rgba(160, 130, 100, 0.7)
   ); /* 줄 색상 그라디언트 */
   border-radius: 1px;
+  z-index: 1; /* 줄이 배경 위에 위치 */
+}
+
+/* 하단 가로 줄 스타일 */
+.story-screen::after {
+  content: '';
+  position: fixed;
+  bottom: 30px; /* 가로 줄 위치 */
+  left: 0; /* 가로 줄 시작 */
+  width: 100%; /* 가로 줄 길이 */
+  height: 2px; /* 가로 줄 두께 */
+  background: linear-gradient(
+    to right,
+    rgba(160, 130, 100, 0.3),
+    rgba(160, 130, 100, 0.7)
+  ); /* 가로 줄 색상 */
+  border-radius: 2px;
   z-index: 1; /* 줄이 배경 위에 위치 */
 }
 .story-screen h2 {
@@ -341,12 +358,13 @@
 .webrtc-button {
   position: fixed; /* 화면 기준 고정 */
   right: 20px; /* 우측 여백 */
-  bottom: 20px; /* 하단 여백 */
+  top: 20px;
+
   padding: 10px 20px; /* 버튼 내부 여백 */
   background-color: #4caf50; /* 버튼 배경색 (녹색) */
   color: white; /* 텍스트 색상 */
   border: none; /* 테두리 제거 */
-  border-radius: 5px; /* 둥근 모서리 */
+  border-radius: 7px; /* 둥근 모서리 */
   font-size: 20px; /* 텍스트 크기 */
   font-weight: bold; /* 텍스트 굵기 */
   cursor: pointer; /* 마우스를 올리면 클릭 가능 표시 */
@@ -356,7 +374,7 @@
 }
 
 .webrtc-button:hover {
-  background-color: #45a049; /* 호버 시 조금 더 진한 녹색 */
+  background-color: #3a9a3f; /* 호버 시 조금 더 진한 녹색 */
 }
 
 .webrtc-button:active {
