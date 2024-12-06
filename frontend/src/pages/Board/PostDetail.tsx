@@ -150,10 +150,9 @@ const PostDetail: React.FC = () => {
               </div>
 
               {/* 게시물 본문 */}
-              <p className="intro-text-pd">{post.intro1}</p>
-              <p className="intro-text-pd">{post.intro2}</p>
-              <p className="intro-text-pd">{post.intro3}</p>
-              <p className="post-content-pd preserve-spacing">{post.geul_content}</p>
+              <p className="post-content-pd preserve-spacing">
+                {post.geul_content}
+              </p>
 
               <hr className="divider" />
 
