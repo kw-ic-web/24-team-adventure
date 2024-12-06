@@ -3,7 +3,12 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  /*background-color: #fffcef*/
+  background: linear-gradient(
+    to bottom right,
+    #e6d5c1 25%,
+    /* 부드러운 파스텔 브라운 */ #d4bba6 50%,
+    /* 더 따뜻한 브라운 */ #c2a18c 75% /* 깊은 브라운 */
+  );
   text-align: center;
   overflow: hidden;
 }
@@ -48,6 +53,7 @@
   margin: auto;
   cursor: pointer;
   perspective: 2500px;
+  border-radius: 0 20px 20px 0;
   filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
   transition:
     transform 0.5s ease-in-out,
@@ -79,6 +85,7 @@
   box-shadow:
     inset -5px 0 8px rgba(0, 0, 0, 0.1),
     inset 0 0 3px rgba(255, 255, 255, 0.5);
+  z-index: -1; /* 책 뒤에 위치하도록 */
 }
 
 .book-content {
@@ -99,7 +106,7 @@
   height: 100%;
   transform-origin: left;
   transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 0px 15px 15px 0px;
+  border-radius: 0px 20px 20px 0px;
 }
 
 .cover {
@@ -134,6 +141,7 @@
 }
 
 .page {
+  border-radius: 0 16px 16px 0;
   background: #fffaf0;
   box-shadow:
     0 0 10px rgba(0, 0, 0, 0.03),
@@ -339,7 +347,7 @@
   color: white; /* 텍스트 색상 */
   border: none; /* 테두리 제거 */
   border-radius: 5px; /* 둥근 모서리 */
-  font-size: 16px; /* 텍스트 크기 */
+  font-size: 20px; /* 텍스트 크기 */
   font-weight: bold; /* 텍스트 굵기 */
   cursor: pointer; /* 마우스를 올리면 클릭 가능 표시 */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 효과 */
