@@ -21,7 +21,11 @@ const app = express();
 // CORS 설정
 app.use(
   cors({
-    origin: ["http://localhost:20580", "http://223.194.46.67:20580"],
+    origin: [
+      "http://localhost:20580",
+      "http://223.194.46.67:20580",
+      "https://team05.kwweb.duckdns.org",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -51,7 +55,7 @@ const server = http.createServer(app);
 socketHandler(server);
 
 // 서버 시작
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 20590;
 server.listen(PORT, () => {
   console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
 });
