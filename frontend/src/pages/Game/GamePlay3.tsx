@@ -29,7 +29,7 @@ export default function GamePlay(): JSX.Element {
   const pages: Page[] = [
     {
       backgroundImage:
-        'url("https://team05.server.duckdns.org/images/Lia\'s Journey_1.jpg")',
+        'url("http://223.194.46.67:20590/images/Lia\'s Journey_1.jpg")',
       text: '첫 번째 이야기',
     },
     { backgroundImage: '', text: '두 번째 이야기' },
