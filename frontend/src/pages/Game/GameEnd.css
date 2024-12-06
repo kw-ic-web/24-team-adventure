@@ -5,6 +5,9 @@
   font-weight: 700;
   font-style: normal;
 }
+.GameEnd {
+  background-color: rgb(255, 252, 242);
+}
 .GameEnd .container {
   display: flex;
   justify-content: center;
