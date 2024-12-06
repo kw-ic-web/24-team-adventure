@@ -50,6 +50,14 @@ const GameSelect = () => {
         <HeaderLogo />
       </div>
       <BigBox>
+        {/* X 버튼 */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-5 right-8 w-14 h-14 flex items-center justify-center text-white transition-transform transform hover:scale-110 "
+        >
+          <img src="/images/xBtn.png" alt="나가기" className="w-6 h-6" />
+        </button>
+
         <div className="game-select-container" style={{ marginTop: '0px' }}>
           <div className="game-select-header"></div>
           <div className="container">
