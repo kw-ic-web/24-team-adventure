@@ -21,7 +21,7 @@ const app = express();
 // CORS 설정
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:20580", "http://223.194.46.67:20580"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
