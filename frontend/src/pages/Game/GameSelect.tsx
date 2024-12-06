@@ -3,7 +3,6 @@ import axiosInstance from '../../apis/axiosInstance.ts';
 import './GameSelect.css';
 
 import { useNavigate } from 'react-router-dom';
-import GameSelectCard from '../../components/game/GameSelectCard.tsx';
 
 import { toggleLanguage, Language } from '../../utils/game/languageUtils.ts';
 import Background from '../../components/ui/Background';
@@ -24,11 +23,6 @@ const GameSelect = () => {
 
   const handleClick = (id: number) => {
     navigate(`/gameplay/${id}`); // 스토리 ID를 기반으로 페이지 이동
-  };
-
-  const handleExit = () => {
-    console.log('Exiting...');
-    navigate('/'); // 홈 또는 다른 페이지로 이동
   };
 
   useEffect(() => {
