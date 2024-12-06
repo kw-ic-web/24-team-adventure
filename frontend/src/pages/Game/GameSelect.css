@@ -1,3 +1,7 @@
+.game-select-container .big-main-box {
+  background-color: rgb(255, 252, 240);
+}
+
 /* 초기 상태 */
 .card {
   opacity: 0;

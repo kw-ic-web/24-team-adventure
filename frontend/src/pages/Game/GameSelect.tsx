@@ -44,7 +44,7 @@ const GameSelect = () => {
   }, []);
 
   return (
-    <div>
+    <div className="game-select-container">
       <Background />
       <div>
         <HeaderLogo />
