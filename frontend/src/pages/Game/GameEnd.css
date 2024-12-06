@@ -1,4 +1,10 @@
-
+@font-face {
+  font-family: 'HakgyoansimNadeuriTTF-B';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimNadeuriTTF-B.woff2')
+    format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
 .GameEnd .container {
   display: flex;
   justify-content: center;
