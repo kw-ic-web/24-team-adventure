@@ -5,7 +5,6 @@ module.exports = {
     extend: {
       fontFamily: {
         noto: ['"Noto Sans KR"', 'sans-serif'], // Noto Sans KR 폰트 설정 추가
-        
       },
     },
   },

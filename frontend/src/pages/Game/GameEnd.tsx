@@ -25,12 +25,15 @@ function GameEnd() {
         throw new Error('스토리 데이터를 완전히 제공하지 않았습니다.');
       }
 
-      const response = await axios.post('http://localhost:3000/api/saveStory', {
-        user_id: userId,
-        story_id: Number(storyId),
-        geul_title: title,
-        geul_content: content,
-      });
+      const response = await axios.post(
+        'https://team05.server.duckdns.org/api/saveStory',
+        {
+          user_id: userId,
+          story_id: Number(storyId),
+          geul_title: title,
+          geul_content: content,
+        },
+      );
 
       if (response.status !== 201) {
         const errorData = response.data;
@@ -76,7 +79,6 @@ function GameEnd() {
         title: savedTitle,
         content: savedContent,
       });
-
     } else {
       alert('스토리 데이터가 없습니다. 홈으로 이동합니다.');
       navigate('/');
@@ -111,7 +113,6 @@ function GameEnd() {
               화상채팅하러가기
             </button>
           </div>
-
         ) : (
           <div className={`book ${bookState.isOpen ? 'open' : ''}`}>
             <div className="book-content">
@@ -122,7 +123,6 @@ function GameEnd() {
               {[...Array(8)].map((_, i) => (
                 <div key={i} className={`page page-${i + 1}`} />
               ))}
-
             </div>
           </div>
         )}
