@@ -23,7 +23,7 @@ const roomDeletionTimers: Record<string, NodeJS.Timeout> = {};
 const socketHandler = (server: HttpServer) => {
   const io = new SocketIOServer(server, {
     cors: {
-      origin: "http://localhost:20580", // 프론트엔드 주소
+      origin: "http://localhost:5173", // 프론트엔드 주소
       methods: ["GET", "POST"],
       credentials: true,
     },
