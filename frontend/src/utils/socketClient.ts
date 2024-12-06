@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_SERVER_URL = 'https://team05.server.duckdns.org';
+const SOCKET_SERVER_URL = 'http://223.194.46.67:20590';
 
 const token = localStorage.getItem('token'); // 로컬 스토리지에서 JWT 토큰 가져오기
 

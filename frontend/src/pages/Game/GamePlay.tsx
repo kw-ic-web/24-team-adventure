@@ -122,7 +122,7 @@ export default function GamePlay(): JSX.Element {
       setIsLoading(true); // 로딩 시작
       try {
         const response = await fetch(
-          `https://team05.server.duckdns.org/gameplay/${story_id}`,
+          `http://223.194.46.67:20590/gameplay/${story_id}`,
         ); // API 호출 수정
         const result = await response.json();
 
