@@ -87,7 +87,7 @@
 
 /* 카드 기본 스타일 */
 .card {
-  background-color: white;
+  background-color: rgb(255, 255, 209);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -99,7 +99,7 @@
 }
 
 .card:hover {
-  background-color: rgb(255, 228, 228);
+  background-color: rgb(255, 248, 173);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
   transform: scale(1.05); /* 카드가 살짝 커짐 */
 }
