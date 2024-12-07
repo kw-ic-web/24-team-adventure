@@ -6,6 +6,7 @@ import {
   generateStory,
   generateStory_second,
   generateStory_end,
+  generateTitle,
   generateKeywords,
   generateImage,
 } from "../controllers/storyController"; // 각 함수 가져오기
@@ -15,6 +16,10 @@ const router = express.Router();
 router.post("/api/generate-story-first", generateStory);
 router.post("/api/generate-story-second", generateStory_second);
 router.post("/api/generate-story-end", generateStory_end);
+router.post("/api/generate-story-title", (req, res, next) => {
+  console.log("POST /api/generate-story-title called");
+  next();
+}, generateTitle);
 router.post("/api/generate-keywords", generateKeywords);
 router.post("/api/generate-image", generateImage);
 
