@@ -116,6 +116,34 @@ export const generateStoryKeywords = async (userInput: string) => {
   }
 };
 
+//결말 내용 생성
+export const generateStoryTitle = async (userInput: string) => {
+  try {
+    if (!openai || !openai.chat || !openai.chat.completions) {
+      throw new Error("openai 객체가 제대로 초기화되지 않았습니다.");
+    }
+    console.log("제목 생성 요청 ");
+    const response = await openai.chat.completions.create({
+      model: "gpt-4",
+      messages: [
+        {
+          role: "system",
+          content:
+            "여기까지 동화 내용입니다. 이 내용을 바탕으로 길지 않는 제목을 만들어주세요. 한국어로 딱 제목만 주세요.",
+        },
+        { role: "user", content: `The story so far: ${userInput}` },
+      ],
+    });
+
+    const continuation = response?.choices?.[0]?.message?.content;
+    return { continuation }; // 이야기 연속성만 반환
+  } catch (error) {
+    console.error("Error generating story title:", error);
+    return { error };
+  }
+};
+
+
 //이미지 생성
 export const generateStoryImage = async (userInput: string) => {
   try {

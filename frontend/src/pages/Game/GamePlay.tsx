@@ -10,6 +10,7 @@ import {
   generateStoryContinuation,
   generateStoryContinuation_second,
   generateStoryContinuation_end,
+  generateStoryTitle,
 } from '../../services/StoryService';
 import { generateStoryKeywords } from '../../services/StoryService';
 import './GamePlay.css';
@@ -90,10 +91,14 @@ export default function GamePlay(): JSX.Element {
     }
   };
   // 최종동화합치기 및 gameEnd로 넘기는 부분
-  const handleCompleteClick = () => {
+  const handleCompleteClick = async () => {
     if (currentPage === 6) {
+      const response = await generateStoryTitle(pageTexts.join('\n\n'));
+
+      const titleResponse = response.continuation;
+
       const fullStory = {
-        title: pages[0]?.story_title || '동화 제목', // 제목이 없으면 기본 제목 사용
+        title: titleResponse || '동화 제목', // 제목이 없으면 기본 제목 사용
         content: pageTexts.join('\n\n'), // pageTexts 배열을 줄바꿈으로 구분하여 하나의 문자열로 합침
         userName: userData?.name || '익명 사용자', // 유저 이름 가져오기, 없으면 기본값 설정
       };
@@ -274,17 +279,11 @@ export default function GamePlay(): JSX.Element {
     }
   }, [currentPage, gameStarted]);
 
-  //cover이미지 불러오기
-  useEffect(() => {
-    console.log('Pages:', pages); // 페이지 데이터 확인
-    console.log('Cover Pic:', pages[0]?.cover_pic); // cover_pic 경로 확인
-  }, [pages]);
   useEffect(() => {
     const fetchCoverImage = async () => {
       try {
         if (pages.length > 0 && pages[0]?.cover_pic) {
           const imageUrl = encodeURI(pages[0].cover_pic);
-          console.log('Generated Image URL:', imageUrl);
           setCoverImage(imageUrl);
         } else {
           console.warn('No cover_pic found. Using default image.');
@@ -359,7 +358,7 @@ export default function GamePlay(): JSX.Element {
             </div>
             {/* 텍스트 애니메이션 */}
             <p className="relative text-white text-3xl font-extrabold animate-drop ">
-              단어들이 도착하고 있어요!
+              이야기가 도착하고 있어요!
             </p>
           </div>
         </div>

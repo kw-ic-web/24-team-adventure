@@ -3,6 +3,7 @@ import {
   generateStoryContinuation,
   generateStoryContinuation_second,
   generateStoryContinuation_end,
+  generateStoryTitle,
   generateStoryKeywords,
   generateStoryImage,
 } from "../services/storyService";
@@ -65,6 +66,30 @@ export const generateStory_end: RequestHandler = async (
   } catch (error) {
     console.error("Error generating story continuation:", error);
     res.status(500).json({ error: "Error generating story continuation" });
+  }
+};
+
+
+
+export const generateTitle: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { userInput } = req.body; // 클라이언트에서 post한 데이터 받아오기
+  if (!userInput) {
+    res.status(400).json({ error: "User input is required" });
+    return;
+  }
+
+  try {
+    console.log("제목: Received userInput:", userInput);
+    const titleResult = await generateStoryTitle(userInput); // 스토리 생성
+    console.log("제목 생성 결과:", titleResult);
+    
+    res.json({ continuation: titleResult.continuation }); // 생성된 스토리만 반환
+  } catch (error) {
+    console.error("Error generating story title1:", error);
+    res.status(500).json({ error: "Error generating story title" });
   }
 };
 

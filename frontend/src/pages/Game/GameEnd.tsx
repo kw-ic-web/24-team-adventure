@@ -17,7 +17,6 @@ function GameEnd() {
   const effectRan = useRef(false); // useEffect 중복 실행 방지 플래그
 
   const saveStoryToBackend = async (storyData) => {
-    console.log('전송할 데이터:', storyData);
     try {
       const { userId, storyId, title, content } = storyData;
 
@@ -40,7 +39,6 @@ function GameEnd() {
         throw new Error(errorData.error || '스토리 저장에 실패했습니다.');
       }
 
-      console.log('스토리 저장 성공:', response.data);
       return response.data;
     } catch (error) {
       console.error('스토리 저장 중 오류 발생:', error.message);

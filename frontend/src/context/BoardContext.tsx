@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import api from '../api'; // Axios 인스턴스 임포트
+import axiosInstance from '../apis/axiosInstance';
 
 // Story와 Post의 타입 정의
 interface Story {
@@ -50,11 +50,11 @@ export const BoardProvider: React.FC<{ children: React.ReactNode }> = ({
     const fetchData = async () => {
       try {
         // 스토리 데이터 가져오기
-        const storiesResponse = await api.get('/stories');
+        const storiesResponse = await axiosInstance.get('/stories');
         setStories(storiesResponse.data);
 
         // 모든 게시물 데이터 가져오기
-        const postsResponse = await api.get('/posts');
+        const postsResponse = await axiosInstance.get('/posts');
         setPosts(postsResponse.data);
       } catch (err: any) {
         console.error('Error fetching board data:', err);
