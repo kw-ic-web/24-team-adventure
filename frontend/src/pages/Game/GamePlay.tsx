@@ -274,17 +274,11 @@ export default function GamePlay(): JSX.Element {
     }
   }, [currentPage, gameStarted]);
 
-  //cover이미지 불러오기
-  useEffect(() => {
-    console.log('Pages:', pages); // 페이지 데이터 확인
-    console.log('Cover Pic:', pages[0]?.cover_pic); // cover_pic 경로 확인
-  }, [pages]);
   useEffect(() => {
     const fetchCoverImage = async () => {
       try {
         if (pages.length > 0 && pages[0]?.cover_pic) {
           const imageUrl = encodeURI(pages[0].cover_pic);
-          console.log('Generated Image URL:', imageUrl);
           setCoverImage(imageUrl);
         } else {
           console.warn('No cover_pic found. Using default image.');

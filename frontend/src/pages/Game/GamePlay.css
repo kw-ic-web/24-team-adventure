@@ -170,11 +170,11 @@
 .story-screen-456 {
   display: flex;
   flex-direction: column;
-  text-align: left; /* 텍스트 전체 왼쪽 정렬 */
-  align-items: flex-start; /* 컨테이너 내용 왼쪽 정렬 */
-  justify-content: flex-start; /* 텍스트가 위에서부터 시작 */
+  text-align: left; 
+  align-items: flex-start; 
+  justify-content: flex-start; 
   position: absolute;
-  background: url('../Game/동화배경1.png') no-repeat center center/cover; /* 배경 이미지 추가 */
+  background: url('../Game/동화배경1.png') no-repeat center center/cover; 
   width: 100%;
   height: 70vh;
   border-radius: 20px;
@@ -204,18 +204,18 @@
 .story-screen-456 p {
   font-size: 1.5rem;
   color: #000000;
-  padding: 20px; /* 내부 여백 */
-  line-height: 1.6; /* 텍스트 간격을 넉넉하게 설정 */
+  padding: 20px; 
+  line-height: 1.6; 
   font-weight: 500;
-  text-align: left; /* 텍스트 왼쪽 정렬 */
-  overflow-y: auto; /* 텍스트가 넘치면 스크롤 */
-  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.4); /* 텍스트 그림자 */
-  max-height: calc(100% - 40px); /* 부모 컨테이너를 넘지 않도록 제한 */
+  text-align: left; 
+  overflow-y: auto; 
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.4); 
+  max-height: calc(100% - 40px); 
 }
 
 .story-screen-456 {
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #6c432b transparent; /* 스크롤 색상 */
+  scrollbar-width: thin; 
+  scrollbar-color: #6c432b transparent;
 }
 
 .story-screen-456::-webkit-scrollbar {
