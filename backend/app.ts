@@ -21,11 +21,7 @@ const app = express();
 // CORS 설정
 app.use(
   cors({
-    origin: [
-      "http://localhost:20580",
-      "http://223.194.46.67:20580",
-      "https://team05.kwweb.duckdns.org",
-    ],
+    origin: ["223.194.46.67:20580", "https://team05.kwweb.duckdns.org"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
