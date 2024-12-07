@@ -105,7 +105,7 @@ const StoryGrid: React.FC = () => {
         </div>
 
         {/* 전체 게시물 보기 버튼과 게시물 리스트 컨테이너 */}
-        <div className="posts-container mt-[-30px]">
+        <div className="posts-container mt-[10px]">
           {selectedStoryId && (
             <div className="show-all-button-container">
               <button onClick={handleShowAllPosts} className="show-all-button">

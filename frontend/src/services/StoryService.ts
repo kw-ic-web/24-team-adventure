@@ -32,6 +32,17 @@ export const generateStoryContinuation_end = async (userInput: string) => {
     throw new Error('결말 스토리 연속 생성에 실패했습니다.');
   }
 };
+
+export const generateStoryTitle = async (userInput: string) => {
+  try {
+    const response = await api.post('/api/generate-story-title', { userInput });
+    return response.data; // 서버에서 반환된 데이터 (연속된 이야기와 키워드)
+  } catch (error) {
+    console.error('Error generating story title1111:', error);
+    throw new Error('제목 생성에 실패했습니다.');
+  }
+};
+
 export const generateStoryKeywords = async (userInput: string) => {
   try {
     const response = await api.post('/api/generate-keywords', { userInput });
@@ -41,6 +52,7 @@ export const generateStoryKeywords = async (userInput: string) => {
     throw new Error('키워드 생성에 실패했습니다.');
   }
 };
+
 export const generateStoryImage = async (userInput: string) => {
   try {
     const response = await api.post('/api/generate-image', { userInput });
