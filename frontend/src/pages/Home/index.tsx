@@ -46,7 +46,9 @@ export default function Home(user_id: string | number) {
     // 게시물 데이터를 가져오는 함수
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://223.194.46.67:20590/posts'); // 게시물 API 호출
+        const response = await fetch(
+          'https://team05-server.kwweb.duckdns.org/posts',
+        ); // 게시물 API 호출
         const data = await response.json();
         setPosts(data); // 게시물 상태 업데이트
       } catch (error) {

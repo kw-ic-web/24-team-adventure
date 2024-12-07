@@ -1,4 +1,4 @@
-const API_BASE_URL = '223.194.46.67:20590/api'; // 백엔드 API URL
+const API_BASE_URL = 'https://team05-server.kwweb.duckdns.org/api'; // 백엔드 API URL
 
 /**
  * 모든 사용자 상태 가져오기

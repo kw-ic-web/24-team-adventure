@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const socket: Socket = io('http://223.194.46.67:20590', {
+const socket: Socket = io('https://team05-server.kwweb.duckdns.org/', {
   withCredentials: true, // 쿠키 포함
 });
 

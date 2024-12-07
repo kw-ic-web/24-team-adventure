@@ -26,7 +26,7 @@ function GameEnd() {
       }
 
       const response = await axios.post(
-        'http://223.194.46.67:20590/api/saveStory',
+        'https://team05-server.kwweb.duckdns.org/api/saveStory',
         {
           user_id: userId,
           story_id: Number(storyId),
