@@ -93,9 +93,8 @@ export default function GamePlay(): JSX.Element {
   // 최종동화합치기 및 gameEnd로 넘기는 부분
   const handleCompleteClick = async () => {
     if (currentPage === 6) {
-      
       const response = await generateStoryTitle(pageTexts.join('\n\n'));
-      
+
       const titleResponse = response.continuation;
 
       const fullStory = {
@@ -128,7 +127,7 @@ export default function GamePlay(): JSX.Element {
       setIsLoading(true); // 로딩 시작
       try {
         const response = await fetch(
-          `http://223.194.46.67:20590/gameplay/${story_id}`,
+          `https://team05-server.kwweb.duckdns.org/gameplay/${story_id}`,
         ); // API 호출 수정
         const result = await response.json();
 
@@ -202,9 +201,7 @@ export default function GamePlay(): JSX.Element {
         response = await generateStoryContinuation_second(combinedPrompt);
       } else if (currentPage === 6) {
         response = await generateStoryContinuation_end(combinedPrompt);
-        
       }
-
 
       const gptResponse = response.continuation;
 

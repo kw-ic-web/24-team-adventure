@@ -299,17 +299,6 @@ const RoomDetail: React.FC = () => {
             muted
             className="w-256 h-96 bg-black rounded"
           />
-          <div className="overlay ">
-            <ul className="list-disc list-inside mt-2">
-              {userList.length > 0 && (
-                <li>
-                  {userList[0].userId === myUserId
-                    ? `나 (${userList[0].userName})`
-                    : userList[0].userName}
-                </li>
-              )}
-            </ul>
-          </div>
         </div>
         <div>
           <div className="video-container">
@@ -319,17 +308,6 @@ const RoomDetail: React.FC = () => {
               autoPlay
               className="w-256 h-96 bg-black rounded"
             />
-            <div className="overlay">
-              <ul className="list-disc list-inside mt-2">
-                {userList.length > 1 && (
-                  <li>
-                    {userList[1].userId === myUserId
-                      ? `나 (${userList[1].userName})`
-                      : userList[1].userName}
-                  </li>
-                )}
-              </ul>
-            </div>
           </div>
         </div>
       </div>

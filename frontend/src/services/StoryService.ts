@@ -39,7 +39,9 @@ export const generateStoryContinuation_end = async (userInput: string) => {
 
 export const generateStoryTitle = async (userInput: string) => {
   try {
-    const response = await api.post('/api/generate-story-title', { userInput });
+    const response = await axiosInstance.post('/api/generate-story-title', {
+      userInput,
+    });
     return response.data; // 서버에서 반환된 데이터 (연속된 이야기와 키워드)
   } catch (error) {
     console.error('Error generating story title1111:', error);
