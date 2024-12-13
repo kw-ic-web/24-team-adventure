@@ -1,4 +1,4 @@
-// 일단 넣은 코드
+// protected route public route 구분 구현 예정
 import express, { Request, Response } from "express";
 import authenticateJWT from "../middleware/authenticateJWT";
 import { User } from "../models/userModel";

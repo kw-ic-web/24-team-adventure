@@ -1,3 +1,4 @@
+// protected route public route 구분 구현 예정
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { JWT_SECRET } from "../config/keys";
